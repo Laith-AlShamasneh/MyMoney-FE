@@ -27,6 +27,20 @@ let _onSessionExpired = () => {
   window.location.href = Config.ROUTES.LOGIN;
 };
 
+/* Shared refresh promise — prevents multiple concurrent 401 responses from
+   each spawning their own refresh call. All concurrent waiters share one
+   in-flight refresh and retry with the same new token once it resolves.  */
+let _pendingRefresh = null;
+
+function _ensureRefreshed() {
+  if (!_pendingRefresh) {
+    _pendingRefresh = _refreshAccessToken().finally(() => {
+      _pendingRefresh = null;
+    });
+  }
+  return _pendingRefresh;
+}
+
 /**
  * Called by auth.js to wire up token management without creating a circular
  * dependency between api.js and auth.js.
@@ -127,7 +141,10 @@ async function request(method, endpoint, body = null, options = {}) {
 
   /* --- Handle 401 Unauthorized: attempt silent token refresh once --- */
   if (response.status === 401 && !options._isRetry) {
-    const refreshed = await _refreshAccessToken();
+    /* _ensureRefreshed() serialises concurrent 401s behind one refresh call.
+       If 5 requests all hit 401 simultaneously, only 1 refresh is made;
+       all 5 retries proceed together once the refresh resolves.           */
+    const refreshed = await _ensureRefreshed();
     if (refreshed) {
       return request(method, endpoint, body, { ...options, _isRetry: true });
     }

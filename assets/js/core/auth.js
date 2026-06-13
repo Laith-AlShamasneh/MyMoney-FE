@@ -188,29 +188,36 @@ export function getAccessToken() {
 
 /**
  * Call at the top of every protected (dashboard) page script.
- * If no valid session can be restored, redirects to login.
+ * Performs a client-side-only session check — no server call.
  *
  * Flow:
- *  1. Access token already in memory  → OK
- *  2. No access token but stored refresh token → attempt silent refresh
- *  3. Refresh fails or no stored token → redirect to login
+ *  1. Access token in memory and valid → OK
+ *  2. No in-memory token but stored refresh token (not locally expired) → OK
+ *     The actual server refresh is deferred to the first 401 response via api.js.
+ *  3. No stored refresh token or locally expired → redirect to login immediately.
+ *
+ * This reactive approach means refresh is only called when the server signals
+ * expiry (401), never pre-emptively on every page load.
  */
 export async function guardPage() {
   if (_accessToken && !_isAccessTokenExpired(_accessToken)) {
     return;
   }
 
-  const refreshed = await _tryRefreshToken();
-  if (!refreshed) {
+  if (!_loadRefreshToken() || _isRefreshTokenExpired()) {
+    clearSession();
     window.location.href = Config.ROUTES.LOGIN;
-    /* Throw so the page script does not continue executing */
     throw new Error('Not authenticated.');
   }
 }
 
 /**
  * Call at the top of anonymous-only pages (login, register, etc.).
- * If the user has a valid session, redirects them to the dashboard.
+ * If the user appears to have a valid session, redirects to the dashboard.
+ *
+ * Client-side check only — no server call.
+ * If the stored refresh token turns out to be revoked, api.js will catch
+ * the subsequent 401 on the dashboard and redirect back to login.
  */
 export async function guardAnonymous() {
   if (_accessToken && !_isAccessTokenExpired(_accessToken)) {
@@ -218,9 +225,7 @@ export async function guardAnonymous() {
     throw new Error('Already authenticated.');
   }
 
-  /* Try to restore from refresh token */
-  const refreshed = await _tryRefreshToken();
-  if (refreshed) {
+  if (_loadRefreshToken() && !_isRefreshTokenExpired()) {
     window.location.href = Config.ROUTES.DASHBOARD;
     throw new Error('Already authenticated.');
   }
