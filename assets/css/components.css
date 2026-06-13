@@ -1,0 +1,921 @@
+/* ==========================================================================
+   components.css — MyMoney
+   Reusable UI components: cards, panels, buttons, tables, forms, badges,
+   avatars, charts, activities, profiles, settings, pagination, alerts.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Eyebrow Label
+   -------------------------------------------------------------------------- */
+.eyebrow {
+  color: var(--mm-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   2. Page Icon & Section Title
+   -------------------------------------------------------------------------- */
+.page-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #eaf2ff;
+  color: var(--mm-primary-dark);
+  font-size: 1.25rem;
+}
+
+html[data-theme="dark"] .page-icon {
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+.section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.section-title i {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #eaf2ff;
+  color: var(--mm-primary-dark);
+  font-size: 0.95rem;
+}
+
+html[data-theme="dark"] .section-title i {
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+/* --------------------------------------------------------------------------
+   3. Buttons
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 8px;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.16s ease, background 0.16s ease,
+              box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.btn:hover,
+.btn:focus {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  border-color: var(--mm-primary-dark);
+  background: var(--mm-primary-dark);
+}
+
+.btn-light {
+  border-color: var(--mm-border);
+  background: var(--mm-surface-soft);
+  color: var(--mm-text);
+}
+
+.btn-outline-secondary {
+  border-color: var(--mm-border);
+  color: var(--mm-text);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  border-color: var(--mm-primary);
+  background: #eaf2ff;
+  color: var(--mm-primary-dark);
+}
+
+html[data-theme="dark"] .btn-outline-secondary:hover,
+html[data-theme="dark"] .btn-outline-secondary:focus {
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+
+  .btn:hover,
+  .btn:focus {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Metric Cards
+   -------------------------------------------------------------------------- */
+.metric-card {
+  position: relative;
+  min-height: 164px;
+  padding: 1.35rem;
+  overflow: hidden;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.metric-card::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 4px;
+  background: var(--metric-color, var(--mm-primary));
+}
+
+.metric-card:hover {
+  border-color: #c6d5e8;
+  box-shadow: var(--mm-shadow-lg);
+  transform: translateY(-3px);
+}
+
+.metric-primary  { --metric-color: var(--mm-primary); }
+.metric-success  { --metric-color: var(--mm-success); }
+.metric-warning  { --metric-color: var(--mm-warning); }
+.metric-danger   { --metric-color: var(--mm-danger); }
+
+.metric-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.metric-label {
+  color: var(--mm-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.metric-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #eaf2ff;
+  color: var(--metric-color, var(--mm-primary));
+  font-size: 0.76rem;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.metric-success .metric-icon { background: #e7f6f3; }
+.metric-warning .metric-icon { background: #fff4df; }
+.metric-danger  .metric-icon { background: #ffecec; }
+
+.metric-value {
+  margin-top: 1rem;
+  color: var(--mm-text);
+  font-size: 2.18rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metric-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.9rem;
+  color: var(--mm-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card {
+    transition: none;
+  }
+
+  .metric-card:hover {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Panels
+   -------------------------------------------------------------------------- */
+.panel {
+  padding: 1.35rem;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.panel:hover {
+  border-color: #c6d5e8;
+  box-shadow: var(--mm-shadow-lg);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.panel-header p {
+  font-size: 0.92rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Charts (CSS-based bar chart)
+   -------------------------------------------------------------------------- */
+.chart-bars {
+  height: 292px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(38px, 1fr));
+  align-items: end;
+  gap: 1rem;
+  padding: 1.2rem 0.4rem 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+html[data-theme="dark"] .chart-bars {
+  background: linear-gradient(180deg, #111827 0%, #182235 100%);
+}
+
+.chart-column {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: end;
+  gap: 0.6rem;
+  color: var(--mm-muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.chart-column span {
+  width: 100%;
+  height: var(--bar-size);
+  min-height: 28px;
+  display: block;
+  border-radius: 8px 8px 3px 3px;
+  background: linear-gradient(180deg, var(--mm-primary), var(--mm-success));
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+}
+
+.bar-42 { --bar-size: 42%; }
+.bar-58 { --bar-size: 58%; }
+.bar-51 { --bar-size: 51%; }
+.bar-72 { --bar-size: 72%; }
+.bar-66 { --bar-size: 66%; }
+.bar-83 { --bar-size: 83%; }
+
+/* --------------------------------------------------------------------------
+   7. Activity List
+   -------------------------------------------------------------------------- */
+.activity-list {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.activity-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--mm-border);
+}
+
+.activity-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.activity-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 0.45rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   8. Tables
+   -------------------------------------------------------------------------- */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--mm-text);
+  --bs-table-border-color: var(--mm-border);
+  color: var(--mm-text);
+}
+
+.table thead th {
+  color: var(--mm-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  min-width: 120px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.table tbody tr {
+  transition: background 0.16s ease;
+}
+
+.table tbody tr:hover {
+  background: #f8fbff;
+}
+
+html[data-theme="dark"] .table tbody tr:hover {
+  background: #111827;
+}
+
+.table-search {
+  width: min(260px, 100%);
+  border-color: var(--mm-border);
+  border-radius: 8px;
+}
+
+.table-media {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. Avatars
+   -------------------------------------------------------------------------- */
+.avatar-img {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+.avatar-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.avatar-md {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.avatar-xl {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+}
+
+.profile-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #e0ecff;
+  color: var(--mm-primary-dark);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+html[data-theme="dark"] .profile-avatar {
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+.product-thumb {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  border: 1px solid var(--mm-border);
+}
+
+/* --------------------------------------------------------------------------
+   10. Badges
+   -------------------------------------------------------------------------- */
+.badge {
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Profile Page
+   -------------------------------------------------------------------------- */
+.profile-hero {
+  display: grid;
+  justify-items: center;
+}
+
+.profile-card {
+  overflow: hidden;
+}
+
+.profile-cover {
+  margin: -1.35rem -1.35rem 0.9rem;
+  height: 96px;
+  border-bottom: 1px solid var(--mm-border);
+}
+
+.profile-cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.profile-photo {
+  margin-top: -44px;
+  border: 4px solid var(--mm-surface);
+  box-shadow: var(--mm-shadow-sm);
+}
+
+.profile-avatar-lg {
+  width: 92px;
+  height: 92px;
+  border-radius: 8px;
+  font-size: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   12. Info List & Settings
+   -------------------------------------------------------------------------- */
+.info-list,
+.settings-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.info-list div,
+.mini-card,
+.settings-row {
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface-soft);
+}
+
+.info-list div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem;
+}
+
+.info-list span {
+  color: var(--mm-muted);
+  font-size: 0.84rem;
+}
+
+.info-list strong {
+  text-align: end;
+}
+
+.mini-card {
+  display: grid;
+  gap: 0.35rem;
+  min-height: 104px;
+  align-content: center;
+  padding: 1rem;
+}
+
+.mini-card span {
+  color: var(--mm-muted);
+  font-size: 0.84rem;
+}
+
+.mini-card strong {
+  color: var(--mm-text);
+  font-size: 1.05rem;
+  text-align: end;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.settings-row span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.settings-row small {
+  color: var(--mm-muted);
+  font-size: 0.84rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. Donut Chart (CSS-based)
+   -------------------------------------------------------------------------- */
+.donut-chart {
+  width: 190px;
+  height: 190px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--mm-primary) 0 42%,
+    var(--mm-success) 42% 68%,
+    var(--mm-warning) 68% 86%,
+    var(--mm-danger) 86% 100%
+  );
+  box-shadow: var(--mm-shadow-sm);
+}
+
+.donut-chart span {
+  width: 112px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--mm-surface);
+  color: var(--mm-text);
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   14. Legend List
+   -------------------------------------------------------------------------- */
+.legend-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.legend-list div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface-soft);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.legend-list strong {
+  margin-inline-start: auto;
+}
+
+/* --------------------------------------------------------------------------
+   15. Progress Bars
+   -------------------------------------------------------------------------- */
+.progress {
+  height: 1.15rem;
+  border-radius: 8px;
+  background: #e8eef6;
+}
+
+html[data-theme="dark"] .progress {
+  background: #243149;
+}
+
+.progress-bar {
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.progress-42 { width: 42%; }
+.progress-58 { width: 58%; }
+.progress-72 { width: 72%; }
+
+/* --------------------------------------------------------------------------
+   16. Blank / Empty State
+   -------------------------------------------------------------------------- */
+.blank-panel {
+  min-height: 440px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.blank-state {
+  max-width: 440px;
+  display: grid;
+  justify-items: center;
+}
+
+.blank-visual {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  margin-bottom: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   17. Form Controls (dark mode overrides)
+   -------------------------------------------------------------------------- */
+.form-control,
+.form-select {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface);
+  color: var(--mm-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #93c5fd;
+  background-color: var(--mm-surface);
+  color: var(--mm-text);
+  box-shadow: var(--mm-ring);
+}
+
+.form-control::placeholder {
+  color: var(--mm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   18. Dropdowns (dark mode)
+   -------------------------------------------------------------------------- */
+.dropdown-menu {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface);
+  color: var(--mm-text);
+}
+
+.dropdown-item {
+  color: var(--mm-text);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--mm-surface-soft);
+  color: var(--mm-text);
+}
+
+/* --------------------------------------------------------------------------
+   19. Modals (dark mode)
+   -------------------------------------------------------------------------- */
+.modal-content {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface);
+  color: var(--mm-text);
+}
+
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer {
+  border-color: var(--mm-border);
+}
+
+html[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(180%);
+}
+
+/* --------------------------------------------------------------------------
+   20. Accordions (dark mode)
+   -------------------------------------------------------------------------- */
+.accordion-item,
+.accordion-button {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface);
+  color: var(--mm-text);
+}
+
+.accordion-body {
+  color: var(--mm-text);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--mm-surface-soft);
+  color: var(--mm-text);
+}
+
+html[data-theme="dark"] .accordion-item {
+  border-color: var(--mm-border);
+}
+
+/* --------------------------------------------------------------------------
+   21. Alerts (dark mode)
+   -------------------------------------------------------------------------- */
+.alert {
+  border-radius: 8px;
+}
+
+html[data-theme="dark"] .alert-primary {
+  border-color: #1d4ed8;
+  background: rgba(37, 99, 235, 0.16);
+  color: #bfdbfe;
+}
+
+html[data-theme="dark"] .alert-success {
+  border-color: #0f766e;
+  background: rgba(15, 118, 110, 0.18);
+  color: #99f6e4;
+}
+
+html[data-theme="dark"] .alert-warning {
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.18);
+  color: #fde68a;
+}
+
+html[data-theme="dark"] .alert-danger {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.16);
+  color: #fecaca;
+}
+
+/* --------------------------------------------------------------------------
+   22. Pagination
+   -------------------------------------------------------------------------- */
+.page-link {
+  border-color: var(--mm-border);
+  background: var(--mm-surface);
+  color: var(--mm-text);
+}
+
+.page-link:hover,
+.page-link:focus {
+  border-color: var(--mm-primary);
+  background: var(--mm-surface-soft);
+  color: var(--mm-primary);
+}
+
+.page-item.active .page-link {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary);
+  color: #ffffff;
+}
+
+.page-item.disabled .page-link {
+  border-color: var(--mm-border);
+  background: var(--mm-surface-soft);
+  color: var(--mm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   23. Utility overrides
+   -------------------------------------------------------------------------- */
+.text-muted {
+  color: var(--mm-muted) !important;
+}
+
+html[data-theme="dark"] .text-body {
+  color: var(--mm-text) !important;
+}
+
+html[data-theme="dark"] .text-bg-secondary {
+  background-color: #334155 !important;
+  color: #e5edf7 !important;
+}
+
+html[data-theme="dark"] .text-bg-info {
+  background-color: #0e7490 !important;
+  color: #ecfeff !important;
+}
+
+html[data-theme="dark"] .text-bg-warning {
+  background-color: #b45309 !important;
+  color: #fff7ed !important;
+}
+
+html[data-theme="dark"] .text-bg-success {
+  background-color: #0f766e !important;
+  color: #ecfdf5 !important;
+}
+
+html[data-theme="dark"] .text-bg-danger {
+  background-color: #b91c1c !important;
+  color: #fef2f2 !important;
+}
+
+/* --------------------------------------------------------------------------
+   24. Responsive – Tablet
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .panel-header {
+    align-items: flex-start;
+  }
+
+  .panel-header > .d-flex {
+    width: 100%;
+  }
+
+  .table-search {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   25. Responsive – Mobile
+   -------------------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+  .metric-value {
+    font-size: 1.85rem;
+  }
+
+  .metric-card,
+  .panel {
+    padding: 1.1rem;
+  }
+
+  .metric-card {
+    min-height: 146px;
+  }
+
+  .chart-bars {
+    height: 220px;
+    gap: 0.6rem;
+    padding-inline: 0.25rem;
+  }
+
+  .panel-header .d-flex,
+  .panel-header .form-control,
+  .panel-header .form-select {
+    width: 100%;
+  }
+
+  .avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .avatar-xl {
+    width: 70px;
+    height: 70px;
+  }
+
+  .profile-cover {
+    height: 82px;
+    margin-bottom: 0.75rem;
+  }
+
+  .profile-photo {
+    margin-top: -38px;
+  }
+
+  .product-thumb {
+    width: 36px;
+    height: 36px;
+  }
+
+  .profile-avatar-lg {
+    width: 76px;
+    height: 76px;
+  }
+}
+
+@media (max-width: 420px) {
+  .heading-actions {
+    width: 100%;
+  }
+
+  .heading-actions .btn {
+    width: 100%;
+  }
+}

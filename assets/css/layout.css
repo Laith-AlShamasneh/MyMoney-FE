@@ -1,0 +1,573 @@
+/* ==========================================================================
+   layout.css — MyMoney
+   Admin shell, sidebar, top navbar, footer, responsive breakpoints.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Admin Shell
+   -------------------------------------------------------------------------- */
+.admin-shell {
+  min-height: 100vh;
+}
+
+/* --------------------------------------------------------------------------
+   2. Sidebar
+   -------------------------------------------------------------------------- */
+.admin-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 1040;
+  width: var(--mm-sidebar-width);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  border-inline-end: 1px solid var(--mm-sidebar-border);
+  background: var(--mm-sidebar-bg);
+  color: var(--mm-sidebar-text-strong);
+  box-shadow: var(--mm-sidebar-shadow);
+  transform: translateX(0);
+  transition: width 0.2s ease, transform 0.2s ease;
+}
+
+/* Sidebar – header */
+.sidebar-header {
+  padding: 1.35rem 1.25rem 1.15rem;
+  margin-inline: 0;
+  border-bottom: 1px solid var(--mm-sidebar-border);
+}
+
+/* Sidebar – brand */
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  color: var(--mm-sidebar-text-strong);
+}
+
+.brand-mark:hover,
+.brand-mark:focus {
+  color: var(--mm-sidebar-text-strong);
+}
+
+.brand-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--mm-primary), var(--mm-success));
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.brand-copy,
+.nav-text,
+.sidebar-footer-text {
+  min-width: 0;
+  transition: opacity 0.16s ease, width 0.16s ease;
+}
+
+.brand-title,
+.brand-subtitle {
+  display: block;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.brand-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  color: var(--mm-sidebar-muted);
+  font-size: 0.78rem;
+}
+
+/* Sidebar – navigation */
+.sidebar-nav {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1.1rem 1rem;
+}
+
+.sidebar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.78rem 0.9rem;
+  border-radius: 8px;
+  color: var(--mm-sidebar-text);
+  font-weight: 700;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+  white-space: nowrap;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link:focus,
+.sidebar-nav .nav-link.active {
+  background: var(--mm-sidebar-soft);
+  color: var(--mm-sidebar-text-strong);
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link:focus {
+  transform: translateX(2px);
+}
+
+[dir="rtl"] .sidebar-nav .nav-link:hover,
+[dir="rtl"] .sidebar-nav .nav-link:focus {
+  transform: translateX(-2px);
+}
+
+.nav-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--mm-sidebar-icon-bg);
+  color: var(--mm-sidebar-icon);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+/* Sidebar – user card */
+.sidebar-user {
+  margin: auto 1rem 1rem;
+  padding: 0.85rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.22rem;
+  border: 1px solid var(--mm-sidebar-border);
+  border-radius: 8px;
+  background: var(--mm-sidebar-soft);
+  text-align: center;
+}
+
+.sidebar-user-avatar {
+  border: 3px solid #53e9b9;
+}
+
+.sidebar-user strong {
+  color: var(--mm-sidebar-text-strong);
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.sidebar-user small {
+  color: var(--mm-sidebar-muted);
+  font-size: 0.84rem;
+}
+
+/* Sidebar – footer status */
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: auto;
+  margin-inline: 1.25rem;
+  padding: 1rem 0;
+  color: var(--mm-sidebar-text);
+  border-top: 1px solid var(--mm-sidebar-border);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: #22c55e;
+}
+
+/* Sidebar – backdrop (mobile overlay) */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1030;
+  display: none;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   3. Main Content Area
+   -------------------------------------------------------------------------- */
+.admin-main {
+  width: auto;
+  min-width: 0;
+  min-height: 100vh;
+  margin-inline-start: var(--mm-sidebar-width);
+  transition: margin-inline-start 0.2s ease;
+}
+
+/* --------------------------------------------------------------------------
+   4. Top Navbar
+   -------------------------------------------------------------------------- */
+.admin-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  min-height: 72px;
+  border-bottom: 1px solid var(--mm-border);
+  box-shadow: var(--mm-shadow-sm);
+}
+
+.admin-navbar.bg-white {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(14px);
+}
+
+html[data-theme="dark"] .admin-navbar.bg-white {
+  background-color: rgba(24, 34, 53, 0.92) !important;
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+  width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  gap: 4px;
+  padding: 9px;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface);
+  color: var(--mm-text);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.sidebar-toggle:hover,
+.sidebar-toggle:focus {
+  border-color: #bfdbfe;
+  background: var(--mm-surface-soft);
+  box-shadow: var(--mm-ring);
+}
+
+.sidebar-toggle span {
+  width: 18px;
+  height: 2px;
+  display: block;
+  background: var(--mm-text);
+  border-radius: 999px;
+}
+
+/* Search input */
+.search-input {
+  max-width: 520px;
+  border-color: var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface-soft);
+  min-height: 42px;
+  box-shadow: none;
+}
+
+.search-input:focus {
+  border-color: #93c5fd;
+  box-shadow: var(--mm-ring);
+}
+
+/* Navbar action buttons */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-button,
+.profile-button {
+  border: 1px solid var(--mm-border);
+  background: var(--mm-surface);
+  color: var(--mm-text);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.icon-button:hover,
+.icon-button:focus,
+.profile-button:hover,
+.profile-button:focus {
+  border-color: #bfdbfe;
+  box-shadow: var(--mm-ring);
+}
+
+.icon-button {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.icon-button.lang-switch-btn {
+  width: auto;
+  min-width: 42px;
+  padding: 0 0.65rem;
+  font-size: 0.83rem;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--mm-danger);
+}
+
+.notification-menu {
+  width: min(320px, calc(100vw - 2rem));
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  box-shadow: var(--mm-shadow);
+}
+
+.notification-menu .dropdown-item {
+  display: grid;
+  gap: 0.2rem;
+  padding-block: 0.7rem;
+}
+
+.notification-title {
+  font-weight: 700;
+}
+
+.notification-time {
+  color: var(--mm-muted);
+  font-size: 0.82rem;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 42px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.profile-button .avatar-sm {
+  border: 2px solid #52e7b8;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="dark"] .profile-button .avatar-sm {
+  border-color: #54f0be;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   5. Dashboard Content
+   -------------------------------------------------------------------------- */
+.dashboard-content {
+  min-height: calc(100vh - 132px);
+}
+
+.dashboard-content > .container-fluid {
+  padding-top: 1.75rem !important;
+  padding-bottom: 1.75rem !important;
+}
+
+/* Page headings */
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.35rem;
+}
+
+.page-heading-copy {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.page-heading h1 {
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+/* --------------------------------------------------------------------------
+   6. Footer
+   -------------------------------------------------------------------------- */
+.admin-footer {
+  padding: 1.1rem 0 1.35rem;
+  color: var(--mm-muted);
+  font-size: 0.9rem;
+}
+
+.admin-footer .container-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   7. Responsive – Desktop Sidebar Mini Mode
+   -------------------------------------------------------------------------- */
+@media (min-width: 992px) {
+  body.sidebar-mini .admin-sidebar {
+    width: var(--mm-sidebar-mini-width);
+  }
+
+  body.sidebar-mini .admin-main {
+    margin-inline-start: var(--mm-sidebar-mini-width);
+  }
+
+  body.sidebar-mini .brand-copy,
+  body.sidebar-mini .nav-text,
+  body.sidebar-mini .sidebar-footer-text {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  body.sidebar-mini .sidebar-header,
+  body.sidebar-mini .sidebar-footer {
+    margin-inline: 1rem;
+    padding-inline: 0;
+  }
+
+  body.sidebar-mini .sidebar-nav .nav-link {
+    justify-content: center;
+    padding-inline: 0.65rem;
+  }
+
+  body.sidebar-mini .sidebar-nav .nav-link:hover,
+  body.sidebar-mini .sidebar-nav .nav-link:focus {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. Responsive – Mobile Sidebar Off-Canvas
+   -------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+  .admin-sidebar {
+    width: min(var(--mm-sidebar-width), calc(100vw - 48px));
+    transform: translateX(-100%);
+    box-shadow: 18px 0 48px rgba(0, 0, 0, 0.28);
+  }
+
+  [dir="rtl"] .admin-sidebar {
+    transform: translateX(100%);
+  }
+
+  .admin-main {
+    margin-inline-start: 0;
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  body.sidebar-open .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open .sidebar-backdrop {
+    display: block;
+  }
+
+  .dashboard-content > .container-fluid {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive – Tablet
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .navbar-actions {
+    gap: 0.5rem;
+  }
+
+  .icon-button,
+  .profile-button,
+  .sidebar-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .profile-button {
+    padding: 0.3rem;
+  }
+
+  .page-heading-copy {
+    align-items: flex-start;
+  }
+
+  .admin-footer .container-fluid {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. Responsive – Mobile
+   -------------------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+  .page-heading,
+  .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-heading-copy {
+    width: 100%;
+  }
+
+  .heading-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .heading-actions .btn {
+    flex: 1 1 0;
+  }
+
+  .admin-footer .container-fluid {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. Reduced Motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-nav .nav-link,
+  .sidebar-toggle,
+  .icon-button,
+  .profile-button {
+    transition: none;
+  }
+
+  .sidebar-nav .nav-link:hover,
+  .sidebar-nav .nav-link:focus {
+    transform: none;
+  }
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — خطأ في الخادم">
+  <title data-i18n-page-title="errors_page.500_title">خطأ في الخادم | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/auth.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+</head>
+
+<body class="auth-body">
+
+  <main class="error-page">
+    <div class="error-card">
+
+      <img class="error-illustration"
+           src="/assets/images/illustrations/500.svg"
+           alt="" aria-hidden="true">
+
+      <div class="error-code" data-i18n="errors_page.500_heading">500</div>
+
+      <h1 class="h4 mt-2 mb-2" data-i18n="errors_page.500_title">خطأ في الخادم</h1>
+      <p class="text-muted mb-4" data-i18n="errors_page.500_message">
+        حدث خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.
+      </p>
+
+      <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <button class="btn btn-outline-secondary" type="button" onclick="location.reload()">
+          <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+          <span data-i18n="common.submit">إعادة المحاولة</span>
+        </button>
+        <a class="btn btn-primary" href="/index.html">
+          <i class="bi bi-house" aria-hidden="true"></i>
+          <span data-i18n="errors_page.go_home">العودة للرئيسية</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/error.js"></script>
+</body>
+</html>

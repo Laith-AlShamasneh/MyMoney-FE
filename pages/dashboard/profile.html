@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — الملف الشخصي">
+  <title data-i18n-page-title="profile.page_title">الملف الشخصي | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="profile.eyebrow">حسابي</p>
+                <h1 class="h3 mb-1" data-i18n="profile.heading">الملف الشخصي</h1>
+                <p class="text-muted mb-0" data-i18n="profile.subheading">إدارة بيانات حسابك الشخصي.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content placeholder — will be populated in a future phase -->
+          <div class="panel mt-2">
+            <div class="blank-panel">
+              <div class="blank-state">
+                <i class="bi bi-person-circle blank-visual text-muted" style="font-size:5rem"></i>
+                <h2 class="h5 mb-2" data-i18n="profile.heading">الملف الشخصي</h2>
+                <p class="text-muted small mb-0" data-i18n="profile.subheading">
+                  إدارة بيانات حسابك الشخصي.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — إنشاء حساب جديد">
+  <title data-i18n-page-title="auth.register.page_title">إنشاء حساب | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/auth.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-controls-top">
+    <button type="button"
+            data-lang-switch
+            data-i18n="layout.lang_switch_label"
+            data-i18n-aria-label="layout.lang_switch_aria"
+            aria-label="التبديل إلى الإنجليزية">
+      EN
+    </button>
+    <button type="button"
+            data-theme-toggle
+            data-i18n-aria-label="layout.switch_to_dark"
+            aria-label="التبديل إلى الوضع الداكن"
+            title="التبديل إلى الوضع الداكن">
+      <i class="bi bi-moon-stars" data-theme-icon aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <main class="auth-page">
+    <section class="auth-card">
+
+      <a class="auth-brand" href="/index.html">
+        <span class="brand-icon"><i class="bi bi-wallet2" aria-hidden="true"></i></span>
+        <span class="auth-brand-copy">
+          <span class="auth-brand-name">MyMoney</span>
+          <span class="auth-brand-tagline" data-i18n="auth.register.brand_tagline">أنشئ حسابك الجديد.</span>
+        </span>
+      </a>
+
+      <div class="auth-visual" aria-hidden="true">
+        <i class="bi bi-person-plus auth-visual-icon"></i>
+      </div>
+
+      <div class="mb-4">
+        <p class="eyebrow mb-1" data-i18n="auth.register.eyebrow">وصول آمن</p>
+        <h1 class="h3 mb-1" data-i18n="auth.register.title">إنشاء حساب</h1>
+        <p class="text-muted mb-0" data-i18n="auth.register.subtitle">أنشئ حسابك في MyMoney.</p>
+      </div>
+
+      <!-- Error summary -->
+      <div class="alert alert-danger d-none mb-3" id="formErrorSummary" role="alert">
+        <ul class="mb-0 ps-3" id="formErrorList"></ul>
+      </div>
+
+      <form id="registerForm" class="needs-validation" novalidate>
+
+        <!-- Name row -->
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label class="form-label" for="firstNameEn" data-i18n="auth.register.first_name_label">الاسم الأول (إنجليزي)</label>
+            <input class="form-control" id="firstNameEn" type="text"
+                   autocomplete="given-name"
+                   data-i18n-placeholder="auth.register.first_name_placeholder"
+                   placeholder="Ahmed"
+                   maxlength="100" required>
+            <div class="invalid-feedback" data-i18n="auth.register.first_name_error">الاسم الأول مطلوب.</div>
+          </div>
+          <div class="col-6">
+            <label class="form-label" for="lastNameEn" data-i18n="auth.register.last_name_label">اسم العائلة (إنجليزي)</label>
+            <input class="form-control" id="lastNameEn" type="text"
+                   autocomplete="family-name"
+                   data-i18n-placeholder="auth.register.last_name_placeholder"
+                   placeholder="Al-Rashid"
+                   maxlength="100" required>
+            <div class="invalid-feedback" data-i18n="auth.register.last_name_error">اسم العائلة مطلوب.</div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="form-label" for="registerEmail" data-i18n="auth.register.email_label">البريد الإلكتروني</label>
+          <input class="form-control" id="registerEmail" type="email"
+                 autocomplete="email"
+                 data-i18n-placeholder="auth.register.email_placeholder"
+                 placeholder="example@email.com"
+                 required>
+          <div class="invalid-feedback" data-i18n="auth.register.email_error">يرجى إدخال بريد إلكتروني صحيح.</div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-1">
+          <label class="form-label" for="registerPassword" data-i18n="auth.register.password_label">كلمة المرور</label>
+          <input class="form-control" id="registerPassword" type="password"
+                 autocomplete="new-password"
+                 data-i18n-placeholder="auth.register.password_placeholder"
+                 placeholder="••••••••"
+                 required>
+          <div class="invalid-feedback" data-i18n="auth.register.password_error">كلمة المرور لا تستوفي المتطلبات.</div>
+        </div>
+
+        <!-- Password strength hints -->
+        <ul class="list-unstyled small mb-3 ps-1" style="line-height:1.8">
+          <li id="hintLength" class="text-muted">
+            <i class="hint-icon bi bi-circle me-1" aria-hidden="true"></i>
+            <span data-i18n="auth.register.password_hint_length">8 أحرف على الأقل</span>
+          </li>
+          <li id="hintUpper" class="text-muted">
+            <i class="hint-icon bi bi-circle me-1" aria-hidden="true"></i>
+            <span data-i18n="auth.register.password_hint_uppercase">حرف كبير واحد على الأقل</span>
+          </li>
+          <li id="hintLower" class="text-muted">
+            <i class="hint-icon bi bi-circle me-1" aria-hidden="true"></i>
+            <span data-i18n="auth.register.password_hint_lowercase">حرف صغير واحد على الأقل</span>
+          </li>
+          <li id="hintDigit" class="text-muted">
+            <i class="hint-icon bi bi-circle me-1" aria-hidden="true"></i>
+            <span data-i18n="auth.register.password_hint_digit">رقم واحد على الأقل</span>
+          </li>
+          <li id="hintSpecial" class="text-muted">
+            <i class="hint-icon bi bi-circle me-1" aria-hidden="true"></i>
+            <span data-i18n="auth.register.password_hint_special">رمز خاص واحد على الأقل</span>
+          </li>
+        </ul>
+
+        <!-- Confirm password -->
+        <div class="mb-3">
+          <label class="form-label" for="confirmPassword" data-i18n="auth.register.confirm_password_label">تأكيد كلمة المرور</label>
+          <input class="form-control" id="confirmPassword" type="password"
+                 autocomplete="new-password"
+                 data-i18n-placeholder="auth.register.confirm_password_placeholder"
+                 placeholder="••••••••"
+                 required>
+          <div class="invalid-feedback" data-i18n="auth.register.confirm_password_error">كلمتا المرور غير متطابقتين.</div>
+        </div>
+
+        <!-- Profile image (optional) -->
+        <div class="mb-3">
+          <label class="form-label" for="profileImage">
+            <span data-i18n="auth.register.profile_image_label">الصورة الشخصية</span>
+            <span class="text-muted small ms-1" data-i18n="common.optional">(اختياري)</span>
+          </label>
+
+          <!-- Image preview -->
+          <div id="imagePreviewWrap" class="d-none mb-2 d-flex align-items-center gap-2">
+            <img id="imagePreview" src="" alt="" class="rounded-circle"
+                 style="width:56px;height:56px;object-fit:cover">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="removeImageBtn"
+                    data-i18n="auth.register.profile_image_remove">إزالة</button>
+          </div>
+
+          <input class="form-control" id="profileImage" type="file"
+                 accept="image/jpeg,image/png">
+          <div class="form-text" data-i18n="auth.register.profile_image_hint">صورة JPG أو PNG، الحد الأقصى 5 ميغابايت.</div>
+        </div>
+
+        <!-- Confirmation note -->
+        <p class="small text-muted mb-3">
+          <i class="bi bi-envelope-check me-1" aria-hidden="true"></i>
+          <span data-i18n="auth.register.confirmation_note">سيتم إرسال رابط تأكيد إلى بريدك الإلكتروني.</span>
+        </p>
+
+        <button class="btn btn-primary w-100" type="submit" id="registerBtn">
+          <i class="bi bi-person-plus" aria-hidden="true"></i>
+          <span data-i18n="auth.register.submit">إنشاء الحساب</span>
+        </button>
+
+      </form>
+
+      <div class="auth-footer">
+        <span data-i18n="auth.register.have_account">لديك حساب بالفعل؟</span>
+        <a href="/pages/auth/login.html" data-i18n="auth.register.sign_in">تسجيل الدخول</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/register.js"></script>
+</body>
+</html>

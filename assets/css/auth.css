@@ -1,0 +1,193 @@
+/* ==========================================================================
+   auth.css — MyMoney
+   Authentication pages and error pages. Standalone — no layout.css needed.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Auth Page Background
+   -------------------------------------------------------------------------- */
+.auth-body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fbff 0%, #eaf2ff 44%, #eef8f6 100%);
+}
+
+html[data-theme="dark"] .auth-body {
+  background: linear-gradient(135deg, #0b1120 0%, #111827 48%, #10201f 100%);
+}
+
+/* --------------------------------------------------------------------------
+   2. Auth Page Centering
+   -------------------------------------------------------------------------- */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. Auth Card
+   -------------------------------------------------------------------------- */
+.auth-card {
+  width: min(100%, 460px);
+  padding: 1.5rem;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--mm-shadow-lg);
+}
+
+html[data-theme="dark"] .auth-card {
+  background: var(--mm-surface);
+}
+
+/* --------------------------------------------------------------------------
+   4. Auth Brand Header
+   -------------------------------------------------------------------------- */
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--mm-text);
+}
+
+.auth-brand:hover,
+.auth-brand:focus {
+  color: var(--mm-text);
+}
+
+.auth-brand-copy {
+  display: grid;
+  line-height: 1.2;
+}
+
+.auth-brand-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.auth-brand-tagline {
+  color: var(--mm-muted);
+  font-size: 0.8rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Auth Visual Banner
+   -------------------------------------------------------------------------- */
+.auth-visual {
+  margin-bottom: 1rem;
+  height: 96px;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--mm-primary) 0%, var(--mm-success) 100%);
+  color: #ffffff;
+}
+
+.auth-visual-icon {
+  font-size: 2.5rem;
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------------------------------
+   6. Auth Footer (sign-in / sign-up link)
+   -------------------------------------------------------------------------- */
+.auth-footer {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--mm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   7. Auth Controls (theme toggle + language switcher — fixed top corner)
+   -------------------------------------------------------------------------- */
+.auth-controls-top {
+  position: fixed;
+  top: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-controls-top > button {
+  height: 42px;
+  min-width: 42px;
+  padding: 0 0.65rem;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface);
+  color: var(--mm-text);
+  font-size: 0.83rem;
+  font-weight: 800;
+  display: inline-grid;
+  place-items: center;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.auth-controls-top > button:hover,
+.auth-controls-top > button:focus {
+  border-color: #bfdbfe;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   8. Error Pages
+   -------------------------------------------------------------------------- */
+.error-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.error-card {
+  width: min(100%, 480px);
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--mm-border);
+  border-radius: 8px;
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow-lg);
+}
+
+.error-illustration {
+  width: min(260px, 100%);
+  max-height: 132px;
+  object-fit: contain;
+  margin: 0 auto 0.55rem;
+}
+
+.error-code {
+  color: var(--mm-primary);
+  font-size: clamp(5rem, 18vw, 8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .auth-page,
+  .error-page {
+    padding: 1rem;
+  }
+
+  .auth-card,
+  .error-card {
+    padding: 1.15rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .auth-visual {
+    height: 82px;
+  }
+}

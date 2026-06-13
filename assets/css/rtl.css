@@ -1,0 +1,83 @@
+/* ==========================================================================
+   rtl.css — MyMoney
+   RTL-specific overrides loaded dynamically by i18n.js when lang = 'ar'.
+   Only properties that cannot be expressed with CSS logical properties go here.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Bootstrap utility overrides for RTL
+   -------------------------------------------------------------------------- */
+[dir="rtl"] .ms-auto { margin-inline-start: auto !important; margin-inline-end: 0 !important; }
+[dir="rtl"] .me-auto { margin-inline-end: auto !important; margin-inline-start: 0 !important; }
+[dir="rtl"] .ms-3    { margin-inline-start: 1rem !important; margin-inline-end: 0 !important; }
+[dir="rtl"] .dropdown-menu-end { --bs-position: start; }
+
+/* Bootstrap 5.3 still uses physical values for text-start / text-end —
+   flip them so they behave logically in RTL context.                    */
+[dir="rtl"] .text-end   { text-align: left  !important; }
+[dir="rtl"] .text-start { text-align: right !important; }
+
+/* --------------------------------------------------------------------------
+   Arabic typography
+   -------------------------------------------------------------------------- */
+[dir="rtl"] body {
+  font-family: "Segoe UI", "Tahoma", system-ui, Arial, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar — anchor to right edge in RTL (applies at all breakpoints)
+   -------------------------------------------------------------------------- */
+[dir="rtl"] .admin-sidebar {
+  inset: 0 0 0 auto;
+  box-shadow: -18px 0 42px rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="dark"] [dir="rtl"] .admin-sidebar {
+  box-shadow: -18px 0 42px rgba(0, 0, 0, 0.34);
+}
+
+/* Mobile sidebar: flip the strong shadow to the left side */
+@media (max-width: 991.98px) {
+  [dir="rtl"] .admin-sidebar {
+    box-shadow: -18px 0 48px rgba(0, 0, 0, 0.28);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Directional icons — mirror horizontally in RTL
+   -------------------------------------------------------------------------- */
+[dir="rtl"] .bi-box-arrow-in-right,
+[dir="rtl"] .bi-box-arrow-right,
+[dir="rtl"] .bi-arrow-right,
+[dir="rtl"] .bi-arrow-right-short,
+[dir="rtl"] .bi-arrow-right-circle,
+[dir="rtl"] .bi-arrow-right-circle-fill,
+[dir="rtl"] .bi-chevron-right,
+[dir="rtl"] .bi-chevron-double-right,
+[dir="rtl"] .bi-caret-right-fill,
+[dir="rtl"] .bi-arrow-left,
+[dir="rtl"] .bi-arrow-left-short,
+[dir="rtl"] .bi-arrow-left-circle,
+[dir="rtl"] .bi-arrow-left-circle-fill,
+[dir="rtl"] .bi-chevron-left,
+[dir="rtl"] .bi-chevron-double-left,
+[dir="rtl"] .bi-caret-left-fill {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+/* --------------------------------------------------------------------------
+   Notification dot position
+   -------------------------------------------------------------------------- */
+[dir="rtl"] .notification-dot {
+  inset-inline-end: 8px;
+  inset-inline-start: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Toast position
+   -------------------------------------------------------------------------- */
+[dir="rtl"] .mm-toast-container {
+  inset-inline-start: 1rem;
+  inset-inline-end: auto;
+}

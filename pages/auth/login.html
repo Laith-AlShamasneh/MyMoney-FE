@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — تسجيل الدخول">
+  <title data-i18n-page-title="auth.login.page_title">تسجيل الدخول | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/auth.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-controls-top">
+    <button type="button"
+            data-lang-switch
+            data-i18n="layout.lang_switch_label"
+            data-i18n-aria-label="layout.lang_switch_aria"
+            aria-label="التبديل إلى الإنجليزية">
+      EN
+    </button>
+    <button type="button"
+            data-theme-toggle
+            data-i18n-aria-label="layout.switch_to_dark"
+            aria-label="التبديل إلى الوضع الداكن"
+            title="التبديل إلى الوضع الداكن">
+      <i class="bi bi-moon-stars" data-theme-icon aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <main class="auth-page">
+    <section class="auth-card">
+
+      <!-- Brand -->
+      <a class="auth-brand" href="/index.html">
+        <span class="brand-icon"><i class="bi bi-wallet2" aria-hidden="true"></i></span>
+        <span class="auth-brand-copy">
+          <span class="auth-brand-name">MyMoney</span>
+          <span class="auth-brand-tagline" data-i18n="auth.login.brand_tagline">سجّل دخولك إلى حسابك.</span>
+        </span>
+      </a>
+
+      <!-- Visual banner -->
+      <div class="auth-visual" aria-hidden="true">
+        <i class="bi bi-wallet2 auth-visual-icon"></i>
+      </div>
+
+      <!-- Form header -->
+      <div class="mb-4">
+        <p class="eyebrow mb-1" data-i18n="auth.login.eyebrow">وصول آمن</p>
+        <h1 class="h3 mb-1" data-i18n="auth.login.title">تسجيل الدخول</h1>
+        <p class="text-muted mb-0" data-i18n="auth.login.subtitle">سجّل دخولك إلى حسابك في MyMoney.</p>
+      </div>
+
+      <!-- Error summary (shown by JS on API errors) -->
+      <div class="alert alert-danger d-none mb-3" id="formErrorSummary" role="alert">
+        <ul class="mb-0 ps-3" id="formErrorList"></ul>
+      </div>
+
+      <!-- Login form -->
+      <form id="loginForm" class="needs-validation" novalidate>
+
+        <div class="mb-3">
+          <label class="form-label" for="loginEmail" data-i18n="auth.login.email_label">البريد الإلكتروني</label>
+          <input class="form-control" id="loginEmail" type="email"
+                 autocomplete="email"
+                 data-i18n-placeholder="auth.login.email_placeholder"
+                 placeholder="example@email.com"
+                 required>
+          <div class="invalid-feedback" data-i18n="auth.login.email_error">يرجى إدخال بريد إلكتروني صحيح.</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <label class="form-label mb-0" for="loginPassword" data-i18n="auth.login.password_label">كلمة المرور</label>
+            <a class="small fw-semibold" href="/pages/auth/forgot-password.html" data-i18n="auth.login.forgot_link">نسيت كلمة المرور؟</a>
+          </div>
+          <input class="form-control mt-1" id="loginPassword" type="password"
+                 autocomplete="current-password"
+                 data-i18n-placeholder="auth.login.password_placeholder"
+                 placeholder="••••••••"
+                 required>
+          <div class="invalid-feedback" data-i18n="auth.login.password_error">كلمة المرور مطلوبة.</div>
+        </div>
+
+        <div class="form-check mb-4">
+          <input class="form-check-input" type="checkbox" id="rememberMe">
+          <label class="form-check-label" for="rememberMe" data-i18n="auth.login.remember_me">تذكّرني</label>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit" id="loginBtn">
+          <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+          <span data-i18n="auth.login.submit">دخول</span>
+        </button>
+
+      </form>
+
+      <!-- Footer link -->
+      <div class="auth-footer">
+        <span data-i18n="auth.login.no_account">ليس لديك حساب؟</span>
+        <a href="/pages/auth/register.html" data-i18n="auth.login.create_account">إنشاء حساب جديد</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/login.js"></script>
+</body>
+</html>
