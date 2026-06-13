@@ -3,21 +3,21 @@
  * All profile API calls go through this module (ADR-004).
  */
 
-import { get, post, put, del, getWithHeaders, deleteWithHeaders, uploadPatch } from '../core/api.js';
+import { post, uploadPost } from '../core/api.js';
 import { Config } from '../core/config.js';
 
 const A = Config.API.PROFILE;
 
 export const ProfileService = Object.freeze({
 
-  /** GET /api/profile — returns GetProfileResponse */
+  /** POST /api/profile/get — returns GetProfileResponse */
   async getProfile() {
-    return get(A.GET);
+    return post(A.GET);
   },
 
-  /** PUT /api/profile — returns UpdateProfileResponse */
+  /** POST /api/profile/update — returns UpdateProfileResponse */
   async updateProfile({ firstNameEn, lastNameEn, displayNameEn, firstNameAr, lastNameAr, displayNameAr, dateOfBirth, genderId }) {
-    return put(A.UPDATE, {
+    return post(A.UPDATE, {
       firstNameEn,
       lastNameEn,
       displayNameEn,
@@ -29,43 +29,42 @@ export const ProfileService = Object.freeze({
     });
   },
 
-  /** PATCH /api/profile/picture — multipart form upload */
+  /** POST /api/profile/picture/update — multipart form upload */
   async updateProfilePicture(imageFile) {
     const fd = new FormData();
     fd.append('ProfileImage', imageFile);
-    return uploadPatch(A.UPDATE_PICTURE, fd);
+    return uploadPost(A.UPDATE_PICTURE, fd);
   },
 
-  /** DELETE /api/profile/picture */
+  /** POST /api/profile/picture/remove */
   async removeProfilePicture() {
-    return del(A.REMOVE_PICTURE);
+    return post(A.REMOVE_PICTURE);
   },
 
   /**
-   * GET /api/profile/sessions
+   * POST /api/profile/sessions/list
    * Pass the current refresh token to identify the active session in the list.
-   * Sent via X-Refresh-Token header (not a query param) to avoid logging.
+   * Sent via X-Refresh-Token header (not in body) to avoid request logging.
    * @param {string|null} currentRefreshToken
    */
   async getSessions(currentRefreshToken) {
     const extraHeaders = currentRefreshToken
       ? { 'X-Refresh-Token': currentRefreshToken }
       : {};
-    return getWithHeaders(A.SESSIONS, extraHeaders);
+    return post(A.SESSIONS, null, { _extraHeaders: extraHeaders });
   },
 
-  /** DELETE /api/profile/sessions/{id} */
+  /** POST /api/profile/sessions/revoke — sends { sessionId } in body */
   async revokeSession(sessionId) {
-    return del(A.SESSION_BY_ID(sessionId));
+    return post(A.REVOKE_SESSION, { sessionId });
   },
 
   /**
-   * DELETE /api/profile/sessions/others
-   * Sends the current refresh token via X-Refresh-Token header to identify
-   * which session to keep while revoking all others.
+   * POST /api/profile/sessions/revoke-others
+   * Sends the current refresh token via X-Refresh-Token header.
    */
   async revokeAllOtherSessions(currentRefreshToken) {
-    return deleteWithHeaders(A.REVOKE_OTHERS, { 'X-Refresh-Token': currentRefreshToken });
+    return post(A.REVOKE_OTHERS, null, { _extraHeaders: { 'X-Refresh-Token': currentRefreshToken } });
   },
 
   /** POST /api/profile/email-change/request */
@@ -73,16 +72,17 @@ export const ProfileService = Object.freeze({
     return post(A.REQUEST_EMAIL_CHANGE, { newEmail, currentPassword });
   },
 
-  /** DELETE /api/profile/email-change — cancel pending request */
+  /** POST /api/profile/email-change/cancel — cancel pending request */
   async cancelEmailChange() {
-    return del(A.CANCEL_EMAIL_CHANGE);
+    return post(A.CANCEL_EMAIL_CHANGE);
   },
 
   /**
-   * GET /api/profile/email-change/confirm?token=...
+   * POST /api/profile/email-change/confirm
    * Public endpoint — no Authorization required. User arrives here from email link.
+   * The HTML page reads ?token= from URL and POSTs it here.
    */
   async confirmEmailChange(token) {
-    return get(`${A.CONFIRM_EMAIL_CHANGE}?token=${encodeURIComponent(token)}`);
+    return post(A.CONFIRM_EMAIL_CHANGE, { token });
   },
 });

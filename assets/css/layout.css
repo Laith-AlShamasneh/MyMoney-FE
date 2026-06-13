@@ -139,34 +139,6 @@
   font-weight: 800;
 }
 
-/* Sidebar – user card */
-.sidebar-user {
-  margin: auto 1rem 1rem;
-  padding: 0.85rem;
-  display: grid;
-  justify-items: center;
-  gap: 0.22rem;
-  border: 1px solid var(--mm-sidebar-border);
-  border-radius: 8px;
-  background: var(--mm-sidebar-soft);
-  text-align: center;
-}
-
-.sidebar-user-avatar {
-  border: 3px solid #53e9b9;
-}
-
-.sidebar-user strong {
-  color: var(--mm-sidebar-text-strong);
-  font-size: 1rem;
-  line-height: 1.1;
-}
-
-.sidebar-user small {
-  color: var(--mm-sidebar-muted);
-  font-size: 0.84rem;
-}
-
 /* Sidebar – footer status */
 .sidebar-footer {
   display: flex;

@@ -118,6 +118,16 @@ async function init() {
   initTheme();
   initLangSwitcher();
   await guardAnonymous();
+
+  /* Show session-ended notice when redirected after revoking the current session */
+  try {
+    const notice = sessionStorage.getItem('mm.login_notice');
+    if (notice === 'session_ended') {
+      sessionStorage.removeItem('mm.login_notice');
+      const noticeEl = document.getElementById('loginNotice');
+      if (noticeEl) noticeEl.classList.remove('d-none');
+    }
+  } catch { /* localStorage/sessionStorage unavailable */ }
 }
 
 init();

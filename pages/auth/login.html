@@ -59,6 +59,12 @@
         <p class="text-muted mb-0" data-i18n="auth.login.subtitle">سجّل دخولك إلى حسابك في MyMoney.</p>
       </div>
 
+      <!-- Session-ended notice (shown when user revoked their own session) -->
+      <div class="alert alert-info d-none mb-3" id="loginNotice" role="alert">
+        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+        <span data-i18n="auth.login.session_ended">انتهت جلستك. يرجى تسجيل الدخول مجدداً.</span>
+      </div>
+
       <!-- Error summary (shown by JS on API errors) -->
       <div class="alert alert-danger d-none mb-3" id="formErrorSummary" role="alert">
         <ul class="mb-0 ps-3" id="formErrorList"></ul>

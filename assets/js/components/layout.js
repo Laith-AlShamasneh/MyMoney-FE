@@ -89,11 +89,8 @@ function _buildNavItems() {
   }).join('');
 }
 
-function _buildSidebar(user) {
-  const avatarSrc  = user?.profileImageUrl || '/assets/images/avatar/avatar.jpg';
-  const avatarAlt  = user?.displayName || t('layout.user_placeholder');
-  const userName   = user?.displayName || t('layout.user_placeholder');
-  const appName    = Config.APP_NAME;
+function _buildSidebar() {
+  const appName = Config.APP_NAME;
 
   return `
     <aside class="admin-sidebar" id="adminSidebar" aria-label="${t('layout.sidebar_aria_label')}">
@@ -108,13 +105,6 @@ function _buildSidebar(user) {
       </div>
 
       <nav class="sidebar-nav">${_buildNavItems()}</nav>
-
-      <div class="sidebar-user">
-        <img class="avatar-img avatar-md sidebar-user-avatar"
-             src="${avatarSrc}" alt="${avatarAlt}" id="sidebarUserAvatar">
-        <strong id="sidebarUserName">${userName}</strong>
-        <small id="sidebarUserSub" data-i18n="layout.active_session">${t('layout.active_session')}</small>
-      </div>
 
       <div class="sidebar-footer">
         <span class="status-dot"></span>
@@ -257,7 +247,11 @@ function _wireEvents() {
   });
 
   /* Logout */
-  logoutBtn?.addEventListener('click', logout);
+  logoutBtn?.addEventListener('click', async () => {
+    if (logoutBtn.disabled) return;
+    logoutBtn.disabled = true;
+    await logout();
+  });
 }
 
 /* --------------------------------------------------------------------------
@@ -294,7 +288,7 @@ export function initLayout() {
   const navbarRoot  = document.getElementById('navbar-root');
   const footerRoot  = document.getElementById('footer-root');
 
-  if (sidebarRoot) sidebarRoot.outerHTML = _buildSidebar(user);
+  if (sidebarRoot) sidebarRoot.outerHTML = _buildSidebar();
   if (navbarRoot)  navbarRoot.outerHTML  = _buildNavbar(user);
   if (footerRoot)  footerRoot.outerHTML  = _buildFooter();
 
@@ -326,11 +320,11 @@ export function initLangSwitcher() {
  */
 export function updateLayoutUser(updates) {
   if (updates.displayName) {
-    const nameEls = document.querySelectorAll('#sidebarUserName, #navbarUserName');
-    nameEls.forEach((el) => { el.textContent = updates.displayName; });
+    const el = document.getElementById('navbarUserName');
+    if (el) el.textContent = updates.displayName;
   }
   if (updates.profileImageUrl) {
-    const avatarEls = document.querySelectorAll('#sidebarUserAvatar, #navbarUserAvatar');
-    avatarEls.forEach((img) => { img.src = updates.profileImageUrl; });
+    const img = document.getElementById('navbarUserAvatar');
+    if (img) img.src = updates.profileImageUrl;
   }
 }

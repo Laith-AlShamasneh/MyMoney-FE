@@ -261,10 +261,28 @@ export async function guardAnonymous() {
 }
 
 /**
- * Logs the user out: clears session and redirects to login.
+ * Logs the user out: revokes the refresh token on the server,
+ * clears all client-side auth state, and redirects to login.
+ * Uses fetch directly (not api.js) to avoid 401-retry interference.
  */
-export function logout() {
+export async function logout() {
+  const refreshToken = _loadRefreshToken();
+  const accessToken  = _accessToken;
+
   clearSession();
+
+  if (refreshToken) {
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+      await fetch(Config.API_BASE_URL + Config.API.AUTH.LOGOUT, {
+        method:  'POST',
+        headers,
+        body:    JSON.stringify({ refreshToken }),
+      });
+    } catch { /* network error — client logout proceeds regardless */ }
+  }
+
   window.location.href = Config.ROUTES.LOGIN;
 }
 

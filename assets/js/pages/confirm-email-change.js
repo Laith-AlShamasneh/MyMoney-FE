@@ -33,7 +33,7 @@ async function confirmToken(token) {
   try {
     await ProfileService.confirmEmailChange(token);
     /* Email changed — all sessions except the one that requested it are revoked.
-       Clear local auth state so the user is prompted to sign in with new email. */
+       Clear local auth state so the user is prompted to sign in with the new email. */
     try {
       localStorage.removeItem('mm.refreshToken');
       localStorage.removeItem('mm.refreshTokenExpiry');

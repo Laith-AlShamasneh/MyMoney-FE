@@ -74,7 +74,8 @@
       "error_account_locked": "Your account has been temporarily locked due to multiple failed attempts. Please try again later.",
       "error_account_inactive": "This account is inactive. Please contact support.",
       "error_email_not_confirmed": "Please confirm your email address first. Check your inbox.",
-      "resend_confirmation": "Resend confirmation link"
+      "resend_confirmation": "Resend confirmation link",
+      "session_ended": "Your session has ended. Please sign in again."
     },
     "register": {
       "page_title": "Create Account",
@@ -313,6 +314,8 @@
     "sessions_revoke_others": "Revoke all other sessions",
     "sessions_revoke_others_confirm": "Revoke all other sessions? Your current session will remain active.",
     "sessions_revoke_others_success": "All other sessions have been revoked.",
+    "sessions_sign_out_this": "Sign out this device",
+    "sessions_sign_out_confirm": "Sign out this device? You will be redirected to the login page.",
 
     "confirm_email_change_page_title": "Confirm Email Change",
     "confirm_email_change_verifying": "Verifying...",

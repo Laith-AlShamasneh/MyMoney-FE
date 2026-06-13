@@ -5,7 +5,7 @@
 
 import { initI18n, t, getLanguage }        from '../core/i18n.js';
 import { initLayout }                      from '../components/layout.js';
-import { guardPage }                       from '../core/auth.js';
+import { guardPage, clearSession }         from '../core/auth.js';
 import { ProfileService }                  from '../services/profile-service.js';
 import { ApiError }                        from '../core/api.js';
 import { Config }                          from '../core/config.js';
@@ -60,15 +60,22 @@ function _buildSessionHtml(s) {
     ? `<span class="badge bg-primary ms-2" data-i18n="settings.sessions_current">${t('settings.sessions_current')}</span>`
     : '';
 
-  const revokeBtn = !s.isCurrentSession
+  const revokeBtn = s.isCurrentSession
     ? `<button type="button"
+               class="btn btn-sm btn-outline-warning ms-auto flex-shrink-0"
+               data-revoke-id="${s.id}"
+               data-is-current="true"
+               aria-label="${_esc(t('settings.sessions_sign_out_this'))}">
+         <i class="bi bi-box-arrow-right me-1" aria-hidden="true"></i>
+         <span>${_esc(t('settings.sessions_sign_out_this'))}</span>
+       </button>`
+    : `<button type="button"
                class="btn btn-sm btn-outline-danger ms-auto flex-shrink-0"
                data-revoke-id="${s.id}"
                aria-label="${_esc(t('settings.sessions_revoke'))}">
          <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
          <span>${_esc(t('settings.sessions_revoke'))}</span>
-       </button>`
-    : '';
+       </button>`;
 
   return `
     <div class="d-flex align-items-start gap-3 py-3 border-bottom session-item" data-session-id="${s.id}">
@@ -116,7 +123,11 @@ function _renderSessions(sessions) {
 
   /* Bind revoke buttons */
   sessionsContainer.querySelectorAll('[data-revoke-id]').forEach(btn => {
-    btn.addEventListener('click', () => _revokeSession(Number(btn.dataset.revokeId), btn));
+    btn.addEventListener('click', () => _revokeSession(
+      Number(btn.dataset.revokeId),
+      btn,
+      btn.dataset.isCurrent === 'true',
+    ));
   });
 }
 
@@ -147,14 +158,26 @@ async function loadSessions() {
 /* --------------------------------------------------------------------------
    Revoke a single session
    -------------------------------------------------------------------------- */
-async function _revokeSession(sessionId, btn) {
-  if (!window.confirm(t('settings.sessions_revoke_confirm'))) return;
+async function _revokeSession(sessionId, btn, isCurrentSession = false) {
+  const confirmKey = isCurrentSession
+    ? 'settings.sessions_sign_out_confirm'
+    : 'settings.sessions_revoke_confirm';
+  if (!window.confirm(t(confirmKey))) return;
+
   Loader.setButtonLoading(btn);
   try {
     await ProfileService.revokeSession(sessionId);
-    _sessions = _sessions.filter(s => s.id !== sessionId);
-    _renderSessions(_sessions);
-    showSuccess(t('settings.sessions_revoke_success'));
+
+    if (isCurrentSession) {
+      /* Current session revoked — clear all auth state and redirect to login */
+      try { sessionStorage.setItem('mm.login_notice', 'session_ended'); } catch { /* ignore */ }
+      clearSession();
+      window.location.href = Config.ROUTES.LOGIN;
+    } else {
+      _sessions = _sessions.filter(s => s.id !== sessionId);
+      _renderSessions(_sessions);
+      showSuccess(t('settings.sessions_revoke_success'));
+    }
   } catch (err) {
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
     Loader.clearButtonLoading(btn);

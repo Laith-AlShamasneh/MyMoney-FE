@@ -74,7 +74,8 @@
       "error_account_locked": "تم تجميد الحساب مؤقتاً بسبب محاولات دخول متعددة. يرجى المحاولة لاحقاً.",
       "error_account_inactive": "هذا الحساب غير نشط. يرجى التواصل مع الدعم.",
       "error_email_not_confirmed": "يرجى تأكيد بريدك الإلكتروني أولاً. تحقق من بريدك الوارد.",
-      "resend_confirmation": "إعادة إرسال رابط التأكيد"
+      "resend_confirmation": "إعادة إرسال رابط التأكيد",
+      "session_ended": "انتهت جلستك. يرجى تسجيل الدخول مجدداً."
     },
     "register": {
       "page_title": "إنشاء حساب",
@@ -313,6 +314,8 @@
     "sessions_revoke_others": "إنهاء جميع الجلسات الأخرى",
     "sessions_revoke_others_confirm": "هل تريد إنهاء جميع الجلسات الأخرى؟ ستظل جلستك الحالية نشطة.",
     "sessions_revoke_others_success": "تم إنهاء جميع الجلسات الأخرى بنجاح.",
+    "sessions_sign_out_this": "تسجيل خروج هذا الجهاز",
+    "sessions_sign_out_confirm": "هل تريد تسجيل الخروج من هذا الجهاز؟ سيتم توجيهك إلى صفحة تسجيل الدخول.",
 
     "confirm_email_change_page_title": "تأكيد تغيير البريد الإلكتروني",
     "confirm_email_change_verifying": "جاري التحقق...",

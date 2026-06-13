@@ -127,7 +127,7 @@ async function request(method, endpoint, body = null, options = {}) {
     signal: options.signal,
   };
 
-  if (body !== null && method !== 'GET') {
+  if (body != null && method !== 'GET') {
     fetchOptions.body = isFormData ? body : JSON.stringify(body);
   }
 
@@ -231,6 +231,14 @@ export function patch(endpoint, body, options) {
 export function upload(endpoint, formData, options) {
   if (!(formData instanceof FormData)) {
     throw new TypeError('upload() requires a FormData instance.');
+  }
+  return request('POST', endpoint, formData, options);
+}
+
+/** Alias for upload() — POST with FormData. Preferred name for clarity. */
+export function uploadPost(endpoint, formData, options) {
+  if (!(formData instanceof FormData)) {
+    throw new TypeError('uploadPost() requires a FormData instance.');
   }
   return request('POST', endpoint, formData, options);
 }
