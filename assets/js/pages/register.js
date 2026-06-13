@@ -1,7 +1,7 @@
 /**
  * pages/register.js — MyMoney
- * Registration form: field validation, password strength, profile image
- * preview, FormData submission, session init on success.
+ * Registration form: all backend fields, validation, password strength,
+ * profile image preview, FormData submission, session init on success.
  */
 
 import { initI18n, t }   from '../core/i18n.js';
@@ -10,14 +10,20 @@ import { guardAnonymous, setSession } from '../core/auth.js';
 import { AuthService }   from '../services/auth-service.js';
 import { ApiError }      from '../core/api.js';
 import { Config }        from '../core/config.js';
-import { Loading }       from '../components/loading.js';
+import { Loader }        from '../components/loading.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
    -------------------------------------------------------------------------- */
 const form              = document.getElementById('registerForm');
-const firstNameInput    = document.getElementById('firstNameEn');
-const lastNameInput     = document.getElementById('lastNameEn');
+const firstNameEnInput  = document.getElementById('firstNameEn');
+const lastNameEnInput   = document.getElementById('lastNameEn');
+const displayNameEnInput = document.getElementById('displayNameEn');
+const firstNameArInput  = document.getElementById('firstNameAr');
+const lastNameArInput   = document.getElementById('lastNameAr');
+const displayNameArInput = document.getElementById('displayNameAr');
+const dateOfBirthInput  = document.getElementById('dateOfBirth');
+const genderIdSelect    = document.getElementById('genderId');
 const emailInput        = document.getElementById('registerEmail');
 const passwordInput     = document.getElementById('registerPassword');
 const confirmPwdInput   = document.getElementById('confirmPassword');
@@ -38,6 +44,11 @@ const hintSpecial   = document.getElementById('hintSpecial');
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES   = ['image/jpeg', 'image/png'];
+const SPECIAL_RE      = /[!@#$%^&*(),.?"':{}|<>]/;
+
+/* Track whether the user has manually edited the display name fields */
+let _displayNameEnEdited = false;
+let _displayNameArEdited = false;
 
 /* --------------------------------------------------------------------------
    Helpers
@@ -60,10 +71,38 @@ function hideErrors() {
 }
 
 /* --------------------------------------------------------------------------
+   Display name auto-fill from first + last name
+   -------------------------------------------------------------------------- */
+function _autoFillDisplayNameEn() {
+  if (_displayNameEnEdited) return;
+  const first = firstNameEnInput?.value.trim() || '';
+  const last  = lastNameEnInput?.value.trim()  || '';
+  if (displayNameEnInput) {
+    displayNameEnInput.value = [first, last].filter(Boolean).join(' ');
+  }
+}
+
+function _autoFillDisplayNameAr() {
+  if (_displayNameArEdited) return;
+  const first = firstNameArInput?.value.trim() || '';
+  const last  = lastNameArInput?.value.trim()  || '';
+  if (displayNameArInput) {
+    displayNameArInput.value = [first, last].filter(Boolean).join(' ');
+  }
+}
+
+firstNameEnInput?.addEventListener('input', _autoFillDisplayNameEn);
+lastNameEnInput?.addEventListener('input',  _autoFillDisplayNameEn);
+firstNameArInput?.addEventListener('input', _autoFillDisplayNameAr);
+lastNameArInput?.addEventListener('input',  _autoFillDisplayNameAr);
+
+/* Mark display name as manually edited when the user types in it directly */
+displayNameEnInput?.addEventListener('input', () => { _displayNameEnEdited = true; });
+displayNameArInput?.addEventListener('input', () => { _displayNameArEdited = true; });
+
+/* --------------------------------------------------------------------------
    Password strength indicator
    -------------------------------------------------------------------------- */
-const SPECIAL_RE = /[!@#$%^&*(),.?"':{}|<>]/;
-
 function _checkStrength(pwd) {
   return {
     length:  pwd.length >= 8,
@@ -92,15 +131,10 @@ function updateStrengthHints(pwd) {
   return s.length && s.upper && s.lower && s.digit && s.special;
 }
 
-if (passwordInput) {
-  passwordInput.addEventListener('input', () => {
-    updateStrengthHints(passwordInput.value);
-    /* Re-check confirm field if already touched */
-    if (confirmPwdInput.value) {
-      _validateConfirmPassword();
-    }
-  });
-}
+passwordInput?.addEventListener('input', () => {
+  updateStrengthHints(passwordInput.value);
+  if (confirmPwdInput.value) _validateConfirmPassword();
+});
 
 /* --------------------------------------------------------------------------
    Confirm password client-side check
@@ -111,9 +145,26 @@ function _validateConfirmPassword() {
   return match;
 }
 
-if (confirmPwdInput) {
-  confirmPwdInput.addEventListener('input', _validateConfirmPassword);
+confirmPwdInput?.addEventListener('input', _validateConfirmPassword);
+
+/* --------------------------------------------------------------------------
+   Date of birth — must not be in the future
+   -------------------------------------------------------------------------- */
+function _validateDateOfBirth() {
+  const val = dateOfBirthInput?.value;
+  if (!val) {
+    dateOfBirthInput?.setCustomValidity('');
+    return true;
+  }
+  const dob    = new Date(val);
+  const today  = new Date();
+  today.setHours(0, 0, 0, 0);
+  const valid  = dob <= today;
+  dateOfBirthInput?.setCustomValidity(valid ? '' : t('auth.register.date_of_birth_error'));
+  return valid;
 }
+
+dateOfBirthInput?.addEventListener('change', _validateDateOfBirth);
 
 /* --------------------------------------------------------------------------
    Profile image handling
@@ -122,43 +173,39 @@ let _selectedImage = null;
 
 function _clearImage() {
   _selectedImage = null;
-  imageInput.value = '';
-  if (imagePreviewWrap) imagePreviewWrap.classList.add('d-none');
-  if (imagePreview)     imagePreview.src = '';
+  if (imageInput) imageInput.value = '';
+  imagePreviewWrap?.classList.add('d-none');
+  if (imagePreview) imagePreview.src = '';
 }
 
-if (imageInput) {
-  imageInput.addEventListener('change', () => {
-    const file = imageInput.files?.[0];
-    if (!file) { _clearImage(); return; }
+imageInput?.addEventListener('change', () => {
+  const file = imageInput.files?.[0];
+  if (!file) { _clearImage(); return; }
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      showErrors([t('auth.register.profile_image_error_type')]);
-      _clearImage();
-      return;
-    }
-    if (file.size > MAX_IMAGE_BYTES) {
-      showErrors([t('auth.register.profile_image_error_size')]);
-      _clearImage();
-      return;
-    }
-
-    _selectedImage = file;
-    const reader  = new FileReader();
-    reader.onload = (ev) => {
-      if (imagePreview)    imagePreview.src = ev.target.result;
-      if (imagePreviewWrap) imagePreviewWrap.classList.remove('d-none');
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-if (removeImageBtn) {
-  removeImageBtn.addEventListener('click', () => {
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    showErrors([t('auth.register.profile_image_error_type')]);
     _clearImage();
-    hideErrors();
-  });
-}
+    return;
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    showErrors([t('auth.register.profile_image_error_size')]);
+    _clearImage();
+    return;
+  }
+
+  _selectedImage = file;
+  const reader  = new FileReader();
+  reader.onload = (ev) => {
+    if (imagePreview)    imagePreview.src = ev.target.result;
+    imagePreviewWrap?.classList.remove('d-none');
+  };
+  reader.readAsDataURL(file);
+});
+
+removeImageBtn?.addEventListener('click', () => {
+  _clearImage();
+  hideErrors();
+});
 
 /* --------------------------------------------------------------------------
    Form submit
@@ -167,8 +214,8 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault();
   hideErrors();
 
-  /* Trigger confirm-password custom validity before Bootstrap validation */
   _validateConfirmPassword();
+  _validateDateOfBirth();
 
   if (!form.checkValidity()) {
     form.classList.add('was-validated');
@@ -183,42 +230,44 @@ form.addEventListener('submit', async (e) => {
   }
 
   form.classList.remove('was-validated');
-  Loading.button(submitBtn);
+  Loader.setButtonLoading(submitBtn);
 
   try {
-    const displayNameEn = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
     const result = await AuthService.register({
-      firstNameEn:  firstNameInput.value,
-      lastNameEn:   lastNameInput.value,
-      displayNameEn,
-      email:        emailInput.value,
-      password:     pwd,
-      profileImage: _selectedImage,
+      firstNameEn:    firstNameEnInput.value,
+      lastNameEn:     lastNameEnInput.value,
+      displayNameEn:  displayNameEnInput.value,
+      firstNameAr:    firstNameArInput?.value  || null,
+      lastNameAr:     lastNameArInput?.value   || null,
+      displayNameAr:  displayNameArInput?.value || null,
+      dateOfBirth:    dateOfBirthInput?.value  || null,
+      genderId:       genderIdSelect?.value ? Number(genderIdSelect.value) : null,
+      email:          emailInput.value,
+      password:       pwd,
+      profileImage:   _selectedImage,
     });
 
-    setSession(result); /* stores tokens + redirects to dashboard */
+    setSession(result);
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.errors?.length) {
         showErrors(err.errors);
       } else {
-        const msg = err.message || t('errors.unknown');
-        /* Highlight conflict (email already in use) */
         if (err.code === Config.RESPONSE_CODES.CONFLICT) {
           showErrors([t('auth.register.email_taken')]);
           emailInput.classList.add('is-invalid');
         } else {
-          showErrors([msg]);
+          showErrors([err.message || t('errors.unknown')]);
         }
       }
     }
   } finally {
-    Loading.restore(submitBtn);
+    Loader.clearButtonLoading(submitBtn);
   }
 });
 
-/* Clear errors / invalid state on input */
-[firstNameInput, lastNameInput, emailInput].forEach(el => {
+/* Clear errors / invalid highlight on input */
+[firstNameEnInput, lastNameEnInput, displayNameEnInput, emailInput].forEach(el => {
   el?.addEventListener('input', () => {
     hideErrors();
     el.classList.remove('is-invalid');
@@ -233,6 +282,15 @@ async function init() {
   initTheme();
   initLangSwitcher();
   await guardAnonymous();
+
+  /* Set date of birth max to today to prevent future selection via browser UI */
+  if (dateOfBirthInput) {
+    const today = new Date();
+    const yyyy  = today.getFullYear();
+    const mm    = String(today.getMonth() + 1).padStart(2, '0');
+    const dd    = String(today.getDate()).padStart(2, '0');
+    dateOfBirthInput.max = `${yyyy}-${mm}-${dd}`;
+  }
 }
 
 init();

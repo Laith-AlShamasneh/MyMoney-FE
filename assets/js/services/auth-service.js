@@ -15,28 +15,50 @@ export const AuthService = Object.freeze({
 
   /**
    * Register a new user account.
-   * Uses FormData because of optional profile image upload.
+   * Uses FormData because of the optional profile image upload.
    *
    * @param {{
-   *   firstNameEn: string,
-   *   lastNameEn: string,
-   *   displayNameEn: string,
-   *   email: string,
-   *   password: string,
-   *   profileImage?: File|null
+   *   firstNameEn:    string,
+   *   lastNameEn:     string,
+   *   displayNameEn:  string,
+   *   firstNameAr?:   string|null,
+   *   lastNameAr?:    string|null,
+   *   displayNameAr?: string|null,
+   *   dateOfBirth?:   string|null,   // ISO date string "YYYY-MM-DD"
+   *   genderId?:      number|null,   // 1=Male 2=Female 3=PreferNotToSay
+   *   email:          string,
+   *   password:       string,
+   *   profileImage?:  File|null,
    * }} fields
    * @returns {Promise<RegisterResponse>}
    */
-  async register({ firstNameEn, lastNameEn, displayNameEn, email, password, profileImage }) {
+  async register({
+    firstNameEn,
+    lastNameEn,
+    displayNameEn,
+    firstNameAr   = null,
+    lastNameAr    = null,
+    displayNameAr = null,
+    dateOfBirth   = null,
+    genderId      = null,
+    email,
+    password,
+    profileImage  = null,
+  }) {
     const fd = new FormData();
-    fd.append('FirstNameEn',  firstNameEn.trim());
-    fd.append('LastNameEn',   lastNameEn.trim());
+    fd.append('FirstNameEn',   firstNameEn.trim());
+    fd.append('LastNameEn',    lastNameEn.trim());
     fd.append('DisplayNameEn', displayNameEn.trim());
-    fd.append('Email',        email.trim());
-    fd.append('Password',     password);
-    if (profileImage) {
-      fd.append('ProfileImage', profileImage);
-    }
+    fd.append('Email',         email.trim());
+    fd.append('Password',      password);
+
+    if (firstNameAr?.trim())   fd.append('FirstNameAr',   firstNameAr.trim());
+    if (lastNameAr?.trim())    fd.append('LastNameAr',    lastNameAr.trim());
+    if (displayNameAr?.trim()) fd.append('DisplayNameAr', displayNameAr.trim());
+    if (dateOfBirth)           fd.append('DateOfBirth',   dateOfBirth);
+    if (genderId != null)      fd.append('GenderId',      String(genderId));
+    if (profileImage)          fd.append('ProfileImage',  profileImage);
+
     return upload(A.REGISTER, fd);
   },
 

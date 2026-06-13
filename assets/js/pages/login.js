@@ -8,7 +8,7 @@ import { initTheme, initLangSwitcher } from '../components/layout.js';
 import { guardAnonymous, setSession } from '../core/auth.js';
 import { AuthService }   from '../services/auth-service.js';
 import { ApiError }      from '../core/api.js';
-import { Loading }       from '../components/loading.js';
+import { Loader }        from '../components/loading.js';
 
 /* --------------------------------------------------------------------------
    DOM refs (resolved after DOMContentLoaded — module scripts defer by default)
@@ -85,7 +85,7 @@ form.addEventListener('submit', async (e) => {
   }
   form.classList.remove('was-validated');
 
-  Loading.button(submitBtn);
+  Loader.setButtonLoading(submitBtn);
   try {
     const result = await AuthService.login(emailInput.value, passwordInput.value);
     setSession(result); /* stores tokens + redirects to dashboard */
@@ -103,7 +103,7 @@ form.addEventListener('submit', async (e) => {
     }
     /* Network / infra errors already handled by api.js (toast shown) */
   } finally {
-    Loading.restore(submitBtn);
+    Loader.clearButtonLoading(submitBtn);
   }
 });
 

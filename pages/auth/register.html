@@ -63,21 +63,28 @@
 
       <form id="registerForm" class="needs-validation" novalidate>
 
-        <!-- Name row -->
+        <!-- ═══ Section: Name ═══ -->
+        <p class="form-section-label" data-i18n="auth.register.section_name">
+          الاسم
+        </p>
+
+        <!-- English Name (required) -->
         <div class="row g-3 mb-3">
           <div class="col-6">
-            <label class="form-label" for="firstNameEn" data-i18n="auth.register.first_name_label">الاسم الأول (إنجليزي)</label>
+            <label class="form-label" for="firstNameEn" data-i18n="auth.register.first_name_label">الاسم الأول (بالإنجليزية)</label>
             <input class="form-control" id="firstNameEn" type="text"
                    autocomplete="given-name"
+                   dir="ltr"
                    data-i18n-placeholder="auth.register.first_name_placeholder"
                    placeholder="Ahmed"
                    maxlength="100" required>
             <div class="invalid-feedback" data-i18n="auth.register.first_name_error">الاسم الأول مطلوب.</div>
           </div>
           <div class="col-6">
-            <label class="form-label" for="lastNameEn" data-i18n="auth.register.last_name_label">اسم العائلة (إنجليزي)</label>
+            <label class="form-label" for="lastNameEn" data-i18n="auth.register.last_name_label">اسم العائلة (بالإنجليزية)</label>
             <input class="form-control" id="lastNameEn" type="text"
                    autocomplete="family-name"
+                   dir="ltr"
                    data-i18n-placeholder="auth.register.last_name_placeholder"
                    placeholder="Al-Rashid"
                    maxlength="100" required>
@@ -85,11 +92,95 @@
           </div>
         </div>
 
+        <!-- Display Name EN (required, auto-fills) -->
+        <div class="mb-3">
+          <label class="form-label" for="displayNameEn" data-i18n="auth.register.display_name_en_label">اسم العرض (بالإنجليزية)</label>
+          <input class="form-control" id="displayNameEn" type="text"
+                 autocomplete="name"
+                 dir="ltr"
+                 data-i18n-placeholder="auth.register.display_name_en_placeholder"
+                 placeholder="Ahmed Al-Rashid"
+                 maxlength="200" required>
+          <div class="form-text" data-i18n="auth.register.display_name_en_hint">يُملأ تلقائياً من اسمك، ويمكنك تعديله.</div>
+          <div class="invalid-feedback" data-i18n="auth.register.display_name_en_error">اسم العرض مطلوب.</div>
+        </div>
+
+        <!-- ═══ Section: Arabic Name (optional) ═══ -->
+        <p class="form-section-label" data-i18n="auth.register.section_arabic_name">
+          الاسم بالعربية
+          <span class="text-muted ms-1" data-i18n="common.optional">(اختياري)</span>
+        </p>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label class="form-label" for="firstNameAr" data-i18n="auth.register.first_name_ar_label">الاسم الأول (بالعربية)</label>
+            <input class="form-control" id="firstNameAr" type="text"
+                   autocomplete="off"
+                   dir="rtl"
+                   data-i18n-placeholder="auth.register.first_name_ar_placeholder"
+                   placeholder="أحمد"
+                   maxlength="100">
+          </div>
+          <div class="col-6">
+            <label class="form-label" for="lastNameAr" data-i18n="auth.register.last_name_ar_label">اسم العائلة (بالعربية)</label>
+            <input class="form-control" id="lastNameAr" type="text"
+                   autocomplete="off"
+                   dir="rtl"
+                   data-i18n-placeholder="auth.register.last_name_ar_placeholder"
+                   placeholder="الراشد"
+                   maxlength="100">
+          </div>
+        </div>
+
+        <!-- Display Name AR (optional, auto-fills) -->
+        <div class="mb-3">
+          <label class="form-label" for="displayNameAr" data-i18n="auth.register.display_name_ar_label">اسم العرض (بالعربية)</label>
+          <input class="form-control" id="displayNameAr" type="text"
+                 autocomplete="off"
+                 dir="rtl"
+                 data-i18n-placeholder="auth.register.display_name_ar_placeholder"
+                 placeholder="أحمد الراشد"
+                 maxlength="200">
+        </div>
+
+        <!-- ═══ Section: Personal Info (optional) ═══ -->
+        <p class="form-section-label" data-i18n="auth.register.section_personal">
+          البيانات الشخصية
+          <span class="text-muted ms-1" data-i18n="common.optional">(اختياري)</span>
+        </p>
+
+        <div class="row g-3 mb-3">
+          <!-- Date of Birth -->
+          <div class="col-sm-6">
+            <label class="form-label" for="dateOfBirth" data-i18n="auth.register.date_of_birth_label">تاريخ الميلاد</label>
+            <input class="form-control" id="dateOfBirth" type="date"
+                   dir="ltr">
+            <div class="invalid-feedback" data-i18n="auth.register.date_of_birth_error">لا يمكن أن يكون تاريخ الميلاد في المستقبل.</div>
+          </div>
+
+          <!-- Gender -->
+          <div class="col-sm-6">
+            <label class="form-label" for="genderId" data-i18n="auth.register.gender_label">الجنس</label>
+            <select class="form-select" id="genderId">
+              <option value="" data-i18n="auth.register.gender_placeholder">اختر الجنس</option>
+              <option value="1" data-i18n="auth.register.gender_male">ذكر</option>
+              <option value="2" data-i18n="auth.register.gender_female">أنثى</option>
+              <option value="3" data-i18n="auth.register.gender_prefer_not_to_say">أفضل عدم الإفصاح</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ═══ Section: Account ═══ -->
+        <p class="form-section-label" data-i18n="auth.register.section_account">
+          بيانات الحساب
+        </p>
+
         <!-- Email -->
         <div class="mb-3">
           <label class="form-label" for="registerEmail" data-i18n="auth.register.email_label">البريد الإلكتروني</label>
           <input class="form-control" id="registerEmail" type="email"
                  autocomplete="email"
+                 dir="ltr"
                  data-i18n-placeholder="auth.register.email_placeholder"
                  placeholder="example@email.com"
                  required>
@@ -142,13 +233,13 @@
           <div class="invalid-feedback" data-i18n="auth.register.confirm_password_error">كلمتا المرور غير متطابقتين.</div>
         </div>
 
-        <!-- Profile image (optional) -->
-        <div class="mb-3">
-          <label class="form-label" for="profileImage">
-            <span data-i18n="auth.register.profile_image_label">الصورة الشخصية</span>
-            <span class="text-muted small ms-1" data-i18n="common.optional">(اختياري)</span>
-          </label>
+        <!-- ═══ Section: Profile Photo (optional) ═══ -->
+        <p class="form-section-label" data-i18n="auth.register.section_photo">
+          الصورة الشخصية
+          <span class="text-muted ms-1" data-i18n="common.optional">(اختياري)</span>
+        </p>
 
+        <div class="mb-3">
           <!-- Image preview -->
           <div id="imagePreviewWrap" class="d-none mb-2 d-flex align-items-center gap-2">
             <img id="imagePreview" src="" alt="" class="rounded-circle"

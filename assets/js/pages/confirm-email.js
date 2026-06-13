@@ -12,7 +12,7 @@ import { initI18n, t }   from '../core/i18n.js';
 import { initTheme, initLangSwitcher } from '../components/layout.js';
 import { AuthService }   from '../services/auth-service.js';
 import { ApiError }      from '../core/api.js';
-import { Loading }       from '../components/loading.js';
+import { Loader }        from '../components/loading.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
@@ -65,7 +65,7 @@ if (resendForm) {
     }
     resendForm.classList.remove('was-validated');
 
-    Loading.button(resendBtn);
+    Loader.setButtonLoading(resendBtn);
     try {
       await AuthService.resendConfirmationEmail(resendEmail.value);
       /* Always show success — backend gives no enumeration */
@@ -76,7 +76,7 @@ if (resendForm) {
       resendForm.classList.add('d-none');
       resendSuccess?.classList.remove('d-none');
     } finally {
-      Loading.restore(resendBtn);
+      Loader.clearButtonLoading(resendBtn);
     }
   });
 }

@@ -8,7 +8,7 @@ import { initI18n, t }   from '../core/i18n.js';
 import { initTheme, initLangSwitcher } from '../components/layout.js';
 import { guardAnonymous } from '../core/auth.js';
 import { AuthService }   from '../services/auth-service.js';
-import { Loading }       from '../components/loading.js';
+import { Loader }        from '../components/loading.js';
 
 const form          = document.getElementById('forgotForm');
 const emailInput    = document.getElementById('forgotEmail');
@@ -49,7 +49,7 @@ form.addEventListener('submit', async (e) => {
   }
   form.classList.remove('was-validated');
 
-  Loading.button(submitBtn);
+  Loader.setButtonLoading(submitBtn);
   try {
     await AuthService.forgotPassword(emailInput.value);
     /* Always show success — backend gives no enumeration */
@@ -58,7 +58,7 @@ form.addEventListener('submit', async (e) => {
     /* Even on unexpected errors show success to avoid enumeration leaks */
     showSuccess();
   } finally {
-    Loading.restore(submitBtn);
+    Loader.clearButtonLoading(submitBtn);
   }
 });
 

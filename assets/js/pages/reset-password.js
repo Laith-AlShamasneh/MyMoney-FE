@@ -15,7 +15,7 @@ import { guardAnonymous } from '../core/auth.js';
 import { AuthService }   from '../services/auth-service.js';
 import { ApiError }      from '../core/api.js';
 import { Config }        from '../core/config.js';
-import { Loading }       from '../components/loading.js';
+import { Loader }        from '../components/loading.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
@@ -154,7 +154,7 @@ if (form) {
     }
 
     form.classList.remove('was-validated');
-    Loading.button(submitBtn);
+    Loader.setButtonLoading(submitBtn);
 
     try {
       await AuthService.resetPassword(_token, pwd, confirmPwdInput.value);
@@ -171,7 +171,7 @@ if (form) {
         }
       }
     } finally {
-      Loading.restore(submitBtn);
+      Loader.clearButtonLoading(submitBtn);
     }
   });
 }

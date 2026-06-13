@@ -9,7 +9,7 @@ import { guardPage }     from '../core/auth.js';
 import { AuthService }   from '../services/auth-service.js';
 import { ApiError }      from '../core/api.js';
 import { Config }        from '../core/config.js';
-import { Loading }       from '../components/loading.js';
+import { Loader }        from '../components/loading.js';
 import { showSuccess, showError } from '../components/toast.js';
 
 /* --------------------------------------------------------------------------
@@ -141,7 +141,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   form.classList.remove('was-validated');
-  Loading.button(submitBtn);
+  Loader.setButtonLoading(submitBtn);
 
   try {
     await AuthService.changePassword(
@@ -176,7 +176,7 @@ form.addEventListener('submit', async (e) => {
       }
     }
   } finally {
-    Loading.restore(submitBtn);
+    Loader.clearButtonLoading(submitBtn);
   }
 });
 
