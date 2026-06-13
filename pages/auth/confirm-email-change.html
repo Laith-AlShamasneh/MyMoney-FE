@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — تأكيد تغيير البريد الإلكتروني">
+  <title data-i18n-page-title="settings.confirm_email_change_page_title">تأكيد تغيير البريد الإلكتروني | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/auth.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-shell">
+    <div class="auth-card">
+
+      <!-- Brand -->
+      <div class="auth-brand">
+        <img src="/assets/images/logo/logo.svg" alt="MyMoney" class="auth-logo" width="40" height="40">
+        <span class="auth-brand-name" data-i18n="common.app_name">MyMoney</span>
+      </div>
+
+      <!-- Verifying state (default) -->
+      <div id="stateVerifying" class="auth-content text-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden" data-i18n="settings.confirm_email_change_verifying">جاري التحقق...</span>
+        </div>
+        <p class="text-muted" data-i18n="settings.confirm_email_change_verifying">جاري التحقق...</p>
+      </div>
+
+      <!-- Success state (hidden) -->
+      <div id="stateSuccess" class="auth-content text-center d-none">
+        <div class="mb-3">
+          <i class="bi bi-envelope-check-fill text-success" style="font-size:3rem;" aria-hidden="true"></i>
+        </div>
+        <h1 class="h4 fw-bold mb-2" data-i18n="settings.confirm_email_change_success_title">
+          تم تغيير البريد الإلكتروني
+        </h1>
+        <p class="text-muted mb-4" data-i18n="settings.confirm_email_change_success_message">
+          تم تغيير بريدك الإلكتروني بنجاح. يرجى تسجيل الدخول مجدداً.
+        </p>
+        <a href="/pages/auth/login.html" class="btn btn-primary">
+          <i class="bi bi-box-arrow-in-left me-1" aria-hidden="true"></i>
+          <span data-i18n="settings.confirm_email_change_go_login">تسجيل الدخول</span>
+        </a>
+      </div>
+
+      <!-- Error state (hidden) -->
+      <div id="stateError" class="auth-content text-center d-none">
+        <div class="mb-3">
+          <i class="bi bi-x-circle-fill text-danger" style="font-size:3rem;" aria-hidden="true"></i>
+        </div>
+        <h1 class="h4 fw-bold mb-2" data-i18n="settings.confirm_email_change_error_title">
+          فشل التأكيد
+        </h1>
+        <p class="text-muted mb-4" data-i18n="settings.confirm_email_change_error_message">
+          الرابط غير صالح أو منتهي الصلاحية أو تم استخدامه مسبقاً.
+        </p>
+        <a href="/pages/auth/login.html" class="btn btn-outline-secondary">
+          <i class="bi bi-house me-1" aria-hidden="true"></i>
+          <span data-i18n="settings.confirm_email_change_go_login">تسجيل الدخول</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/confirm-email-change.js"></script>
+</body>
+</html>

@@ -116,6 +116,11 @@ async function request(method, endpoint, body = null, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  // Merge any extra headers provided by the caller (e.g. X-Refresh-Token)
+  if (options._extraHeaders) {
+    Object.assign(headers, options._extraHeaders);
+  }
+
   const fetchOptions = {
     method,
     headers,
@@ -217,10 +222,38 @@ export function del(endpoint, options) {
   return request('DELETE', endpoint, null, options);
 }
 
+/** PATCH request with FormData (file uploads). Returns result payload. */
+export function patch(endpoint, body, options) {
+  return request('PATCH', endpoint, body, options);
+}
+
 /** POST request with FormData (file uploads). Returns result payload. */
 export function upload(endpoint, formData, options) {
   if (!(formData instanceof FormData)) {
     throw new TypeError('upload() requires a FormData instance.');
   }
   return request('POST', endpoint, formData, options);
+}
+
+/** PATCH request with FormData (file uploads). Returns result payload. */
+export function uploadPatch(endpoint, formData, options) {
+  if (!(formData instanceof FormData)) {
+    throw new TypeError('uploadPatch() requires a FormData instance.');
+  }
+  return request('PATCH', endpoint, formData, options);
+}
+
+/**
+ * GET request with extra custom headers (e.g. X-Refresh-Token for sessions).
+ * Merges the provided headers with the standard auth/language headers.
+ */
+export function getWithHeaders(endpoint, extraHeaders = {}, options = {}) {
+  return request('GET', endpoint, null, { ...options, _extraHeaders: extraHeaders });
+}
+
+/**
+ * DELETE request with extra custom headers (e.g. X-Refresh-Token).
+ */
+export function deleteWithHeaders(endpoint, extraHeaders = {}, options = {}) {
+  return request('DELETE', endpoint, null, { ...options, _extraHeaders: extraHeaders });
 }

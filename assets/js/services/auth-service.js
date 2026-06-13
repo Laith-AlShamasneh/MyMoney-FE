@@ -124,13 +124,20 @@ export const AuthService = Object.freeze({
 
   /**
    * Change the authenticated user's password.
+   * Pass currentRefreshToken to keep the current session active (all other sessions are revoked).
    * Requires a valid session (Authorization header injected by api.js).
-   * @param {string} currentPassword
-   * @param {string} newPassword
-   * @param {string} confirmPassword
+   * @param {string}      currentPassword
+   * @param {string}      newPassword
+   * @param {string}      confirmPassword
+   * @param {string|null} [currentRefreshToken] - If provided, this session is preserved.
    * @returns {Promise<boolean>}
    */
-  async changePassword(currentPassword, newPassword, confirmPassword) {
-    return post(A.CHANGE_PASSWORD, { currentPassword, newPassword, confirmPassword });
+  async changePassword(currentPassword, newPassword, confirmPassword, currentRefreshToken = null) {
+    return post(A.CHANGE_PASSWORD, {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+      ...(currentRefreshToken ? { currentRefreshToken } : {}),
+    });
   },
 });

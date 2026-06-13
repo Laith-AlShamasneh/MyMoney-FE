@@ -37,23 +37,328 @@
             </div>
           </div>
 
-          <!-- Content placeholder — will be populated in a future phase -->
-          <div class="panel mt-2">
-            <div class="blank-panel">
-              <div class="blank-state">
-                <i class="bi bi-person-circle blank-visual text-muted" style="font-size:5rem"></i>
-                <h2 class="h5 mb-2" data-i18n="profile.heading">الملف الشخصي</h2>
-                <p class="text-muted small mb-0" data-i18n="profile.subheading">
-                  إدارة بيانات حسابك الشخصي.
-                </p>
+          <!-- ── Avatar Hero Card ─────────────────────────────────────────── -->
+          <div class="panel mb-4">
+
+            <!-- Skeleton (shown while loading) -->
+            <div id="heroSkeleton">
+              <div class="d-flex align-items-center gap-4 placeholder-glow">
+                <span class="placeholder rounded-circle flex-shrink-0"
+                      style="width:96px;height:96px;display:block;"></span>
+                <div class="flex-grow-1">
+                  <span class="placeholder col-5 mb-2 d-block" style="height:1.2rem;border-radius:4px;"></span>
+                  <span class="placeholder col-3 d-block" style="height:0.9rem;border-radius:4px;"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Real content (shown after load) -->
+            <div id="heroContent" class="d-none">
+              <div class="d-flex align-items-center gap-4 flex-wrap">
+                <!-- Avatar circle -->
+                <div id="avatarCircle"
+                     style="width:96px;height:96px;border-radius:50%;background:var(--mm-primary);color:#fff;display:grid;place-items:center;font-size:2rem;font-weight:700;overflow:hidden;flex-shrink:0;user-select:none;">
+                  <img id="avatarImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;">
+                  <span id="avatarInitials" aria-hidden="true">?</span>
+                </div>
+                <!-- Name + email -->
+                <div>
+                  <h2 class="h4 fw-bold mb-1" id="heroDisplayName"></h2>
+                  <p class="text-muted mb-0 small" id="heroEmail"></p>
+                </div>
+              </div>
+
+              <!-- Avatar actions -->
+              <div class="mt-3 d-flex gap-2 align-items-center flex-wrap">
+                <input type="file" id="avatarFileInput" class="d-none"
+                       accept="image/jpeg,image/png,image/webp">
+                <button type="button" class="btn btn-sm btn-outline-primary" id="uploadAvatarBtn">
+                  <i class="bi bi-camera me-1" aria-hidden="true"></i>
+                  <span data-i18n="profile.avatar_upload">تغيير الصورة</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger d-none" id="removeAvatarBtn">
+                  <i class="bi bi-trash3 me-1" aria-hidden="true"></i>
+                  <span data-i18n="profile.avatar_remove">إزالة الصورة</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-link text-muted p-0 d-none"
+                        id="previewAvatarBtn"
+                        data-bs-toggle="modal" data-bs-target="#avatarPreviewModal">
+                  <i class="bi bi-eye me-1" aria-hidden="true"></i>
+                  <span data-i18n="profile.avatar_preview">عرض</span>
+                </button>
+                <small class="text-muted" data-i18n="profile.avatar_hint">
+                  JPG أو PNG أو WebP — الحد الأقصى 5 ميغابايت
+                </small>
               </div>
             </div>
           </div>
 
-        </div>
+          <!-- ── Content Columns ───────────────────────────────────────────── -->
+          <div class="row g-4">
+
+            <!-- Personal Information -->
+            <div class="col-12 col-lg-7">
+              <div class="panel">
+
+                <!-- Skeleton -->
+                <div id="infoSkeleton" class="placeholder-glow">
+                  <div class="d-flex justify-content-between mb-3">
+                    <span class="placeholder col-4" style="height:1.1rem;border-radius:4px;"></span>
+                    <span class="placeholder col-2" style="height:1.1rem;border-radius:4px;"></span>
+                  </div>
+                  <span class="placeholder col-12 mb-2 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                  <span class="placeholder col-10 mb-2 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                  <span class="placeholder col-8 mb-2 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                  <span class="placeholder col-11 mb-2 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                </div>
+
+                <!-- Real content -->
+                <div id="infoContent" class="d-none">
+                  <div class="panel-header">
+                    <h2 class="h5 mb-0" data-i18n="profile.info_section">المعلومات الشخصية</h2>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="editInfoBtn">
+                      <i class="bi bi-pencil me-1" aria-hidden="true"></i>
+                      <span data-i18n="profile.info_edit">تعديل</span>
+                    </button>
+                  </div>
+
+                  <!-- View mode -->
+                  <div id="infoView">
+                    <dl class="row mb-0 small">
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_first_name_en">الاسم الأول (إنجليزي)</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vFirstNameEn">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_last_name_en">اسم العائلة (إنجليزي)</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vLastNameEn">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_display_name_en">اسم العرض (إنجليزي)</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vDisplayNameEn">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_first_name_ar">الاسم الأول (عربي)</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vFirstNameAr">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_last_name_ar">اسم العائلة (عربي)</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vLastNameAr">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_display_name_ar">اسم العرض (عربي)</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vDisplayNameAr">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_date_of_birth">تاريخ الميلاد</dt>
+                      <dd class="col-7 fw-medium mb-2" id="vDateOfBirth">—</dd>
+
+                      <dt class="col-5 text-muted fw-normal" data-i18n="profile.field_gender">الجنس</dt>
+                      <dd class="col-7 fw-medium mb-0" id="vGender">—</dd>
+                    </dl>
+                  </div>
+
+                  <!-- Edit mode (hidden by default) -->
+                  <form id="infoForm" class="d-none" novalidate>
+
+                    <!-- Error summary -->
+                    <div class="alert alert-danger d-none mb-3" id="infoFormError" role="alert">
+                      <ul class="mb-0 ps-3" id="infoFormErrorList"></ul>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-12 col-sm-6">
+                        <label class="form-label" for="fFirstNameEn" data-i18n="profile.field_first_name_en">الاسم الأول (إنجليزي)</label>
+                        <input type="text" class="form-control" id="fFirstNameEn" maxlength="100" required>
+                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <label class="form-label" for="fLastNameEn" data-i18n="profile.field_last_name_en">اسم العائلة (إنجليزي)</label>
+                        <input type="text" class="form-control" id="fLastNameEn" maxlength="100" required>
+                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label" for="fDisplayNameEn" data-i18n="profile.field_display_name_en">اسم العرض (إنجليزي)</label>
+                        <input type="text" class="form-control" id="fDisplayNameEn" maxlength="100" required>
+                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <label class="form-label" for="fFirstNameAr" data-i18n="profile.field_first_name_ar">
+                          الاسم الأول (عربي)
+                          <span class="text-muted small" data-i18n="common.optional">(اختياري)</span>
+                        </label>
+                        <input type="text" class="form-control" id="fFirstNameAr" maxlength="100" dir="rtl">
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <label class="form-label" for="fLastNameAr" data-i18n="profile.field_last_name_ar">
+                          اسم العائلة (عربي)
+                          <span class="text-muted small" data-i18n="common.optional">(اختياري)</span>
+                        </label>
+                        <input type="text" class="form-control" id="fLastNameAr" maxlength="100" dir="rtl">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label" for="fDisplayNameAr" data-i18n="profile.field_display_name_ar">
+                          اسم العرض (عربي)
+                          <span class="text-muted small" data-i18n="common.optional">(اختياري)</span>
+                        </label>
+                        <input type="text" class="form-control" id="fDisplayNameAr" maxlength="100" dir="rtl">
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <label class="form-label" for="fDateOfBirth" data-i18n="profile.field_date_of_birth">
+                          تاريخ الميلاد
+                          <span class="text-muted small" data-i18n="common.optional">(اختياري)</span>
+                        </label>
+                        <input type="date" class="form-control" id="fDateOfBirth">
+                      </div>
+                      <div class="col-12 col-sm-6">
+                        <label class="form-label" for="fGender" data-i18n="profile.field_gender">
+                          الجنس
+                          <span class="text-muted small" data-i18n="common.optional">(اختياري)</span>
+                        </label>
+                        <select class="form-select" id="fGender">
+                          <option value="" data-i18n="profile.gender_select_placeholder">اختر الجنس</option>
+                          <option value="1" data-i18n="profile.gender_male">ذكر</option>
+                          <option value="2" data-i18n="profile.gender_female">أنثى</option>
+                          <option value="3" data-i18n="profile.gender_prefer_not_to_say">أفضل عدم الإفصاح</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                      <button type="submit" class="btn btn-primary btn-sm" id="saveInfoBtn">
+                        <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+                        <span data-i18n="profile.info_save">حفظ التغييرات</span>
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelInfoBtn">
+                        <span data-i18n="profile.info_cancel">إلغاء</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="col-12 col-lg-5">
+              <div class="panel">
+
+                <!-- Skeleton -->
+                <div id="emailSkeleton" class="placeholder-glow">
+                  <span class="placeholder col-5 mb-3 d-block" style="height:1.1rem;border-radius:4px;"></span>
+                  <span class="placeholder col-8 mb-2 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                  <span class="placeholder col-6 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                </div>
+
+                <!-- Real content -->
+                <div id="emailContent" class="d-none">
+                  <div class="panel-header">
+                    <h2 class="h5 mb-0" data-i18n="profile.email_section">البريد الإلكتروني</h2>
+                  </div>
+
+                  <!-- Current email -->
+                  <div class="mb-3">
+                    <p class="text-muted small mb-1" data-i18n="profile.email_current">البريد الإلكتروني الحالي</p>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <span id="emailDisplay" class="fw-medium"></span>
+                      <span id="emailVerifiedBadge" class="badge bg-success d-none" data-i18n="profile.email_confirmed">مؤكد</span>
+                      <span id="emailUnverifiedBadge" class="badge bg-warning text-dark d-none" data-i18n="profile.email_not_confirmed">غير مؤكد</span>
+                    </div>
+                  </div>
+
+                  <!-- Pending email change notice -->
+                  <div id="pendingEmailSection" class="d-none">
+                    <div class="alert alert-info py-2 px-3 mb-3 small">
+                      <div class="fw-semibold mb-1">
+                        <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+                        <span data-i18n="profile.email_pending_heading">تغيير بريد إلكتروني قيد الانتظار</span>
+                      </div>
+                      <p class="mb-1">
+                        <span data-i18n="profile.email_pending_desc">تم إرسال رابط تأكيد إلى:</span>
+                        <strong id="pendingEmailAddress" class="ms-1"></strong>
+                      </p>
+                      <p class="mb-2 text-muted" data-i18n="profile.email_pending_hint">
+                        يرجى التحقق من البريد الجديد والنقر على رابط التأكيد.
+                      </p>
+                      <button type="button" class="btn btn-sm btn-outline-danger" id="cancelEmailChangeBtn">
+                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
+                        <span data-i18n="profile.email_pending_cancel">إلغاء الطلب</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Change email form (collapsed by default) -->
+                  <div id="changeEmailFormWrap" class="d-none">
+                    <hr class="my-3">
+                    <p class="small fw-semibold mb-3" data-i18n="profile.email_change_heading">
+                      طلب تغيير البريد الإلكتروني
+                    </p>
+
+                    <!-- Form error -->
+                    <div class="alert alert-danger d-none mb-3 small" id="emailFormError" role="alert">
+                      <ul class="mb-0 ps-3" id="emailFormErrorList"></ul>
+                    </div>
+
+                    <form id="changeEmailForm" novalidate>
+                      <div class="mb-3">
+                        <label class="form-label" for="newEmailInput"
+                               data-i18n="profile.email_change_new_label">البريد الإلكتروني الجديد</label>
+                        <input type="email" class="form-control form-control-sm" id="newEmailInput"
+                               maxlength="254"
+                               data-i18n-placeholder="profile.email_change_new_placeholder"
+                               placeholder="example@email.com"
+                               required>
+                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="emailChangePwdInput"
+                               data-i18n="profile.email_change_pwd_label">كلمة المرور الحالية (للتحقق)</label>
+                        <input type="password" class="form-control form-control-sm" id="emailChangePwdInput"
+                               autocomplete="current-password"
+                               placeholder="••••••••"
+                               required>
+                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                      </div>
+                      <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm" id="submitEmailChangeBtn">
+                          <i class="bi bi-envelope-check me-1" aria-hidden="true"></i>
+                          <span data-i18n="profile.email_change_submit">إرسال رابط التأكيد</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                id="cancelEmailFormBtn"
+                                data-i18n="profile.email_change_cancel_form">إلغاء</button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- Show change form button (hidden when pending or form open) -->
+                  <div id="changeEmailBtnWrap">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="showChangeEmailFormBtn">
+                      <i class="bi bi-envelope-arrow-up me-1" aria-hidden="true"></i>
+                      <span data-i18n="profile.email_change_btn">تغيير البريد الإلكتروني</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.row -->
+
+        </div><!-- /.container-fluid -->
       </main>
 
       <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- ── Avatar Preview Modal ──────────────────────────────────────────────── -->
+  <div class="modal fade" id="avatarPreviewModal" tabindex="-1"
+       aria-labelledby="avatarPreviewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="avatarPreviewLabel"
+              data-i18n="profile.avatar_preview">عرض الصورة الشخصية</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  data-i18n-aria-label="common.close" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body text-center p-3">
+          <img id="avatarPreviewImg" src="" alt=""
+               class="img-fluid rounded" style="max-height:420px;">
+        </div>
+      </div>
     </div>
   </div>
 

@@ -143,11 +143,16 @@ form.addEventListener('submit', async (e) => {
   form.classList.remove('was-validated');
   Loader.setButtonLoading(submitBtn);
 
+  /* Read the current refresh token so the backend can keep this session alive */
+  let currentRefreshToken = null;
+  try { currentRefreshToken = localStorage.getItem(Config.STORAGE_KEYS.REFRESH_TOKEN); } catch { /* ignore */ }
+
   try {
     await AuthService.changePassword(
       currentPwdInput.value,
       newPwd,
       confirmPwdInput.value,
+      currentRefreshToken,
     );
 
     showSuccess(t('auth.change_password.success_message'));

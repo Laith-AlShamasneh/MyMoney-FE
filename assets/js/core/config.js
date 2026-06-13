@@ -54,6 +54,18 @@ export const Config = Object.freeze({
       CHANGE_PASSWORD:           '/api/authentication/change-password',
       REFRESH_TOKEN:             '/api/authentication/refresh-token',
     }),
+    PROFILE: Object.freeze({
+      GET:                       '/api/profile',
+      UPDATE:                    '/api/profile',
+      UPDATE_PICTURE:            '/api/profile/picture',
+      REMOVE_PICTURE:            '/api/profile/picture',
+      SESSIONS:                  '/api/profile/sessions',
+      SESSION_BY_ID:             (id) => `/api/profile/sessions/${id}`,
+      REVOKE_OTHERS:             '/api/profile/sessions/others',
+      REQUEST_EMAIL_CHANGE:      '/api/profile/email-change/request',
+      CONFIRM_EMAIL_CHANGE:      '/api/profile/email-change/confirm',
+      CANCEL_EMAIL_CHANGE:       '/api/profile/email-change',
+    }),
   }),
 
   /**
