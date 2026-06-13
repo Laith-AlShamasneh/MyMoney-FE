@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/assets/css/components.css">
 
   <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
 </head>
 
 <body>
@@ -58,6 +59,100 @@
                   <i class="bi bi-arrow-left-circle me-1" aria-hidden="true"></i>
                   <span data-i18n="settings.change_password_btn">تغيير كلمة المرور</span>
                 </a>
+              </div>
+
+              <!-- Change Email Card -->
+              <div class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1" data-i18n="settings.change_email_heading">تغيير البريد الإلكتروني</h2>
+                    <p class="text-muted small mb-0" data-i18n="settings.change_email_desc">
+                      تحديث عنوان البريد الإلكتروني المرتبط بحسابك.
+                    </p>
+                  </div>
+                  <i class="bi bi-envelope text-muted fs-4" aria-hidden="true"></i>
+                </div>
+
+                <!-- Current email display (skeleton while loading) -->
+                <div id="emailSkeleton" class="placeholder-glow mb-3">
+                  <span class="placeholder col-7 d-block" style="height:0.85rem;border-radius:4px;"></span>
+                </div>
+                <div id="emailDisplay" class="mb-3 d-none small">
+                  <span class="text-muted" data-i18n="profile.email_current">البريد الإلكتروني الحالي</span>
+                  <div class="d-flex align-items-center gap-2 flex-wrap mt-1">
+                    <span id="currentEmailValue" class="fw-medium"></span>
+                    <span id="emailVerifiedBadge" class="badge bg-success d-none" data-i18n="profile.email_confirmed">مؤكد</span>
+                    <span id="emailUnverifiedBadge" class="badge bg-warning text-dark d-none" data-i18n="profile.email_not_confirmed">غير مؤكد</span>
+                  </div>
+                </div>
+
+                <!-- Pending email change notice -->
+                <div id="pendingEmailSection" class="d-none">
+                  <div class="alert alert-info py-2 px-3 mb-3 small">
+                    <div class="fw-semibold mb-1">
+                      <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+                      <span data-i18n="profile.email_pending_heading">تغيير بريد إلكتروني قيد الانتظار</span>
+                    </div>
+                    <p class="mb-1">
+                      <span data-i18n="profile.email_pending_desc">تم إرسال رابط تأكيد إلى:</span>
+                      <strong id="pendingEmailAddress" class="ms-1"></strong>
+                    </p>
+                    <p class="mb-2 text-muted" data-i18n="profile.email_pending_hint">
+                      يرجى التحقق من البريد الجديد والنقر على رابط التأكيد.
+                    </p>
+                    <button type="button" class="btn btn-sm btn-outline-danger" id="cancelEmailChangeBtn">
+                      <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
+                      <span data-i18n="profile.email_pending_cancel">إلغاء الطلب</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Change email form (collapsed by default) -->
+                <div id="changeEmailFormWrap" class="d-none">
+                  <!-- Form error -->
+                  <div class="alert alert-danger d-none mb-3 small" id="emailFormError" role="alert">
+                    <ul class="mb-0 ps-3" id="emailFormErrorList"></ul>
+                  </div>
+
+                  <form id="changeEmailForm" novalidate>
+                    <div class="mb-3">
+                      <label class="form-label" for="newEmailInput"
+                             data-i18n="profile.email_change_new_label">البريد الإلكتروني الجديد</label>
+                      <input type="email" class="form-control form-control-sm" id="newEmailInput"
+                             maxlength="254"
+                             data-i18n-placeholder="profile.email_change_new_placeholder"
+                             placeholder="example@email.com"
+                             required>
+                      <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label" for="emailChangePwdInput"
+                             data-i18n="profile.email_change_pwd_label">كلمة المرور الحالية (للتحقق)</label>
+                      <input type="password" class="form-control form-control-sm" id="emailChangePwdInput"
+                             autocomplete="current-password"
+                             placeholder="••••••••"
+                             required>
+                      <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-primary btn-sm" id="submitEmailChangeBtn">
+                        <i class="bi bi-envelope-check me-1" aria-hidden="true"></i>
+                        <span data-i18n="profile.email_change_submit">إرسال رابط التأكيد</span>
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary btn-sm"
+                              id="cancelEmailFormBtn"
+                              data-i18n="profile.email_change_cancel_form">إلغاء</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Show change form button (hidden when pending or form open) -->
+                <div id="changeEmailBtnWrap" class="d-none">
+                  <button type="button" class="btn btn-sm btn-outline-primary" id="showChangeEmailFormBtn">
+                    <i class="bi bi-envelope-arrow-up me-1" aria-hidden="true"></i>
+                    <span data-i18n="profile.email_change_btn">تغيير البريد الإلكتروني</span>
+                  </button>
+                </div>
               </div>
 
             </div>

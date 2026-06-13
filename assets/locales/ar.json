@@ -243,6 +243,8 @@
     "avatar_remove": "إزالة الصورة",
     "avatar_preview": "عرض الصورة الشخصية",
     "avatar_hint": "JPG أو PNG أو WebP — الحد الأقصى 5 ميغابايت",
+    "avatar_drop_hint": "اسحب وأفلت صورتك هنا، أو انقر للاختيار",
+    "avatar_upload_confirm": "رفع الصورة",
     "avatar_upload_success": "تم تحديث الصورة الشخصية بنجاح.",
     "avatar_remove_success": "تمت إزالة الصورة الشخصية.",
     "avatar_remove_confirm": "هل تريد إزالة صورتك الشخصية؟",
@@ -323,7 +325,10 @@
     "confirm_email_change_success_message": "تم تغيير بريدك الإلكتروني بنجاح. يرجى تسجيل الدخول مجدداً.",
     "confirm_email_change_error_title": "فشل التأكيد",
     "confirm_email_change_error_message": "الرابط غير صالح أو منتهي الصلاحية أو تم استخدامه مسبقاً.",
-    "confirm_email_change_go_login": "تسجيل الدخول"
+    "confirm_email_change_go_login": "تسجيل الدخول",
+
+    "change_email_heading": "تغيير البريد الإلكتروني",
+    "change_email_desc": "تحديث عنوان البريد الإلكتروني المرتبط بحسابك."
   },
 
   "errors_page": {

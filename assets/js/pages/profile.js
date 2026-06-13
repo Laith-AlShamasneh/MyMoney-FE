@@ -1,11 +1,11 @@
 /**
  * pages/profile.js — MyMoney
- * Profile page: avatar, personal info edit, email change.
+ * Profile page: avatar, personal info edit.
  */
 
 import { initI18n, t, getLanguage }        from '../core/i18n.js';
 import { initLayout, updateLayoutUser }    from '../components/layout.js';
-import { guardPage }                       from '../core/auth.js';
+import { guardPage, updateCurrentUser }    from '../core/auth.js';
 import { ProfileService }                  from '../services/profile-service.js';
 import { ApiError }                        from '../core/api.js';
 import { Config }                          from '../core/config.js';
@@ -15,7 +15,8 @@ import { showSuccess, showError }          from '../components/toast.js';
 /* --------------------------------------------------------------------------
    State
    -------------------------------------------------------------------------- */
-let _profile = null; // GetProfileResponse
+let _profile      = null;
+let _selectedFile = null;
 
 /* --------------------------------------------------------------------------
    DOM refs — avatar hero
@@ -27,22 +28,32 @@ const avatarImg       = document.getElementById('avatarImg');
 const avatarInitials  = document.getElementById('avatarInitials');
 const heroDisplayName = document.getElementById('heroDisplayName');
 const heroEmail       = document.getElementById('heroEmail');
-const avatarFileInput = document.getElementById('avatarFileInput');
 const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
 const removeAvatarBtn = document.getElementById('removeAvatarBtn');
-const previewAvatarBtn= document.getElementById('previewAvatarBtn');
-const avatarPreviewImg= document.getElementById('avatarPreviewImg');
+
+/* DOM refs — avatar upload modal */
+const avatarUploadModalEl    = document.getElementById('avatarUploadModal');
+const avatarDropZone         = document.getElementById('avatarDropZone');
+const avatarFileInput        = document.getElementById('avatarFileInput');
+const avatarUploadPreview    = document.getElementById('avatarUploadPreview');
+const avatarUploadPreviewImg = document.getElementById('avatarUploadPreviewImg');
+const avatarUploadFileName   = document.getElementById('avatarUploadFileName');
+const clearUploadBtn         = document.getElementById('clearUploadBtn');
+const confirmUploadBtn       = document.getElementById('confirmUploadBtn');
+
+/* DOM refs — avatar preview modal */
+const avatarPreviewImg = document.getElementById('avatarPreviewImg');
 
 /* DOM refs — personal info */
-const infoSkeleton   = document.getElementById('infoSkeleton');
-const infoContent    = document.getElementById('infoContent');
-const editInfoBtn    = document.getElementById('editInfoBtn');
-const infoView       = document.getElementById('infoView');
-const infoForm       = document.getElementById('infoForm');
-const infoFormError  = document.getElementById('infoFormError');
-const infoFormErrList= document.getElementById('infoFormErrorList');
-const saveInfoBtn    = document.getElementById('saveInfoBtn');
-const cancelInfoBtn  = document.getElementById('cancelInfoBtn');
+const infoSkeleton    = document.getElementById('infoSkeleton');
+const infoContent     = document.getElementById('infoContent');
+const editInfoBtn     = document.getElementById('editInfoBtn');
+const infoView        = document.getElementById('infoView');
+const infoForm        = document.getElementById('infoForm');
+const infoFormError   = document.getElementById('infoFormError');
+const infoFormErrList = document.getElementById('infoFormErrorList');
+const saveInfoBtn     = document.getElementById('saveInfoBtn');
+const cancelInfoBtn   = document.getElementById('cancelInfoBtn');
 
 /* View-mode display fields */
 const vFirstNameEn   = document.getElementById('vFirstNameEn');
@@ -64,25 +75,6 @@ const fDisplayNameAr = document.getElementById('fDisplayNameAr');
 const fDateOfBirth   = document.getElementById('fDateOfBirth');
 const fGender        = document.getElementById('fGender');
 
-/* DOM refs — email section */
-const emailSkeleton        = document.getElementById('emailSkeleton');
-const emailContent         = document.getElementById('emailContent');
-const emailDisplay         = document.getElementById('emailDisplay');
-const emailVerifiedBadge   = document.getElementById('emailVerifiedBadge');
-const emailUnverifiedBadge = document.getElementById('emailUnverifiedBadge');
-const pendingEmailSection  = document.getElementById('pendingEmailSection');
-const pendingEmailAddress  = document.getElementById('pendingEmailAddress');
-const cancelEmailChangeBtn = document.getElementById('cancelEmailChangeBtn');
-const changeEmailFormWrap  = document.getElementById('changeEmailFormWrap');
-const changeEmailBtnWrap   = document.getElementById('changeEmailBtnWrap');
-const showChangeEmailFormBtn = document.getElementById('showChangeEmailFormBtn');
-const changeEmailForm      = document.getElementById('changeEmailForm');
-const newEmailInput        = document.getElementById('newEmailInput');
-const emailChangePwdInput  = document.getElementById('emailChangePwdInput');
-const submitEmailChangeBtn = document.getElementById('submitEmailChangeBtn');
-const cancelEmailFormBtn   = document.getElementById('cancelEmailFormBtn');
-const emailFormError       = document.getElementById('emailFormError');
-const emailFormErrList     = document.getElementById('emailFormErrorList');
 
 /* --------------------------------------------------------------------------
    Helpers
@@ -132,16 +124,6 @@ function _hideInfoErrors() {
   infoFormErrList.innerHTML = '';
 }
 
-function _showEmailErrors(messages) {
-  emailFormErrList.innerHTML = messages.map(m => `<li>${_esc(m)}</li>`).join('');
-  emailFormError.classList.remove('d-none');
-}
-
-function _hideEmailErrors() {
-  emailFormError.classList.add('d-none');
-  emailFormErrList.innerHTML = '';
-}
-
 /* --------------------------------------------------------------------------
    Avatar rendering
    -------------------------------------------------------------------------- */
@@ -152,8 +134,8 @@ function _renderAvatar(profileImageUrl, displayName) {
     avatarImg.style.display = 'block';
     avatarInitials.style.display = 'none';
     avatarCircle.style.cursor = 'pointer';
+    avatarCircle.title = t('profile.avatar_preview');
     removeAvatarBtn.classList.remove('d-none');
-    previewAvatarBtn.classList.remove('d-none');
     avatarPreviewImg.src = url;
   } else {
     avatarImg.style.display = 'none';
@@ -161,8 +143,8 @@ function _renderAvatar(profileImageUrl, displayName) {
     avatarInitials.style.display = '';
     avatarInitials.textContent = _initials(displayName);
     avatarCircle.style.cursor = 'default';
+    avatarCircle.title = '';
     removeAvatarBtn.classList.add('d-none');
-    previewAvatarBtn.classList.add('d-none');
     avatarPreviewImg.src = '';
   }
 }
@@ -180,31 +162,6 @@ function _renderInfoView(p) {
   vDisplayNameAr.textContent = p.displayNameAr || na;
   vDateOfBirth.textContent   = p.dateOfBirth ? _formatDate(p.dateOfBirth) : na;
   vGender.textContent        = _genderLabel(p.genderId);
-}
-
-/* --------------------------------------------------------------------------
-   Email section rendering
-   -------------------------------------------------------------------------- */
-function _renderEmailSection(p) {
-  emailDisplay.textContent = p.email || '';
-
-  if (p.isEmailConfirmed) {
-    emailVerifiedBadge.classList.remove('d-none');
-    emailUnverifiedBadge.classList.add('d-none');
-  } else {
-    emailVerifiedBadge.classList.add('d-none');
-    emailUnverifiedBadge.classList.remove('d-none');
-  }
-
-  if (p.hasPendingEmailChange && p.pendingEmail) {
-    pendingEmailAddress.textContent = p.pendingEmail;
-    pendingEmailSection.classList.remove('d-none');
-    changeEmailBtnWrap.classList.add('d-none');
-    changeEmailFormWrap.classList.add('d-none');
-  } else {
-    pendingEmailSection.classList.add('d-none');
-    changeEmailBtnWrap.classList.remove('d-none');
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -229,48 +186,132 @@ async function loadProfile() {
     return;
   }
 
-  /* Reveal hero */
   heroSkeleton.classList.add('d-none');
   heroContent.classList.remove('d-none');
   _renderHero(_profile);
 
-  /* Reveal info section */
   infoSkeleton.classList.add('d-none');
   infoContent.classList.remove('d-none');
   _renderInfoView(_profile);
-
-  /* Reveal email section */
-  emailSkeleton.classList.add('d-none');
-  emailContent.classList.remove('d-none');
-  _renderEmailSection(_profile);
 }
 
 /* --------------------------------------------------------------------------
-   Avatar upload / remove
+   Avatar — click circle to preview
    -------------------------------------------------------------------------- */
-uploadAvatarBtn.addEventListener('click', () => avatarFileInput.click());
+avatarCircle.addEventListener('click', () => {
+  if (!_profile?.profileImageUrl) return;
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarPreviewModal')).show();
+});
 
-avatarFileInput.addEventListener('change', async () => {
-  const file = avatarFileInput.files?.[0];
+/* --------------------------------------------------------------------------
+   Avatar upload modal
+   -------------------------------------------------------------------------- */
+function _resetUploadModal() {
+  _selectedFile = null;
+  avatarFileInput.value = '';
+  if (avatarUploadPreviewImg.src.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarUploadPreviewImg.src);
+  }
+  avatarUploadPreviewImg.src = '';
+  avatarUploadFileName.textContent = '';
+  avatarUploadPreview.classList.add('d-none');
+  confirmUploadBtn.classList.add('d-none');
+  avatarDropZone.style.borderColor = '';
+  avatarDropZone.style.backgroundColor = '';
+}
+
+function _handleFileSelected(file) {
   if (!file) return;
-  avatarFileInput.value = ''; // reset so same file can be re-selected
 
-  Loader.setButtonLoading(uploadAvatarBtn);
+  const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+  const maxSize = 5 * 1024 * 1024;
+
+  if (!allowed.includes(file.type)) {
+    showError(t('auth.register.profile_image_error_type'));
+    return;
+  }
+  if (file.size > maxSize) {
+    showError(t('auth.register.profile_image_error_size'));
+    return;
+  }
+
+  _selectedFile = file;
+  avatarUploadPreviewImg.src = URL.createObjectURL(file);
+  avatarUploadFileName.textContent = file.name;
+  avatarUploadPreview.classList.remove('d-none');
+  confirmUploadBtn.classList.remove('d-none');
+}
+
+/* Open upload modal */
+uploadAvatarBtn.addEventListener('click', () => {
+  _resetUploadModal();
+  bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).show();
+});
+
+/* Reset on modal close */
+avatarUploadModalEl.addEventListener('hidden.bs.modal', _resetUploadModal);
+
+/* Drop zone — click */
+avatarDropZone.addEventListener('click', () => avatarFileInput.click());
+avatarDropZone.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    avatarFileInput.click();
+  }
+});
+
+/* Drop zone — drag/drop */
+avatarDropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  avatarDropZone.style.borderColor = 'var(--mm-primary, #0d6efd)';
+  avatarDropZone.style.backgroundColor = 'rgba(13,110,253,0.04)';
+});
+
+avatarDropZone.addEventListener('dragleave', () => {
+  avatarDropZone.style.borderColor = '';
+  avatarDropZone.style.backgroundColor = '';
+});
+
+avatarDropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  avatarDropZone.style.borderColor = '';
+  avatarDropZone.style.backgroundColor = '';
+  _handleFileSelected(e.dataTransfer.files?.[0]);
+});
+
+/* File input change */
+avatarFileInput.addEventListener('change', () => {
+  _handleFileSelected(avatarFileInput.files?.[0]);
+});
+
+/* Clear selected file */
+clearUploadBtn.addEventListener('click', () => {
+  _resetUploadModal();
+});
+
+/* Confirm upload */
+confirmUploadBtn.addEventListener('click', async () => {
+  if (!_selectedFile) return;
+  Loader.setButtonLoading(confirmUploadBtn);
   try {
-    const result = await ProfileService.updateProfilePicture(file);
-    /* result is UpdateProfileResponse: { displayNameEn, displayNameAr, profileImageUrl } */
+    const result = await ProfileService.updateProfilePicture(_selectedFile);
     _profile.profileImageUrl = result.profileImageUrl;
     _renderAvatar(result.profileImageUrl, result.displayNameEn);
-    /* Sync layout navbar/sidebar avatar */
-    updateLayoutUser({ profileImageUrl: _buildImageUrl(result.profileImageUrl) });
+    const fullUrl = _buildImageUrl(result.profileImageUrl);
+    updateLayoutUser({ profileImageUrl: fullUrl });
+    updateCurrentUser({ profileImageUrl: result.profileImageUrl });
+    bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).hide();
     showSuccess(t('profile.avatar_upload_success'));
   } catch (err) {
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
   } finally {
-    Loader.clearButtonLoading(uploadAvatarBtn);
+    Loader.clearButtonLoading(confirmUploadBtn);
   }
 });
 
+/* --------------------------------------------------------------------------
+   Remove avatar
+   -------------------------------------------------------------------------- */
 removeAvatarBtn.addEventListener('click', async () => {
   if (!window.confirm(t('profile.avatar_remove_confirm'))) return;
   Loader.setButtonLoading(removeAvatarBtn);
@@ -280,18 +321,12 @@ removeAvatarBtn.addEventListener('click', async () => {
     _renderAvatar(null, _profile.displayNameEn);
     _renderHero(_profile);
     updateLayoutUser({ profileImageUrl: '/assets/images/avatar/avatar.jpg' });
+    updateCurrentUser({ profileImageUrl: null });
     showSuccess(t('profile.avatar_remove_success'));
   } catch (err) {
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
   } finally {
     Loader.clearButtonLoading(removeAvatarBtn);
-  }
-});
-
-/* Open avatar preview modal on circle click (only when image exists) */
-avatarCircle.addEventListener('click', () => {
-  if (_profile?.profileImageUrl) {
-    previewAvatarBtn.click();
   }
 });
 
@@ -351,10 +386,8 @@ infoForm.addEventListener('submit', async (e) => {
       genderId:      fGender.value ? Number(fGender.value) : null,
     });
 
-    /* Merge result back into cached profile */
     _profile.displayNameEn = result.displayNameEn;
     _profile.displayNameAr = result.displayNameAr;
-    /* Re-read the other fields from the form (server echoes them back or we trust what we sent) */
     _profile.firstNameEn   = fFirstNameEn.value.trim();
     _profile.lastNameEn    = fLastNameEn.value.trim();
     _profile.firstNameAr   = fFirstNameAr.value.trim()   || null;
@@ -374,75 +407,6 @@ infoForm.addEventListener('submit', async (e) => {
     }
   } finally {
     Loader.clearButtonLoading(saveInfoBtn);
-  }
-});
-
-/* --------------------------------------------------------------------------
-   Email change flow
-   -------------------------------------------------------------------------- */
-showChangeEmailFormBtn.addEventListener('click', () => {
-  changeEmailBtnWrap.classList.add('d-none');
-  changeEmailFormWrap.classList.remove('d-none');
-  _hideEmailErrors();
-  changeEmailForm.classList.remove('was-validated');
-  newEmailInput.value = '';
-  emailChangePwdInput.value = '';
-  newEmailInput.focus();
-});
-
-cancelEmailFormBtn.addEventListener('click', () => {
-  changeEmailFormWrap.classList.add('d-none');
-  changeEmailBtnWrap.classList.remove('d-none');
-  _hideEmailErrors();
-});
-
-changeEmailForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  _hideEmailErrors();
-
-  if (!changeEmailForm.checkValidity()) {
-    changeEmailForm.classList.add('was-validated');
-    return;
-  }
-  changeEmailForm.classList.remove('was-validated');
-
-  Loader.setButtonLoading(submitEmailChangeBtn);
-  try {
-    await ProfileService.requestEmailChange({
-      newEmail:        newEmailInput.value.trim(),
-      currentPassword: emailChangePwdInput.value,
-    });
-
-    /* Update cached profile state */
-    _profile.hasPendingEmailChange = true;
-    _profile.pendingEmail = newEmailInput.value.trim();
-
-    changeEmailFormWrap.classList.add('d-none');
-    _renderEmailSection(_profile);
-    showSuccess(t('profile.email_change_success'));
-  } catch (err) {
-    if (err instanceof ApiError) {
-      if (err.errors?.length) _showEmailErrors(err.errors);
-      else _showEmailErrors([err.message || t('errors.unknown')]);
-    }
-  } finally {
-    Loader.clearButtonLoading(submitEmailChangeBtn);
-  }
-});
-
-cancelEmailChangeBtn.addEventListener('click', async () => {
-  if (!window.confirm(t('profile.email_pending_cancel_confirm'))) return;
-  Loader.setButtonLoading(cancelEmailChangeBtn);
-  try {
-    await ProfileService.cancelEmailChange();
-    _profile.hasPendingEmailChange = false;
-    _profile.pendingEmail = null;
-    _renderEmailSection(_profile);
-    showSuccess(t('profile.email_pending_cancel_success'));
-  } catch (err) {
-    showError(err instanceof ApiError ? err.message : t('errors.unknown'));
-  } finally {
-    Loader.clearButtonLoading(cancelEmailChangeBtn);
   }
 });
 

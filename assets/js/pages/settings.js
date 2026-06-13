@@ -1,12 +1,13 @@
 /**
  * pages/settings.js — MyMoney
- * Settings page: change password link, active sessions management.
+ * Settings page: change password link, email change, active sessions management.
  */
 
 import { initI18n, t, getLanguage }        from '../core/i18n.js';
 import { initLayout }                      from '../components/layout.js';
 import { guardPage, clearSession }         from '../core/auth.js';
 import { ProfileService }                  from '../services/profile-service.js';
+import { AuthService }                     from '../services/auth-service.js';
 import { ApiError }                        from '../core/api.js';
 import { Config }                          from '../core/config.js';
 import { Loader }                          from '../components/loading.js';
@@ -18,8 +19,33 @@ import { showSuccess, showError }          from '../components/toast.js';
 /** @type {Array<{id:number, ipAddress:string, createdOnUtc:string, expiresOnUtc:string, isCurrentSession:boolean}>} */
 let _sessions = [];
 
+/** @type {{email:string, isEmailConfirmed:boolean, hasPendingEmailChange:boolean, pendingEmail:string|null}|null} */
+let _emailState = null;
+
 /* --------------------------------------------------------------------------
-   DOM refs
+   DOM refs — email change
+   -------------------------------------------------------------------------- */
+const emailSkeleton        = document.getElementById('emailSkeleton');
+const emailDisplayWrap     = document.getElementById('emailDisplay');
+const currentEmailValue    = document.getElementById('currentEmailValue');
+const emailVerifiedBadge   = document.getElementById('emailVerifiedBadge');
+const emailUnverifiedBadge = document.getElementById('emailUnverifiedBadge');
+const pendingEmailSection  = document.getElementById('pendingEmailSection');
+const pendingEmailAddress  = document.getElementById('pendingEmailAddress');
+const cancelEmailChangeBtn = document.getElementById('cancelEmailChangeBtn');
+const changeEmailFormWrap  = document.getElementById('changeEmailFormWrap');
+const changeEmailBtnWrap   = document.getElementById('changeEmailBtnWrap');
+const showChangeEmailFormBtn = document.getElementById('showChangeEmailFormBtn');
+const changeEmailForm      = document.getElementById('changeEmailForm');
+const newEmailInput        = document.getElementById('newEmailInput');
+const emailChangePwdInput  = document.getElementById('emailChangePwdInput');
+const submitEmailChangeBtn = document.getElementById('submitEmailChangeBtn');
+const cancelEmailFormBtn   = document.getElementById('cancelEmailFormBtn');
+const emailFormError       = document.getElementById('emailFormError');
+const emailFormErrList     = document.getElementById('emailFormErrorList');
+
+/* --------------------------------------------------------------------------
+   DOM refs — sessions
    -------------------------------------------------------------------------- */
 const sessionsLoading   = document.getElementById('sessionsLoading');
 const sessionsError     = document.getElementById('sessionsError');
@@ -211,6 +237,127 @@ revokeOthersBtn.addEventListener('click', async () => {
 });
 
 /* --------------------------------------------------------------------------
+   Email change — render + handlers
+   -------------------------------------------------------------------------- */
+function _renderEmailSection(state) {
+  currentEmailValue.textContent = state.email || '';
+
+  if (state.isEmailConfirmed) {
+    emailVerifiedBadge.classList.remove('d-none');
+    emailUnverifiedBadge.classList.add('d-none');
+  } else {
+    emailVerifiedBadge.classList.add('d-none');
+    emailUnverifiedBadge.classList.remove('d-none');
+  }
+
+  if (state.hasPendingEmailChange && state.pendingEmail) {
+    pendingEmailAddress.textContent = state.pendingEmail;
+    pendingEmailSection.classList.remove('d-none');
+    changeEmailBtnWrap.classList.add('d-none');
+    changeEmailFormWrap.classList.add('d-none');
+  } else {
+    pendingEmailSection.classList.add('d-none');
+    changeEmailFormWrap.classList.add('d-none');
+    changeEmailBtnWrap.classList.remove('d-none');
+  }
+
+  emailSkeleton.classList.add('d-none');
+  emailDisplayWrap.classList.remove('d-none');
+}
+
+function _showEmailErrors(messages) {
+  emailFormErrList.innerHTML = messages.map(m => `<li>${_esc(m)}</li>`).join('');
+  emailFormError.classList.remove('d-none');
+}
+
+function _hideEmailErrors() {
+  emailFormError.classList.add('d-none');
+  emailFormErrList.innerHTML = '';
+}
+
+showChangeEmailFormBtn.addEventListener('click', () => {
+  changeEmailBtnWrap.classList.add('d-none');
+  changeEmailFormWrap.classList.remove('d-none');
+  _hideEmailErrors();
+  changeEmailForm.classList.remove('was-validated');
+  newEmailInput.value = '';
+  emailChangePwdInput.value = '';
+  newEmailInput.focus();
+});
+
+cancelEmailFormBtn.addEventListener('click', () => {
+  changeEmailFormWrap.classList.add('d-none');
+  changeEmailBtnWrap.classList.remove('d-none');
+  _hideEmailErrors();
+});
+
+changeEmailForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  _hideEmailErrors();
+
+  if (!changeEmailForm.checkValidity()) {
+    changeEmailForm.classList.add('was-validated');
+    return;
+  }
+  changeEmailForm.classList.remove('was-validated');
+
+  Loader.setButtonLoading(submitEmailChangeBtn);
+  try {
+    await AuthService.requestEmailChange(
+      newEmailInput.value.trim(),
+      emailChangePwdInput.value,
+    );
+
+    if (_emailState) {
+      _emailState.hasPendingEmailChange = true;
+      _emailState.pendingEmail = newEmailInput.value.trim();
+      _renderEmailSection(_emailState);
+    }
+    showSuccess(t('profile.email_change_success'));
+  } catch (err) {
+    if (err instanceof ApiError) {
+      if (err.errors?.length) _showEmailErrors(err.errors);
+      else _showEmailErrors([err.message || t('errors.unknown')]);
+    }
+  } finally {
+    Loader.clearButtonLoading(submitEmailChangeBtn);
+  }
+});
+
+cancelEmailChangeBtn.addEventListener('click', async () => {
+  if (!window.confirm(t('profile.email_pending_cancel_confirm'))) return;
+  Loader.setButtonLoading(cancelEmailChangeBtn);
+  try {
+    await AuthService.cancelEmailChange();
+    if (_emailState) {
+      _emailState.hasPendingEmailChange = false;
+      _emailState.pendingEmail = null;
+      _renderEmailSection(_emailState);
+    }
+    showSuccess(t('profile.email_pending_cancel_success'));
+  } catch (err) {
+    showError(err instanceof ApiError ? err.message : t('errors.unknown'));
+  } finally {
+    Loader.clearButtonLoading(cancelEmailChangeBtn);
+  }
+});
+
+async function loadEmailState() {
+  try {
+    const profile = await ProfileService.getProfile();
+    _emailState = {
+      email:                profile.email,
+      isEmailConfirmed:     profile.isEmailConfirmed,
+      hasPendingEmailChange: profile.hasPendingEmailChange,
+      pendingEmail:         profile.pendingEmail ?? null,
+    };
+    _renderEmailSection(_emailState);
+  } catch {
+    emailSkeleton.classList.add('d-none');
+  }
+}
+
+/* --------------------------------------------------------------------------
    Auth helpers
    -------------------------------------------------------------------------- */
 function _getRefreshToken() {
@@ -228,7 +375,7 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
-  await loadSessions();
+  await Promise.all([loadEmailState(), loadSessions()]);
 }
 
 init();

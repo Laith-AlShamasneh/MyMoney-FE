@@ -67,22 +67,4 @@ export const ProfileService = Object.freeze({
     return post(A.REVOKE_OTHERS, null, { _extraHeaders: { 'X-Refresh-Token': currentRefreshToken } });
   },
 
-  /** POST /api/profile/email-change/request */
-  async requestEmailChange({ newEmail, currentPassword }) {
-    return post(A.REQUEST_EMAIL_CHANGE, { newEmail, currentPassword });
-  },
-
-  /** POST /api/profile/email-change/cancel — cancel pending request */
-  async cancelEmailChange() {
-    return post(A.CANCEL_EMAIL_CHANGE);
-  },
-
-  /**
-   * POST /api/profile/email-change/confirm
-   * Public endpoint — no Authorization required. User arrives here from email link.
-   * The HTML page reads ?token= from URL and POSTs it here.
-   */
-  async confirmEmailChange(token) {
-    return post(A.CONFIRM_EMAIL_CHANGE, { token });
-  },
 });

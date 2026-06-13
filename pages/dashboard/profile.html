@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/assets/css/components.css">
 
   <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
 </head>
 
 <body>
@@ -70,8 +71,6 @@
 
               <!-- Avatar actions -->
               <div class="mt-3 d-flex gap-2 align-items-center flex-wrap">
-                <input type="file" id="avatarFileInput" class="d-none"
-                       accept="image/jpeg,image/png,image/webp">
                 <button type="button" class="btn btn-sm btn-outline-primary" id="uploadAvatarBtn">
                   <i class="bi bi-camera me-1" aria-hidden="true"></i>
                   <span data-i18n="profile.avatar_upload">تغيير الصورة</span>
@@ -80,15 +79,6 @@
                   <i class="bi bi-trash3 me-1" aria-hidden="true"></i>
                   <span data-i18n="profile.avatar_remove">إزالة الصورة</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-link text-muted p-0 d-none"
-                        id="previewAvatarBtn"
-                        data-bs-toggle="modal" data-bs-target="#avatarPreviewModal">
-                  <i class="bi bi-eye me-1" aria-hidden="true"></i>
-                  <span data-i18n="profile.avatar_preview">عرض</span>
-                </button>
-                <small class="text-muted" data-i18n="profile.avatar_hint">
-                  JPG أو PNG أو WebP — الحد الأقصى 5 ميغابايت
-                </small>
               </div>
             </div>
           </div>
@@ -97,7 +87,7 @@
           <div class="row g-4">
 
             <!-- Personal Information -->
-            <div class="col-12 col-lg-7">
+            <div class="col-12 col-lg-8">
               <div class="panel">
 
                 <!-- Skeleton -->
@@ -231,109 +221,6 @@
               </div>
             </div>
 
-            <!-- Email Address -->
-            <div class="col-12 col-lg-5">
-              <div class="panel">
-
-                <!-- Skeleton -->
-                <div id="emailSkeleton" class="placeholder-glow">
-                  <span class="placeholder col-5 mb-3 d-block" style="height:1.1rem;border-radius:4px;"></span>
-                  <span class="placeholder col-8 mb-2 d-block" style="height:0.85rem;border-radius:4px;"></span>
-                  <span class="placeholder col-6 d-block" style="height:0.85rem;border-radius:4px;"></span>
-                </div>
-
-                <!-- Real content -->
-                <div id="emailContent" class="d-none">
-                  <div class="panel-header">
-                    <h2 class="h5 mb-0" data-i18n="profile.email_section">البريد الإلكتروني</h2>
-                  </div>
-
-                  <!-- Current email -->
-                  <div class="mb-3">
-                    <p class="text-muted small mb-1" data-i18n="profile.email_current">البريد الإلكتروني الحالي</p>
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                      <span id="emailDisplay" class="fw-medium"></span>
-                      <span id="emailVerifiedBadge" class="badge bg-success d-none" data-i18n="profile.email_confirmed">مؤكد</span>
-                      <span id="emailUnverifiedBadge" class="badge bg-warning text-dark d-none" data-i18n="profile.email_not_confirmed">غير مؤكد</span>
-                    </div>
-                  </div>
-
-                  <!-- Pending email change notice -->
-                  <div id="pendingEmailSection" class="d-none">
-                    <div class="alert alert-info py-2 px-3 mb-3 small">
-                      <div class="fw-semibold mb-1">
-                        <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
-                        <span data-i18n="profile.email_pending_heading">تغيير بريد إلكتروني قيد الانتظار</span>
-                      </div>
-                      <p class="mb-1">
-                        <span data-i18n="profile.email_pending_desc">تم إرسال رابط تأكيد إلى:</span>
-                        <strong id="pendingEmailAddress" class="ms-1"></strong>
-                      </p>
-                      <p class="mb-2 text-muted" data-i18n="profile.email_pending_hint">
-                        يرجى التحقق من البريد الجديد والنقر على رابط التأكيد.
-                      </p>
-                      <button type="button" class="btn btn-sm btn-outline-danger" id="cancelEmailChangeBtn">
-                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
-                        <span data-i18n="profile.email_pending_cancel">إلغاء الطلب</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Change email form (collapsed by default) -->
-                  <div id="changeEmailFormWrap" class="d-none">
-                    <hr class="my-3">
-                    <p class="small fw-semibold mb-3" data-i18n="profile.email_change_heading">
-                      طلب تغيير البريد الإلكتروني
-                    </p>
-
-                    <!-- Form error -->
-                    <div class="alert alert-danger d-none mb-3 small" id="emailFormError" role="alert">
-                      <ul class="mb-0 ps-3" id="emailFormErrorList"></ul>
-                    </div>
-
-                    <form id="changeEmailForm" novalidate>
-                      <div class="mb-3">
-                        <label class="form-label" for="newEmailInput"
-                               data-i18n="profile.email_change_new_label">البريد الإلكتروني الجديد</label>
-                        <input type="email" class="form-control form-control-sm" id="newEmailInput"
-                               maxlength="254"
-                               data-i18n-placeholder="profile.email_change_new_placeholder"
-                               placeholder="example@email.com"
-                               required>
-                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
-                      </div>
-                      <div class="mb-3">
-                        <label class="form-label" for="emailChangePwdInput"
-                               data-i18n="profile.email_change_pwd_label">كلمة المرور الحالية (للتحقق)</label>
-                        <input type="password" class="form-control form-control-sm" id="emailChangePwdInput"
-                               autocomplete="current-password"
-                               placeholder="••••••••"
-                               required>
-                        <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
-                      </div>
-                      <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary btn-sm" id="submitEmailChangeBtn">
-                          <i class="bi bi-envelope-check me-1" aria-hidden="true"></i>
-                          <span data-i18n="profile.email_change_submit">إرسال رابط التأكيد</span>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm"
-                                id="cancelEmailFormBtn"
-                                data-i18n="profile.email_change_cancel_form">إلغاء</button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <!-- Show change form button (hidden when pending or form open) -->
-                  <div id="changeEmailBtnWrap">
-                    <button type="button" class="btn btn-sm btn-outline-primary" id="showChangeEmailFormBtn">
-                      <i class="bi bi-envelope-arrow-up me-1" aria-hidden="true"></i>
-                      <span data-i18n="profile.email_change_btn">تغيير البريد الإلكتروني</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div><!-- /.row -->
 
         </div><!-- /.container-fluid -->
@@ -357,6 +244,54 @@
         <div class="modal-body text-center p-3">
           <img id="avatarPreviewImg" src="" alt=""
                class="img-fluid rounded" style="max-height:420px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Avatar Upload Modal ──────────────────────────────────────────────── -->
+  <div class="modal fade" id="avatarUploadModal" tabindex="-1"
+       aria-labelledby="avatarUploadLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="avatarUploadLabel"
+              data-i18n="profile.avatar_upload">تغيير الصورة</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  data-i18n-aria-label="common.close" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <!-- Drop zone -->
+          <div id="avatarDropZone" role="button" tabindex="0"
+               style="border:2px dashed var(--mm-border,#dee2e6);border-radius:0.75rem;padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:border-color 0.15s,background-color 0.15s;">
+            <i class="bi bi-cloud-upload fs-1 text-muted d-block mb-2" aria-hidden="true"></i>
+            <p class="mb-1 fw-medium" data-i18n="profile.avatar_drop_hint">اسحب وأفلت صورتك هنا، أو انقر للاختيار</p>
+            <p class="text-muted small mb-0" data-i18n="profile.avatar_hint">JPG أو PNG أو WebP — الحد الأقصى 5 ميغابايت</p>
+          </div>
+          <input type="file" id="avatarFileInput" class="d-none"
+                 accept="image/jpeg,image/png,image/webp">
+          <!-- Selected file preview -->
+          <div id="avatarUploadPreview" class="d-none mt-3 p-2 rounded"
+               style="background:var(--mm-surface-2,rgba(0,0,0,0.04));">
+            <div class="d-flex align-items-center gap-3">
+              <img id="avatarUploadPreviewImg" src="" alt=""
+                   class="rounded-circle flex-shrink-0"
+                   style="width:64px;height:64px;object-fit:cover;">
+              <div class="flex-grow-1 overflow-hidden">
+                <p class="small fw-medium mb-0 text-truncate" id="avatarUploadFileName"></p>
+              </div>
+              <button type="button" class="btn-close flex-shrink-0" id="clearUploadBtn"
+                      data-i18n-aria-label="common.close" aria-label="إزالة"></button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                  data-i18n="common.cancel">إلغاء</button>
+          <button type="button" class="btn btn-primary d-none" id="confirmUploadBtn">
+            <i class="bi bi-upload me-1" aria-hidden="true"></i>
+            <span data-i18n="profile.avatar_upload_confirm">رفع الصورة</span>
+          </button>
         </div>
       </div>
     </div>

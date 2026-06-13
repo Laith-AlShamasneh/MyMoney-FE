@@ -243,6 +243,8 @@
     "avatar_remove": "Remove Photo",
     "avatar_preview": "View Profile Photo",
     "avatar_hint": "JPG, PNG or WebP — max 5 MB",
+    "avatar_drop_hint": "Drag & drop your photo here, or click to browse",
+    "avatar_upload_confirm": "Upload Photo",
     "avatar_upload_success": "Profile photo updated successfully.",
     "avatar_remove_success": "Profile photo removed.",
     "avatar_remove_confirm": "Remove your profile photo?",
@@ -323,7 +325,10 @@
     "confirm_email_change_success_message": "Your email address has been changed successfully. Please sign in again.",
     "confirm_email_change_error_title": "Confirmation Failed",
     "confirm_email_change_error_message": "The link is invalid, expired, or has already been used.",
-    "confirm_email_change_go_login": "Sign In"
+    "confirm_email_change_go_login": "Sign In",
+
+    "change_email_heading": "Change Email Address",
+    "change_email_desc": "Update the email address associated with your account."
   },
 
   "errors_page": {

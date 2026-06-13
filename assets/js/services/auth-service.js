@@ -140,4 +140,34 @@ export const AuthService = Object.freeze({
       ...(currentRefreshToken ? { currentRefreshToken } : {}),
     });
   },
+
+  /**
+   * Request an email change. Sends a confirmation link to the new address.
+   * Requires current password to verify identity.
+   * @param {string} newEmail
+   * @param {string} currentPassword
+   * @returns {Promise<boolean>}
+   */
+  async requestEmailChange(newEmail, currentPassword) {
+    return post(A.REQUEST_EMAIL_CHANGE, { newEmail, currentPassword });
+  },
+
+  /**
+   * Confirm an email change using the token from the confirmation link.
+   * Public endpoint — no Authorization required.
+   * @param {string} token - Raw token from URL query param.
+   * @returns {Promise<boolean>}
+   */
+  async confirmEmailChange(token) {
+    return post(A.CONFIRM_EMAIL_CHANGE, { token });
+  },
+
+  /**
+   * Cancel a pending email change request.
+   * Requires a valid session (Authorization header injected by api.js).
+   * @returns {Promise<boolean>}
+   */
+  async cancelEmailChange() {
+    return post(A.CANCEL_EMAIL_CHANGE);
+  },
 });

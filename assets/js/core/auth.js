@@ -3,7 +3,7 @@
  *
  * Authentication state management.
  *
- * - Access token stored in memory (never persisted — cleared on page refresh).
+ * - Access token stored in memory AND localStorage for cross-navigation persistence.
  * - Refresh token stored in localStorage (key: mm.refreshToken).
  * - Wires itself into api.js on import via setAuthInterceptors().
  * - Provides guardPage() for protecting dashboard pages.
@@ -28,11 +28,29 @@ setAuthInterceptors(
   () => _accessToken,
   _tryRefreshToken,
   _handleSessionExpired,
+  _loadRefreshToken,  // 4th arg: provides current refresh token for X-Refresh-Token header refresh
 );
 
 /* --------------------------------------------------------------------------
    Token persistence helpers
    -------------------------------------------------------------------------- */
+function _saveAccessToken(token, expiresAt) {
+  try {
+    localStorage.setItem(Config.STORAGE_KEYS.ACCESS_TOKEN, token);
+    if (expiresAt) localStorage.setItem(Config.STORAGE_KEYS.ACCESS_TOKEN_EXPIRY, expiresAt);
+  } catch {
+    /* localStorage unavailable */
+  }
+}
+
+function _loadAccessToken() {
+  try {
+    return localStorage.getItem(Config.STORAGE_KEYS.ACCESS_TOKEN);
+  } catch {
+    return null;
+  }
+}
+
 function _saveRefreshToken(token, expiresAt) {
   try {
     localStorage.setItem(Config.STORAGE_KEYS.REFRESH_TOKEN, token);
@@ -69,6 +87,8 @@ function _loadUser() {
 
 function _clearStoredTokens() {
   try {
+    localStorage.removeItem(Config.STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(Config.STORAGE_KEYS.ACCESS_TOKEN_EXPIRY);
     localStorage.removeItem(Config.STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(Config.STORAGE_KEYS.REFRESH_TOKEN_EXPIRY);
     localStorage.removeItem(Config.STORAGE_KEYS.USER);
@@ -147,23 +167,23 @@ function _handleSessionExpired() {
 
 /**
  * Applies a login/refresh response to in-memory state + localStorage.
- * @param {{ accessToken, refreshToken, refreshTokenExpiresAt, email, displayName, roles }} result
+ * @param {{ accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt, email, displayName, roles }} result
  */
 function _applySession(result) {
   _accessToken = result.accessToken;
 
   const payload = _decodeJwt(result.accessToken);
   _currentUser = {
-    userId:         payload?.nameid    || '',
-    email:          result.email       || payload?.email || '',
-    displayName:    result.displayName || '',
-    roles:          Array.isArray(result.roles) ? result.roles : [],
+    userId:          payload?.nameid    || '',
+    email:           result.email       || payload?.email || '',
+    displayName:     result.displayName || '',
+    roles:           Array.isArray(result.roles) ? result.roles : [],
     profileImageUrl: result.profileImageUrl || null,
   };
 
-  /* Persist display data so the layout can render correctly on the next page
-     load before the first 401 triggers a server refresh.
-     Access token is intentionally NOT persisted (ADR-005).              */
+  /* Persist access token so it survives page navigation.
+     Also persist display data for layout rendering before the first API call. */
+  _saveAccessToken(result.accessToken, result.accessTokenExpiresAt);
   _saveUser(_currentUser);
 
   if (result.refreshToken) {
@@ -205,6 +225,17 @@ export function getAccessToken() {
   return _accessToken;
 }
 
+/**
+ * Updates specific fields in the current user object (in-memory and localStorage).
+ * Used by pages that change profile data (avatar, display name) without a full refresh.
+ * @param {Partial<{displayName:string, profileImageUrl:string|null}>} partial
+ */
+export function updateCurrentUser(partial) {
+  if (!_currentUser) return;
+  _currentUser = { ..._currentUser, ...partial };
+  _saveUser(_currentUser);
+}
+
 /* --------------------------------------------------------------------------
    Route guards
    -------------------------------------------------------------------------- */
@@ -223,7 +254,17 @@ export function getAccessToken() {
  * expiry (401), never pre-emptively on every page load.
  */
 export async function guardPage() {
+  /* Restore access token from localStorage if not already in memory */
+  if (!_accessToken) {
+    const stored = _loadAccessToken();
+    if (stored && !_isAccessTokenExpired(stored)) {
+      _accessToken = stored;
+    }
+  }
+
   if (_accessToken && !_isAccessTokenExpired(_accessToken)) {
+    /* Restore display data if not yet loaded into memory */
+    if (!_currentUser) _currentUser = _loadUser();
     return;
   }
 

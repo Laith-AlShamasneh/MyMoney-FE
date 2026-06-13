@@ -21,9 +21,10 @@ import { Config } from './config.js';
 /* --------------------------------------------------------------------------
    Auth interceptors (set by auth.js at import time)
    -------------------------------------------------------------------------- */
-let _getAccessToken = () => null;
+let _getAccessToken    = () => null;
+let _getRefreshToken   = () => null;
 let _refreshAccessToken = async () => false;
-let _onSessionExpired = () => {
+let _onSessionExpired  = () => {
   window.location.href = Config.ROUTES.LOGIN;
 };
 
@@ -44,11 +45,16 @@ function _ensureRefreshed() {
 /**
  * Called by auth.js to wire up token management without creating a circular
  * dependency between api.js and auth.js.
+ * @param {()=>string|null}          getToken         - Returns current access token
+ * @param {()=>Promise<boolean>}     refreshToken     - Attempts silent refresh; resolves true on success
+ * @param {()=>void}                 onSessionExpired - Called when refresh fails
+ * @param {()=>string|null}          [getRefreshToken] - Returns current refresh token from storage
  */
-export function setAuthInterceptors(getToken, refreshToken, onSessionExpired) {
-  if (getToken)       _getAccessToken    = getToken;
-  if (refreshToken)   _refreshAccessToken = refreshToken;
-  if (onSessionExpired) _onSessionExpired = onSessionExpired;
+export function setAuthInterceptors(getToken, refreshToken, onSessionExpired, getRefreshToken) {
+  if (getToken)         _getAccessToken    = getToken;
+  if (refreshToken)     _refreshAccessToken = refreshToken;
+  if (onSessionExpired) _onSessionExpired  = onSessionExpired;
+  if (getRefreshToken)  _getRefreshToken   = getRefreshToken;
 }
 
 /* --------------------------------------------------------------------------
@@ -151,7 +157,20 @@ async function request(method, endpoint, body = null, options = {}) {
        all 5 retries proceed together once the refresh resolves.           */
     const refreshed = await _ensureRefreshed();
     if (refreshed) {
-      return request(method, endpoint, body, { ...options, _isRetry: true });
+      /* After token rotation the refresh token in storage has changed.
+         Replace X-Refresh-Token in extraHeaders so the retry uses the NEW token,
+         not the now-revoked one that was captured before this request started.  */
+      const retryOptions = { ...options, _isRetry: true };
+      if (retryOptions._extraHeaders?.['X-Refresh-Token']) {
+        const freshRefreshToken = _getRefreshToken();
+        if (freshRefreshToken) {
+          retryOptions._extraHeaders = {
+            ...retryOptions._extraHeaders,
+            'X-Refresh-Token': freshRefreshToken,
+          };
+        }
+      }
+      return request(method, endpoint, body, retryOptions);
     }
     /* Refresh failed — session is gone */
     _onSessionExpired();
