@@ -69,6 +69,9 @@ export const Config = Object.freeze({
       REVOKE_SESSION: '/api/profile/sessions/revoke',
       REVOKE_OTHERS:  '/api/profile/sessions/revoke-others',
     }),
+    DASHBOARD: Object.freeze({
+      SUMMARY: '/api/dashboard/summary',
+    }),
   }),
 
   /**

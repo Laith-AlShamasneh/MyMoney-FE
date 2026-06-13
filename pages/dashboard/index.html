@@ -14,20 +14,63 @@
 
   <link rel="icon" href="/assets/images/favicon/favicon.ico">
   <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
+
+  <style>
+    /* ── KPI Cards ────────────────────────────────────────────────────── */
+    .kpi-card {
+      border: 1px solid var(--mm-border-color, rgba(0,0,0,.08));
+      border-radius: .75rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--mm-card-bg, #fff);
+      transition: box-shadow .15s ease;
+    }
+    .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+    .kpi-icon {
+      width: 2.75rem; height: 2.75rem;
+      border-radius: .6rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .kpi-label  { font-size: .75rem; font-weight: 500; color: var(--mm-text-muted, #6c757d); letter-spacing: .02em; text-transform: uppercase; }
+    .kpi-value  { font-size: 1.65rem; font-weight: 700; line-height: 1.15; margin: .2rem 0 .35rem; }
+    .kpi-change { font-size: .78rem; }
+
+    /* ── Chart containers ─────────────────────────────────────────────── */
+    .chart-wrap { position: relative; }
+    .chart-wrap canvas { max-width: 100%; }
+
+    /* ── Recent transactions table ────────────────────────────────────── */
+    .tx-table { font-size: .875rem; }
+    .tx-table thead th { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .tx-badge-income  { color: #198754; }
+    .tx-badge-expense { color: #dc3545; }
+    .tx-amount { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    /* ── Skeleton ─────────────────────────────────────────────────────── */
+    .skeleton-kpi   { height: 7.5rem; border-radius: .75rem; }
+    .skeleton-chart { height: 18rem; border-radius: .75rem; }
+    .skeleton-table { height: 14rem; border-radius: .75rem; }
+
+    /* ── Category donut legend ────────────────────────────────────────── */
+    .donut-legend-dot {
+      width: .7rem; height: .7rem; border-radius: 50%; flex-shrink: 0; display: inline-block;
+    }
+    .donut-legend-item {
+      display: flex; align-items: center; gap: .45rem;
+      font-size: .78rem; margin-bottom: .3rem; cursor: default;
+    }
+    .donut-legend-pct { margin-inline-start: auto; font-weight: 600; min-width: 2.5rem; text-align: end; }
+  </style>
 </head>
 
 <body>
   <div class="admin-shell">
 
-    <!-- Sidebar backdrop (mobile) -->
     <div class="sidebar-backdrop" data-sidebar-close></div>
-
-    <!-- Sidebar injected here by layout.js -->
     <div id="sidebar-root"></div>
 
     <div class="admin-main">
-
-      <!-- Navbar injected here by layout.js -->
       <div id="navbar-root"></div>
 
       <main class="dashboard-content">
@@ -45,29 +88,171 @@
             </div>
           </div>
 
-          <!-- Content placeholder — will be populated in Phase 3 with real data -->
-          <div class="panel mt-2">
-            <div class="blank-panel">
-              <div class="blank-state">
-                <i class="bi bi-bar-chart-line blank-visual text-muted" style="font-size:5rem"></i>
-                <h2 class="h5 mb-2" data-i18n="dashboard.heading">لوحة التحكم</h2>
-                <p class="text-muted small mb-0" data-i18n="dashboard.subheading">
-                  راقب أداءك المالي من مكان واحد.
-                </p>
+          <!-- ── KPI Cards ──────────────────────────────────────────────── -->
+          <div id="kpiSkeletons" class="row g-3 mb-4">
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+          </div>
+
+          <div id="kpiCards" class="row g-3 mb-4 d-none">
+            <!-- Income -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(25,135,84,.1);color:#198754;">
+                    <i class="bi bi-arrow-down-circle-fill"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="dashboard.kpi_income">الدخل</span>
+                </div>
+                <div class="kpi-value" id="kpiIncomeVal">—</div>
+                <div class="kpi-change" id="kpiIncomeChange"></div>
               </div>
+            </div>
+            <!-- Expenses -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(220,53,69,.1);color:#dc3545;">
+                    <i class="bi bi-arrow-up-circle-fill"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="dashboard.kpi_expenses">المصروفات</span>
+                </div>
+                <div class="kpi-value" id="kpiExpensesVal">—</div>
+                <div class="kpi-change" id="kpiExpensesChange"></div>
+              </div>
+            </div>
+            <!-- Net -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(13,110,253,.1);color:#0d6efd;">
+                    <i class="bi bi-calculator-fill"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="dashboard.kpi_net">الصافي</span>
+                </div>
+                <div class="kpi-value" id="kpiNetVal">—</div>
+                <div class="kpi-change" id="kpiNetChange"></div>
+              </div>
+            </div>
+            <!-- Transaction count -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(111,66,193,.1);color:#6f42c1;">
+                    <i class="bi bi-list-ul"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="dashboard.kpi_transactions">المعاملات</span>
+                </div>
+                <div class="kpi-value" id="kpiCountVal">—</div>
+                <div class="kpi-change" id="kpiCountChange"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Charts Row ─────────────────────────────────────────────── -->
+          <div id="chartsSkeletons" class="row g-3 mb-4">
+            <div class="col-12"><div class="skeleton skeleton-chart"></div></div>
+          </div>
+
+          <div id="chartsRow" class="row g-3 mb-4 d-none">
+            <!-- Bar chart: 6-month trend -->
+            <div class="col-12">
+              <div class="panel">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                  <div>
+                    <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.trend_title">الدخل مقابل المصروفات</h2>
+                    <p class="text-muted small mb-0" data-i18n="dashboard.trend_subtitle">آخر 6 أشهر</p>
+                  </div>
+                </div>
+                <div class="chart-wrap" style="height:220px;" dir="ltr">
+                  <canvas id="trendChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Bottom Row: Donut + Recent Transactions ────────────────── -->
+          <div id="bottomSkeletons" class="row g-3 mb-4">
+            <div class="col-lg-5"><div class="skeleton skeleton-chart"></div></div>
+            <div class="col-lg-7"><div class="skeleton skeleton-table"></div></div>
+          </div>
+
+          <div id="bottomRow" class="row g-3 mb-4 d-none">
+            <!-- Category breakdown donut -->
+            <div class="col-lg-5">
+              <div class="panel h-100 d-flex flex-column">
+                <div class="mb-3">
+                  <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.breakdown_title">توزيع المصروفات</h2>
+                  <p class="text-muted small mb-0" data-i18n="dashboard.breakdown_subtitle">هذا الشهر حسب الفئة</p>
+                </div>
+                <div id="breakdownEmpty" class="d-none text-center text-muted py-4 small flex-grow-1 d-flex align-items-center justify-content-center">
+                  <div>
+                    <i class="bi bi-pie-chart" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:.5rem;"></i>
+                    <span data-i18n="dashboard.breakdown_empty">لا توجد مصروفات مسجّلة هذا الشهر.</span>
+                  </div>
+                </div>
+                <div id="breakdownChart" class="d-none flex-grow-1">
+                  <div class="chart-wrap mb-3" style="height:180px;" dir="ltr">
+                    <canvas id="donutChart"></canvas>
+                  </div>
+                  <div id="donutLegend"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent transactions -->
+            <div class="col-lg-7">
+              <div class="panel h-100 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                  <div>
+                    <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.recent_title">آخر المعاملات</h2>
+                  </div>
+                </div>
+                <div id="recentEmpty" class="d-none text-center text-muted py-4 small flex-grow-1 d-flex align-items-center justify-content-center">
+                  <div>
+                    <i class="bi bi-receipt" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:.5rem;"></i>
+                    <span data-i18n="dashboard.recent_empty">لا توجد معاملات مسجّلة بعد.</span>
+                  </div>
+                </div>
+                <div id="recentTableWrap" class="d-none flex-grow-1">
+                  <div class="table-responsive">
+                    <table class="table table-hover tx-table mb-0">
+                      <thead>
+                        <tr>
+                          <th data-i18n="dashboard.recent_date">التاريخ</th>
+                          <th data-i18n="dashboard.recent_category">الفئة</th>
+                          <th data-i18n="dashboard.recent_description">الوصف</th>
+                          <th class="text-end" data-i18n="dashboard.recent_amount">المبلغ</th>
+                        </tr>
+                      </thead>
+                      <tbody id="recentTbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Global empty state (zero transactions ever) ────────────── -->
+          <div id="emptyState" class="d-none">
+            <div class="panel py-5 text-center">
+              <i class="bi bi-bar-chart-line" style="font-size:4rem;opacity:.2;display:block;margin-bottom:1rem;"></i>
+              <h2 class="h5 fw-semibold mb-2" data-i18n="dashboard.empty_title">لا توجد بيانات حتى الآن</h2>
+              <p class="text-muted mb-0 small" data-i18n="dashboard.empty_desc">ابدأ بتسجيل معاملاتك لتظهر تحليلاتك المالية هنا.</p>
             </div>
           </div>
 
         </div>
       </main>
 
-      <!-- Footer injected here by layout.js -->
       <div id="footer-root"></div>
-
     </div>
   </div>
 
   <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script type="module" src="/assets/js/pages/dashboard.js"></script>
 </body>
 </html>

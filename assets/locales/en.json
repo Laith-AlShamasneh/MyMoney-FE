@@ -230,7 +230,43 @@
     "page_title": "Dashboard",
     "eyebrow": "Overview",
     "heading": "Dashboard",
-    "subheading": "Monitor your financial performance from one place."
+    "subheading": "Monitor your financial performance from one place.",
+
+    "kpi_income": "Income This Month",
+    "kpi_expenses": "Expenses This Month",
+    "kpi_net": "Net This Month",
+    "kpi_transactions": "Transactions This Month",
+    "vs_last_month": "vs. last month",
+    "new_this_month": "New",
+    "no_change": "No change",
+
+    "trend_title": "Income vs. Expenses",
+    "trend_subtitle": "Last 6 months",
+    "trend_income": "Income",
+    "trend_expenses": "Expenses",
+
+    "breakdown_title": "Expense Breakdown",
+    "breakdown_subtitle": "This month by category",
+    "breakdown_empty": "No expenses recorded this month.",
+
+    "recent_title": "Recent Transactions",
+    "recent_view_all": "View All",
+    "recent_date": "Date",
+    "recent_category": "Category",
+    "recent_description": "Description",
+    "recent_amount": "Amount",
+    "recent_empty": "No transactions recorded yet.",
+
+    "income_label": "Income",
+    "expense_label": "Expense",
+
+    "empty_title": "No data yet",
+    "empty_desc": "Start recording your transactions and your financial insights will appear here.",
+
+    "month_1": "Jan", "month_2": "Feb", "month_3": "Mar",
+    "month_4": "Apr", "month_5": "May", "month_6": "Jun",
+    "month_7": "Jul", "month_8": "Aug", "month_9": "Sep",
+    "month_10": "Oct", "month_11": "Nov", "month_12": "Dec"
   },
 
   "profile": {
