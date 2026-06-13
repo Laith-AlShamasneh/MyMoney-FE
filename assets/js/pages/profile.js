@@ -294,12 +294,12 @@ confirmUploadBtn.addEventListener('click', async () => {
   if (!_selectedFile) return;
   Loader.setButtonLoading(confirmUploadBtn);
   try {
-    const result = await ProfileService.updateProfilePicture(_selectedFile);
-    _profile.profileImageUrl = result.profileImageUrl;
-    _renderAvatar(result.profileImageUrl, result.displayNameEn);
-    const fullUrl = _buildImageUrl(result.profileImageUrl);
+    const newImageUrl = await ProfileService.updateProfilePicture(_selectedFile);
+    _profile.profileImageUrl = newImageUrl;
+    _renderHero(_profile);
+    const fullUrl = _buildImageUrl(newImageUrl);
     updateLayoutUser({ profileImageUrl: fullUrl });
-    updateCurrentUser({ profileImageUrl: result.profileImageUrl });
+    updateCurrentUser({ profileImageUrl: fullUrl });
     bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).hide();
     showSuccess(t('profile.avatar_upload_success'));
   } catch (err) {
