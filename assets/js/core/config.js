@@ -22,6 +22,7 @@ export const Config = Object.freeze({
     SIDEBAR_MINI:          'mm.sidebarMini',
     REFRESH_TOKEN:         'mm.refreshToken',
     REFRESH_TOKEN_EXPIRY:  'mm.refreshTokenExpiry',
+    USER:                  'mm.user',
   }),
 
   /** Application routes. */

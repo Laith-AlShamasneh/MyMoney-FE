@@ -50,10 +50,28 @@ function _loadRefreshToken() {
   }
 }
 
+function _saveUser(user) {
+  try {
+    localStorage.setItem(Config.STORAGE_KEYS.USER, JSON.stringify(user));
+  } catch {
+    /* ignore */
+  }
+}
+
+function _loadUser() {
+  try {
+    const json = localStorage.getItem(Config.STORAGE_KEYS.USER);
+    return json ? JSON.parse(json) : null;
+  } catch {
+    return null;
+  }
+}
+
 function _clearStoredTokens() {
   try {
     localStorage.removeItem(Config.STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(Config.STORAGE_KEYS.REFRESH_TOKEN_EXPIRY);
+    localStorage.removeItem(Config.STORAGE_KEYS.USER);
   } catch {
     /* ignore */
   }
@@ -136,12 +154,17 @@ function _applySession(result) {
 
   const payload = _decodeJwt(result.accessToken);
   _currentUser = {
-    userId:      payload?.nameid   || '',
-    email:       result.email      || payload?.email || '',
-    displayName: result.displayName || '',
-    roles:       Array.isArray(result.roles) ? result.roles : [],
+    userId:         payload?.nameid    || '',
+    email:          result.email       || payload?.email || '',
+    displayName:    result.displayName || '',
+    roles:          Array.isArray(result.roles) ? result.roles : [],
     profileImageUrl: result.profileImageUrl || null,
   };
+
+  /* Persist display data so the layout can render correctly on the next page
+     load before the first 401 triggers a server refresh.
+     Access token is intentionally NOT persisted (ADR-005).              */
+  _saveUser(_currentUser);
 
   if (result.refreshToken) {
     _saveRefreshToken(result.refreshToken, result.refreshTokenExpiresAt);
@@ -208,6 +231,12 @@ export async function guardPage() {
     clearSession();
     window.location.href = Config.ROUTES.LOGIN;
     throw new Error('Not authenticated.');
+  }
+
+  /* Restore display data from localStorage so the layout renders with the
+     real user name and avatar before the first API call triggers a refresh. */
+  if (!_currentUser) {
+    _currentUser = _loadUser();
   }
 }
 
