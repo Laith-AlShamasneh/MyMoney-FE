@@ -80,7 +80,7 @@
                 <div id="emailDisplay" class="mb-3 d-none small">
                   <span class="text-muted" data-i18n="profile.email_current">البريد الإلكتروني الحالي</span>
                   <div class="d-flex align-items-center gap-2 flex-wrap mt-1">
-                    <span id="currentEmailValue" class="fw-medium"></span>
+                    <span id="currentEmailValue" class="fw-medium" dir="ltr"></span>
                     <span id="emailVerifiedBadge" class="badge bg-success d-none" data-i18n="profile.email_confirmed">مؤكد</span>
                     <span id="emailUnverifiedBadge" class="badge bg-warning text-dark d-none" data-i18n="profile.email_not_confirmed">غير مؤكد</span>
                   </div>
@@ -95,7 +95,7 @@
                     </div>
                     <p class="mb-1">
                       <span data-i18n="profile.email_pending_desc">تم إرسال رابط تأكيد إلى:</span>
-                      <strong id="pendingEmailAddress" class="ms-1"></strong>
+                      <strong id="pendingEmailAddress" class="ms-1" dir="ltr"></strong>
                     </p>
                     <p class="mb-2 text-muted" data-i18n="profile.email_pending_hint">
                       يرجى التحقق من البريد الجديد والنقر على رابط التأكيد.
@@ -120,6 +120,7 @@
                              data-i18n="profile.email_change_new_label">البريد الإلكتروني الجديد</label>
                       <input type="email" class="form-control form-control-sm" id="newEmailInput"
                              maxlength="254"
+                             dir="ltr"
                              data-i18n-placeholder="profile.email_change_new_placeholder"
                              placeholder="example@email.com"
                              required>

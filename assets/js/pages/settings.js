@@ -108,7 +108,7 @@ function _buildSessionHtml(s) {
       <i class="bi bi-display text-muted mt-1 flex-shrink-0 fs-5" aria-hidden="true"></i>
       <div class="flex-grow-1 small">
         <div class="d-flex align-items-center flex-wrap gap-1 mb-1">
-          <span class="fw-semibold">${_esc(s.ipAddress)}</span>
+          <span class="fw-semibold" dir="ltr">${_esc(s.ipAddress)}</span>
           ${currentBadge}
         </div>
         <div class="text-muted">
