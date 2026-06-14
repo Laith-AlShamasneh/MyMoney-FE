@@ -15,150 +15,6 @@
   <link rel="icon" href="/assets/images/favicon/favicon.ico">
   <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
 
-  <style>
-    /* ── Summary KPI Strip ──────────────────────────────────────────────── */
-    .kpi-card {
-      border: 1px solid var(--mm-border-color, rgba(0,0,0,.08));
-      border-radius: .75rem;
-      padding: 1.25rem 1.5rem;
-      background: var(--mm-card-bg, #fff);
-      transition: box-shadow .15s ease;
-    }
-    .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
-    .kpi-icon {
-      width: 2.75rem; height: 2.75rem;
-      border-radius: .6rem;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; flex-shrink: 0;
-    }
-    .kpi-label { font-size: .72rem; font-weight: 600; color: var(--mm-text-muted, #6c757d); letter-spacing: .04em; text-transform: uppercase; }
-    .kpi-value { font-size: 1.45rem; font-weight: 700; line-height: 1.2; margin: .25rem 0 0; font-variant-numeric: tabular-nums; }
-
-    /* ── Filter Panel ───────────────────────────────────────────────────── */
-    .filter-panel { border-radius: .75rem; border: 1px solid var(--mm-border-color, rgba(0,0,0,.08)); background: var(--mm-card-bg, #fff); }
-    .filter-panel-header { padding: .85rem 1.25rem; border-bottom: 1px solid var(--mm-border-color, rgba(0,0,0,.08)); display: flex; align-items: center; gap: .5rem; }
-    .filter-panel-body { padding: 1rem 1.25rem; }
-
-    .preset-btn {
-      border: 1px solid var(--mm-border-color, rgba(0,0,0,.15));
-      border-radius: 2rem;
-      padding: .28rem .85rem;
-      font-size: .78rem;
-      font-weight: 500;
-      background: transparent;
-      color: var(--mm-text-muted, #6c757d);
-      cursor: pointer;
-      transition: all .15s ease;
-      white-space: nowrap;
-    }
-    .preset-btn:hover { border-color: var(--bs-primary); color: var(--bs-primary); background: rgba(13,110,253,.05); }
-    .preset-btn.active {
-      background: var(--bs-primary);
-      border-color: var(--bs-primary);
-      color: #fff;
-    }
-
-    /* ── Transaction Table ──────────────────────────────────────────────── */
-    .tx-table { font-size: .875rem; margin-bottom: 0; }
-    .tx-table thead th {
-      font-size: .68rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .05em; color: var(--mm-text-muted, #6c757d);
-      border-bottom: 2px solid var(--mm-border-color, rgba(0,0,0,.1));
-      padding: .75rem 1rem; white-space: nowrap; cursor: pointer;
-      user-select: none;
-    }
-    .tx-table thead th.non-sort { cursor: default; }
-    .tx-table thead th .sort-icon { opacity: .35; font-size: .7rem; margin-inline-start: .25rem; }
-    .tx-table thead th.sorted .sort-icon { opacity: 1; color: var(--bs-primary); }
-    .tx-table tbody td { padding: .75rem 1rem; vertical-align: middle; border-color: var(--mm-border-color, rgba(0,0,0,.06)); }
-    .tx-table tbody tr:hover { background: var(--mm-hover-bg, rgba(0,0,0,.02)); }
-
-    .tx-badge {
-      display: inline-flex; align-items: center; gap: .3rem;
-      font-size: .72rem; font-weight: 600; padding: .25rem .6rem;
-      border-radius: 2rem; letter-spacing: .02em;
-    }
-    .tx-badge-income  { background: rgba(25,135,84,.12);  color: #146c43; }
-    .tx-badge-expense { background: rgba(220,53,69,.12);  color: #b02a37; }
-
-    .tx-amount { font-weight: 700; font-variant-numeric: tabular-nums; font-size: .9rem; }
-    .tx-amount-income  { color: #198754; }
-    .tx-amount-expense { color: #dc3545; }
-
-    .tx-cat-icon {
-      width: 1.8rem; height: 1.8rem; border-radius: .4rem;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: .85rem; flex-shrink: 0;
-    }
-    .tx-cat-income  { background: rgba(25,135,84,.1);  color: #198754; }
-    .tx-cat-expense { background: rgba(220,53,69,.1);  color: #dc3545; }
-
-    .tx-desc { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    /* ── Row action buttons ─────────────────────────────────────────────── */
-    .btn-row-action {
-      width: 1.85rem; height: 1.85rem; border-radius: .4rem;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: .8rem; border: none; cursor: pointer;
-      transition: background .15s ease;
-    }
-    .btn-row-edit   { background: rgba(13,110,253,.1);   color: #0d6efd; }
-    .btn-row-edit:hover   { background: rgba(13,110,253,.2); }
-    .btn-row-delete { background: rgba(220,53,69,.1);    color: #dc3545; }
-    .btn-row-delete:hover { background: rgba(220,53,69,.2); }
-
-    /* ── Skeleton ───────────────────────────────────────────────────────── */
-    .skeleton-kpi    { height: 5.5rem; border-radius: .75rem; }
-    .skeleton-filter { height: 7rem;   border-radius: .75rem; }
-    .skeleton-table  { height: 20rem;  border-radius: .75rem; }
-    .skeleton-chart  { height: 18rem;  border-radius: .75rem; }
-
-    /* ── Pagination ─────────────────────────────────────────────────────── */
-    .tx-pagination { font-size: .82rem; }
-    .tx-pagination .page-link { padding: .3rem .65rem; font-size: .82rem; border-radius: .4rem; }
-    .tx-pagination .page-item.active .page-link { font-weight: 600; }
-
-    /* ── Analytics section ──────────────────────────────────────────────── */
-    .analytics-toggle-btn {
-      border: 1px solid var(--mm-border-color, rgba(0,0,0,.15));
-      border-radius: 2rem; padding: .3rem 1rem;
-      font-size: .8rem; font-weight: 500;
-      background: transparent; cursor: pointer;
-      transition: all .15s;
-    }
-    .analytics-toggle-btn:hover { border-color: var(--bs-primary); color: var(--bs-primary); }
-
-    .chart-wrap { position: relative; }
-    .chart-wrap canvas { max-width: 100%; }
-
-    .donut-legend-dot { width: .65rem; height: .65rem; border-radius: 50%; flex-shrink: 0; display: inline-block; }
-    .donut-legend-item { display: flex; align-items: center; gap: .45rem; font-size: .78rem; margin-bottom: .3rem; }
-    .donut-legend-pct { margin-inline-start: auto; font-weight: 600; min-width: 2.5rem; text-align: end; }
-
-    /* ── Empty state ────────────────────────────────────────────────────── */
-    .tx-empty-state { padding: 3.5rem 1rem; text-align: center; }
-    .tx-empty-icon  { font-size: 3.5rem; opacity: .18; display: block; margin-bottom: 1rem; }
-
-    /* ── Custom date row ────────────────────────────────────────────────── */
-    #customDateRow { display: none; }
-    #customDateRow.visible { display: flex; }
-
-    /* ── Modal type radio group ─────────────────────────────────────────── */
-    .type-radio-group { display: flex; gap: .5rem; }
-    .type-radio-group input[type=radio] { display: none; }
-    .type-radio-group label {
-      flex: 1; text-align: center; padding: .5rem;
-      border: 1.5px solid var(--mm-border-color, rgba(0,0,0,.2));
-      border-radius: .5rem; font-size: .85rem; font-weight: 500;
-      cursor: pointer; transition: all .15s;
-    }
-    .type-radio-group input[type=radio]:checked + label.income-lbl {
-      border-color: #198754; background: rgba(25,135,84,.1); color: #146c43;
-    }
-    .type-radio-group input[type=radio]:checked + label.expense-lbl {
-      border-color: #dc3545; background: rgba(220,53,69,.1); color: #b02a37;
-    }
-  </style>
 </head>
 
 <body>
@@ -254,15 +110,15 @@
           <!-- ── Filter Panel ───────────────────────────────────────────── -->
           <div class="filter-panel mb-4">
             <div class="filter-panel-header">
-              <i class="bi bi-funnel text-muted" style="font-size:.9rem;"></i>
-              <span class="fw-semibold" style="font-size:.88rem;" data-i18n="transactions.filter_title">الفلاتر</span>
-              <button id="btnClearFilters" class="btn btn-sm btn-link text-muted ms-auto p-0 text-decoration-none" style="font-size:.8rem;" data-i18n="transactions.filter_clear">مسح الفلاتر</button>
+              <i class="bi bi-funnel" aria-hidden="true"></i>
+              <span class="filter-panel-title" data-i18n="transactions.filter_title">الفلاتر</span>
+              <button id="btnClearFilters" class="btn btn-sm btn-link text-muted filter-panel-clear p-0 text-decoration-none" data-i18n="transactions.filter_clear">مسح الفلاتر</button>
             </div>
             <div class="filter-panel-body">
 
               <!-- Date presets row -->
               <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
-                <span class="text-muted" style="font-size:.78rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap;" data-i18n="transactions.filter_date_label">نطاق التاريخ</span>
+                <span class="filter-label" data-i18n="transactions.filter_date_label">نطاق التاريخ</span>
                 <div class="d-flex flex-wrap gap-1" id="presetBtns">
                   <button class="preset-btn" data-preset="today" data-i18n="transactions.filter_preset_today">اليوم</button>
                   <button class="preset-btn" data-preset="7d" data-i18n="transactions.filter_preset_7d">آخر 7 أيام</button>
@@ -275,7 +131,7 @@
               </div>
 
               <!-- Custom date range (visible when preset=custom) -->
-              <div id="customDateRow" class="gap-3 align-items-end mb-3">
+              <div id="customDateRow" class="custom-date-row gap-3 align-items-end mb-3">
                 <div>
                   <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_date_from">من</label>
                   <input type="date" id="filterDateFrom" class="form-control form-control-sm" style="min-width:150px;">
@@ -350,10 +206,10 @@
           </div>
 
           <!-- ── Transaction Table Panel ────────────────────────────────── -->
-          <div id="tablePanel" class="panel mb-4 d-none p-0" style="overflow:hidden;">
+          <div id="tablePanel" class="panel panel-flush mb-4 d-none">
 
             <!-- Table header with count -->
-            <div class="d-flex align-items-center justify-content-between px-3 py-2" style="border-bottom: 1px solid var(--mm-border-color, rgba(0,0,0,.08));">
+            <div class="panel-inner-bar panel-inner-bar--top">
               <span id="tableResultCount" class="text-muted" style="font-size:.8rem;"></span>
               <div class="d-flex align-items-center gap-2">
                 <label class="text-muted small mb-0">
@@ -408,7 +264,7 @@
             </div>
 
             <!-- Pagination -->
-            <div id="txPagination" class="d-flex align-items-center justify-content-between px-3 py-2" style="border-top: 1px solid var(--mm-border-color, rgba(0,0,0,.08));">
+            <div id="txPagination" class="panel-inner-bar panel-inner-bar--bottom">
               <span id="paginationInfo" class="text-muted" style="font-size:.8rem;"></span>
               <nav aria-label="Transaction pagination">
                 <ul class="pagination tx-pagination mb-0" id="paginationList"></ul>

@@ -15,53 +15,6 @@
   <link rel="icon" href="/assets/images/favicon/favicon.ico">
   <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
 
-  <style>
-    /* ── KPI Cards ────────────────────────────────────────────────────── */
-    .kpi-card {
-      border: 1px solid var(--mm-border-color, rgba(0,0,0,.08));
-      border-radius: .75rem;
-      padding: 1.25rem 1.5rem;
-      background: var(--mm-card-bg, #fff);
-      transition: box-shadow .15s ease;
-    }
-    .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
-    .kpi-icon {
-      width: 2.75rem; height: 2.75rem;
-      border-radius: .6rem;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-    .kpi-label  { font-size: .75rem; font-weight: 500; color: var(--mm-text-muted, #6c757d); letter-spacing: .02em; text-transform: uppercase; }
-    .kpi-value  { font-size: 1.65rem; font-weight: 700; line-height: 1.15; margin: .2rem 0 .35rem; }
-    .kpi-change { font-size: .78rem; }
-
-    /* ── Chart containers ─────────────────────────────────────────────── */
-    .chart-wrap { position: relative; }
-    .chart-wrap canvas { max-width: 100%; }
-
-    /* ── Recent transactions table ────────────────────────────────────── */
-    .tx-table { font-size: .875rem; }
-    .tx-table thead th { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-    .tx-badge-income  { color: #198754; }
-    .tx-badge-expense { color: #dc3545; }
-    .tx-amount { font-weight: 600; font-variant-numeric: tabular-nums; }
-
-    /* ── Skeleton ─────────────────────────────────────────────────────── */
-    .skeleton-kpi   { height: 7.5rem; border-radius: .75rem; }
-    .skeleton-chart { height: 18rem; border-radius: .75rem; }
-    .skeleton-table { height: 14rem; border-radius: .75rem; }
-
-    /* ── Category donut legend ────────────────────────────────────────── */
-    .donut-legend-dot {
-      width: .7rem; height: .7rem; border-radius: 50%; flex-shrink: 0; display: inline-block;
-    }
-    .donut-legend-item {
-      display: flex; align-items: center; gap: .45rem;
-      font-size: .78rem; margin-bottom: .3rem; cursor: default;
-    }
-    .donut-legend-pct { margin-inline-start: auto; font-weight: 600; min-width: 2.5rem; text-align: end; }
-  </style>
 </head>
 
 <body>

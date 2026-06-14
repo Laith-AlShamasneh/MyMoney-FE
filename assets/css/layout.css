@@ -110,20 +110,31 @@
 }
 
 .sidebar-nav .nav-link:hover,
-.sidebar-nav .nav-link:focus,
-.sidebar-nav .nav-link.active {
+.sidebar-nav .nav-link:focus {
   background: var(--mm-sidebar-soft);
   color: var(--mm-sidebar-text-strong);
-}
-
-.sidebar-nav .nav-link:hover,
-.sidebar-nav .nav-link:focus {
   transform: translateX(2px);
 }
 
 [dir="rtl"] .sidebar-nav .nav-link:hover,
 [dir="rtl"] .sidebar-nav .nav-link:focus {
   transform: translateX(-2px);
+}
+
+.sidebar-nav .nav-link.active {
+  background: var(--mm-sidebar-soft);
+  color: var(--mm-primary);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--mm-primary);
+}
+
+[dir="rtl"] .sidebar-nav .nav-link.active {
+  box-shadow: inset -3px 0 0 var(--mm-primary);
+}
+
+.sidebar-nav .nav-link.active .nav-icon {
+  background: var(--mm-primary);
+  color: #ffffff;
 }
 
 .nav-icon {
@@ -137,6 +148,8 @@
   color: var(--mm-sidebar-icon);
   font-size: 0.95rem;
   font-weight: 800;
+  transition: background var(--mm-duration-fast) var(--mm-ease),
+              color var(--mm-duration-fast) var(--mm-ease);
 }
 
 /* Sidebar – footer status */

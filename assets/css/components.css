@@ -678,6 +678,58 @@ html[data-theme="dark"] .progress {
   color: var(--mm-muted);
 }
 
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface);
+  color: var(--mm-text);
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus {
+  background-color: var(--mm-surface-raised);
+  border-color: var(--mm-primary);
+  box-shadow: var(--mm-ring);
+}
+
+html[data-theme="dark"] .form-control::placeholder {
+  color: var(--mm-muted);
+  opacity: 0.7;
+}
+
+html[data-theme="dark"] .form-control:disabled,
+html[data-theme="dark"] .form-select:disabled {
+  background-color: var(--mm-surface-soft);
+  opacity: 0.6;
+}
+
+.input-group-text {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface-soft);
+  color: var(--mm-muted);
+}
+
+html[data-theme="dark"] .input-group-text {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface-raised);
+  color: var(--mm-muted);
+}
+
+.form-label {
+  color: var(--mm-text);
+}
+
+html[data-theme="dark"] .form-check-input {
+  border-color: var(--mm-border);
+  background-color: var(--mm-surface-soft);
+}
+
+html[data-theme="dark"] .form-check-input:checked {
+  background-color: var(--mm-primary);
+  border-color: var(--mm-primary);
+}
+
 /* --------------------------------------------------------------------------
    18. Dropdowns (dark mode)
    -------------------------------------------------------------------------- */
@@ -1019,5 +1071,593 @@ html[data-theme="dark"] .mm-overlay-loader {
 
   .heading-actions .btn {
     width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   26. Skeleton Loading System (shimmer animation)
+   -------------------------------------------------------------------------- */
+@keyframes mm-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton {
+  border-radius: var(--mm-radius-lg);
+  background: linear-gradient(
+    90deg,
+    var(--mm-border)      0%,
+    var(--mm-surface-soft) 50%,
+    var(--mm-border)      100%
+  );
+  background-size: 200% 100%;
+  animation: mm-shimmer 1.5s ease-in-out infinite;
+}
+
+html[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--mm-border)       0%,
+    var(--mm-surface-raised) 50%,
+    var(--mm-border)       100%
+  );
+  background-size: 200% 100%;
+  animation: mm-shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Skeleton size variants */
+.skeleton-kpi    { height: 6rem;  }
+.skeleton-chart  { height: 18rem; }
+.skeleton-table  { height: 20rem; }
+.skeleton-filter { height: 7.5rem; }
+
+/* --------------------------------------------------------------------------
+   27. KPI Cards (used in Dashboard + Transactions summary strip)
+   -------------------------------------------------------------------------- */
+.kpi-card {
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.25rem 1.5rem;
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow-xs);
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease),
+              transform var(--mm-duration-base) var(--mm-ease),
+              border-color var(--mm-duration-base) var(--mm-ease);
+}
+
+.kpi-card:hover {
+  box-shadow: var(--mm-shadow-sm);
+  border-color: var(--mm-border-soft);
+  transform: translateY(-2px);
+}
+
+html[data-theme="dark"] .kpi-card {
+  border-color: var(--mm-border);
+  background: var(--mm-surface);
+}
+
+.kpi-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--mm-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.kpi-label {
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  color: var(--mm-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0.2rem 0 0.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-change {
+  font-size: 0.78rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kpi-card {
+    transition: none;
+  }
+  .kpi-card:hover {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   28. Chart Components
+   -------------------------------------------------------------------------- */
+.chart-wrap {
+  position: relative;
+}
+
+.chart-wrap canvas {
+  max-width: 100%;
+}
+
+.donut-legend-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+  cursor: default;
+}
+
+.donut-legend-pct {
+  margin-inline-start: auto;
+  font-weight: 600;
+  min-width: 2.5rem;
+  text-align: end;
+  color: var(--mm-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   29. Transaction Table
+   -------------------------------------------------------------------------- */
+.tx-table {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+.tx-table thead th {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mm-muted);
+  border-bottom: 2px solid var(--mm-border);
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tx-table thead th.non-sort {
+  cursor: default;
+}
+
+.tx-table thead th .sort-icon {
+  opacity: 0.35;
+  font-size: 0.68rem;
+  margin-inline-start: 0.25rem;
+}
+
+.tx-table thead th.sorted .sort-icon {
+  opacity: 1;
+  color: var(--mm-primary);
+}
+
+.tx-table tbody td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  border-color: var(--mm-border-soft);
+}
+
+.tx-table tbody tr {
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+
+.tx-table tbody tr:hover {
+  background: var(--mm-surface-soft);
+}
+
+html[data-theme="dark"] .tx-table tbody tr:hover {
+  background: var(--mm-surface-raised);
+}
+
+/* Transaction type badges */
+.tx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.22rem 0.6rem;
+  border-radius: var(--mm-radius-full);
+  letter-spacing: 0.02em;
+}
+
+.tx-badge-income {
+  background: rgba(5, 150, 105, 0.12);
+  color: #065f46;
+}
+
+html[data-theme="dark"] .tx-badge-income {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+}
+
+.tx-badge-expense {
+  background: rgba(220, 38, 38, 0.12);
+  color: #991b1b;
+}
+
+html[data-theme="dark"] .tx-badge-expense {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+
+/* Transaction amounts */
+.tx-amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+}
+
+.tx-amount-income {
+  color: var(--mm-income);
+}
+
+.tx-amount-expense {
+  color: var(--mm-expense);
+}
+
+/* Category icon pill */
+.tx-cat-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: var(--mm-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.tx-cat-income {
+  background: rgba(5, 150, 105, 0.1);
+  color: var(--mm-income);
+}
+
+.tx-cat-expense {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--mm-expense);
+}
+
+html[data-theme="dark"] .tx-cat-income {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--mm-income);
+}
+
+html[data-theme="dark"] .tx-cat-expense {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--mm-expense);
+}
+
+/* Description cell */
+.tx-desc {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   30. Filter Panel
+   -------------------------------------------------------------------------- */
+.filter-panel {
+  border-radius: var(--mm-radius-lg);
+  border: 1px solid var(--mm-border);
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow-xs);
+}
+
+.filter-panel-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--mm-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-panel-header i {
+  font-size: 0.9rem;
+  color: var(--mm-muted);
+}
+
+.filter-panel-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--mm-text);
+}
+
+.filter-panel-clear {
+  font-size: 0.8rem;
+  margin-inline-start: auto;
+}
+
+.filter-panel-body {
+  padding: 1rem 1.25rem;
+}
+
+.filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--mm-muted);
+}
+
+/* Date preset quick-filter pills */
+.preset-btn {
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-full);
+  padding: 0.25rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: transparent;
+  color: var(--mm-muted);
+  cursor: pointer;
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              color var(--mm-duration-fast) var(--mm-ease),
+              background var(--mm-duration-fast) var(--mm-ease);
+  white-space: nowrap;
+}
+
+.preset-btn:hover {
+  border-color: var(--mm-primary);
+  color: var(--mm-primary);
+  background: var(--mm-primary-light);
+}
+
+.preset-btn.active {
+  background: var(--mm-primary);
+  border-color: var(--mm-primary);
+  color: #fff;
+}
+
+html[data-theme="dark"] .preset-btn:hover {
+  background: rgba(96, 165, 250, 0.12);
+}
+
+html[data-theme="dark"] .preset-btn.active {
+  background: var(--mm-primary);
+  color: #0f172a;
+}
+
+/* Custom date row (toggled by JS via .visible class) */
+.custom-date-row {
+  display: none;
+}
+
+.custom-date-row.visible {
+  display: flex;
+}
+
+/* --------------------------------------------------------------------------
+   31. Row Action Buttons
+   -------------------------------------------------------------------------- */
+.btn-row-action {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: var(--mm-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+
+.btn-row-edit {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--mm-primary);
+}
+
+.btn-row-edit:hover {
+  background: rgba(37, 99, 235, 0.2);
+}
+
+.btn-row-delete {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--mm-danger);
+}
+
+.btn-row-delete:hover {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+html[data-theme="dark"] .btn-row-edit {
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--mm-primary);
+}
+
+html[data-theme="dark"] .btn-row-delete {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--mm-danger);
+}
+
+/* --------------------------------------------------------------------------
+   32. Table Panel Inner Bars (header strip + pagination strip)
+   -------------------------------------------------------------------------- */
+.panel-inner-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+}
+
+.panel-inner-bar--top {
+  border-bottom: 1px solid var(--mm-border);
+}
+
+.panel-inner-bar--bottom {
+  border-top: 1px solid var(--mm-border);
+}
+
+/* Panel with no padding (flush tables) */
+.panel-flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Transaction-table specific pagination */
+.tx-pagination {
+  font-size: 0.82rem;
+}
+
+.tx-pagination .page-link {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.82rem;
+  border-radius: var(--mm-radius-sm);
+}
+
+.tx-pagination .page-item.active .page-link {
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   33. Analytics Toggle Button
+   -------------------------------------------------------------------------- */
+.analytics-toggle-btn {
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-full);
+  padding: 0.3rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: transparent;
+  color: var(--mm-muted);
+  cursor: pointer;
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              color var(--mm-duration-fast) var(--mm-ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.analytics-toggle-btn:hover {
+  border-color: var(--mm-primary);
+  color: var(--mm-primary);
+}
+
+/* --------------------------------------------------------------------------
+   34. Empty States
+   -------------------------------------------------------------------------- */
+.tx-empty-state {
+  padding: 3.5rem 1rem;
+  text-align: center;
+}
+
+.tx-empty-icon {
+  font-size: 3rem;
+  opacity: 0.2;
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--mm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   35. Type Radio Group (Add / Edit Transaction Modal)
+   -------------------------------------------------------------------------- */
+.type-radio-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.type-radio-group input[type="radio"] {
+  display: none;
+}
+
+.type-radio-group label {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem;
+  border: 1.5px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--mm-text);
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              background var(--mm-duration-fast) var(--mm-ease),
+              color var(--mm-duration-fast) var(--mm-ease);
+}
+
+.type-radio-group input[type="radio"]:checked + label.income-lbl {
+  border-color: var(--mm-income);
+  background: rgba(5, 150, 105, 0.1);
+  color: #065f46;
+}
+
+html[data-theme="dark"] .type-radio-group input[type="radio"]:checked + label.income-lbl {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--mm-income);
+}
+
+.type-radio-group input[type="radio"]:checked + label.expense-lbl {
+  border-color: var(--mm-expense);
+  background: rgba(220, 38, 38, 0.1);
+  color: #991b1b;
+}
+
+html[data-theme="dark"] .type-radio-group input[type="radio"]:checked + label.expense-lbl {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--mm-expense);
+}
+
+/* --------------------------------------------------------------------------
+   36. Page Entrance Animations
+   -------------------------------------------------------------------------- */
+@keyframes mm-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-up {
+  animation: mm-fade-up var(--mm-duration-slow) var(--mm-ease-out) both;
+}
+
+.animate-fade-in {
+  animation: mm-fade-in var(--mm-duration-slow) var(--mm-ease-out) both;
+}
+
+/* Staggered entrance for card grids */
+.animate-stagger > * { animation: mm-fade-up var(--mm-duration-slow) var(--mm-ease-out) both; }
+.animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.animate-stagger > *:nth-child(2) { animation-delay: 50ms; }
+.animate-stagger > *:nth-child(3) { animation-delay: 100ms; }
+.animate-stagger > *:nth-child(4) { animation-delay: 150ms; }
+.animate-stagger > *:nth-child(5) { animation-delay: 200ms; }
+.animate-stagger > *:nth-child(6) { animation-delay: 250ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-stagger > * {
+    animation: none;
   }
 }

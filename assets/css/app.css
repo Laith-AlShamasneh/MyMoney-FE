@@ -8,30 +8,79 @@
    1. Custom Properties (Light Mode)
    -------------------------------------------------------------------------- */
 :root {
-  /* Layout */
+  /* ── Layout */
   --mm-sidebar-width: 280px;
   --mm-sidebar-mini-width: 84px;
 
-  /* Background surfaces */
+  /* ── Typography */
+  --mm-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mm-font-arabic: "Segoe UI", "Tahoma", ui-sans-serif, system-ui, sans-serif;
+  --mm-font-mono: ui-monospace, "Cascadia Code", "Fira Code", monospace;
+  --mm-text-xs:   0.72rem;
+  --mm-text-sm:   0.8125rem;
+  --mm-text-base: 0.9375rem;
+  --mm-text-lg:   1.125rem;
+  --mm-text-xl:   1.25rem;
+  --mm-text-2xl:  1.5rem;
+
+  /* ── Spacing scale (4 px base) */
+  --mm-space-1: 0.25rem;
+  --mm-space-2: 0.5rem;
+  --mm-space-3: 0.75rem;
+  --mm-space-4: 1rem;
+  --mm-space-5: 1.25rem;
+  --mm-space-6: 1.5rem;
+  --mm-space-8: 2rem;
+  --mm-space-10: 2.5rem;
+
+  /* ── Border-radius scale */
+  --mm-radius-sm: 6px;
+  --mm-radius:    8px;
+  --mm-radius-md: 10px;
+  --mm-radius-lg: 12px;
+  --mm-radius-xl: 16px;
+  --mm-radius-full: 9999px;
+
+  /* ── Animation tokens */
+  --mm-duration-fast: 120ms;
+  --mm-duration-base: 200ms;
+  --mm-duration-slow: 320ms;
+  --mm-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --mm-ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* ── Background surfaces */
   --mm-bg: #f5f7fb;
   --mm-surface: #ffffff;
   --mm-surface-soft: #f8fafc;
+  --mm-surface-raised: #ffffff;
 
-  /* Borders */
+  /* ── Borders */
   --mm-border: #dbe4ef;
+  --mm-border-soft: #eef2f7;
 
-  /* Text */
+  /* ── Text */
   --mm-text: #1f2937;
+  --mm-text-secondary: #374151;
   --mm-muted: #6b7280;
 
-  /* Brand colours */
+  /* ── Brand colours */
   --mm-primary: #2563eb;
   --mm-primary-dark: #1d4ed8;
+  --mm-primary-light: #eff6ff;
   --mm-success: #0f766e;
+  --mm-success-light: #f0fdfa;
   --mm-warning: #d97706;
+  --mm-warning-light: #fffbeb;
   --mm-danger: #dc2626;
+  --mm-danger-light: #fff5f5;
+  --mm-info: #0891b2;
+  --mm-info-light: #f0f9ff;
 
-  /* Sidebar */
+  /* ── Finance semantic */
+  --mm-income:  #059669;
+  --mm-expense: #dc2626;
+
+  /* ── Sidebar */
   --mm-sidebar-bg: #ffffff;
   --mm-sidebar-soft: #eef4ff;
   --mm-sidebar-border: #dbe4ef;
@@ -42,11 +91,13 @@
   --mm-sidebar-icon: #2563eb;
   --mm-sidebar-shadow: 18px 0 42px rgba(15, 23, 42, 0.08);
 
-  /* Elevation */
-  --mm-shadow-sm: 0 10px 24px rgba(15, 23, 42, 0.06);
-  --mm-shadow: 0 18px 46px rgba(15, 23, 42, 0.09);
-  --mm-shadow-lg: 0 26px 70px rgba(15, 23, 42, 0.12);
-  --mm-ring: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  /* ── Elevation */
+  --mm-shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --mm-shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 4px rgba(15, 23, 42, 0.04);
+  --mm-shadow:    0 10px 24px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  --mm-shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.10), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --mm-ring: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  --mm-ring-danger: 0 0 0 3px rgba(220, 38, 38, 0.18);
 }
 
 /* --------------------------------------------------------------------------
@@ -56,14 +107,25 @@ html[data-theme="dark"] {
   --mm-bg: #0f172a;
   --mm-surface: #182235;
   --mm-surface-soft: #111827;
+  --mm-surface-raised: #1e2d45;
   --mm-border: #2f3b52;
+  --mm-border-soft: #243049;
   --mm-text: #e5edf7;
+  --mm-text-secondary: #cbd5e1;
   --mm-muted: #9aa8bd;
   --mm-primary: #60a5fa;
   --mm-primary-dark: #3b82f6;
+  --mm-primary-light: rgba(96, 165, 250, 0.12);
   --mm-success: #2dd4bf;
+  --mm-success-light: rgba(45, 212, 191, 0.12);
   --mm-warning: #fbbf24;
+  --mm-warning-light: rgba(251, 191, 36, 0.12);
   --mm-danger: #f87171;
+  --mm-danger-light: rgba(248, 113, 113, 0.12);
+  --mm-info: #38bdf8;
+  --mm-info-light: rgba(56, 189, 248, 0.12);
+  --mm-income:  #34d399;
+  --mm-expense: #f87171;
 
   /* Sidebar (dark) */
   --mm-sidebar-bg: #090f1d;
@@ -77,10 +139,12 @@ html[data-theme="dark"] {
   --mm-sidebar-shadow: 18px 0 42px rgba(0, 0, 0, 0.34);
 
   /* Elevation (dark) */
-  --mm-shadow-sm: 0 10px 24px rgba(0, 0, 0, 0.24);
-  --mm-shadow: 0 18px 46px rgba(0, 0, 0, 0.32);
-  --mm-shadow-lg: 0 26px 70px rgba(0, 0, 0, 0.42);
-  --mm-ring: 0 0 0 4px rgba(96, 165, 250, 0.18);
+  --mm-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --mm-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.28);
+  --mm-shadow:    0 10px 24px rgba(0, 0, 0, 0.32);
+  --mm-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.42);
+  --mm-ring: 0 0 0 3px rgba(96, 165, 250, 0.22);
+  --mm-ring-danger: 0 0 0 3px rgba(248, 113, 113, 0.22);
 
   color-scheme: dark;
 }
@@ -107,7 +171,14 @@ body {
   margin: 0;
   background: linear-gradient(180deg, #f8fbff 0%, var(--mm-bg) 42%, #eef4fa 100%);
   color: var(--mm-text);
-  font-family: "Segoe UI", system-ui, Arial, sans-serif;
+  font-family: var(--mm-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[lang="ar"] body,
+[dir="rtl"] body {
+  font-family: var(--mm-font-arabic);
 }
 
 html[data-theme="dark"] body {
