@@ -153,29 +153,19 @@ function _renderFilterCategories() {
 }
 
 /* ==========================================================================
-   Modal category dropdown — shows ALL categories in two optgroups.
-   When the user picks a category, the type radio auto-syncs to match.
+   Modal category dropdown — filtered by the selected transaction type.
    ========================================================================== */
-function _renderModalCategories(selectedId) {
-  const sel     = $('txCategory');
-  const income  = _s.categories.filter(c => Number(c.transactionTypeId) === 1);
-  const expense = _s.categories.filter(c => Number(c.transactionTypeId) === 2);
+function _renderModalCategories(typeId, selectedId) {
+  const sel  = $('txCategory');
+  const cats = _categoriesForType(typeId);
 
   sel.innerHTML = `<option value="">${t('transactions.modal_field_category_placeholder')}</option>`;
-
-  [{ label: t('transactions.type_income'), list: income },
-   { label: t('transactions.type_expense'), list: expense }].forEach(({ label, list }) => {
-    if (!list.length) return;
-    const grp = document.createElement('optgroup');
-    grp.label = label;
-    list.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value       = c.categoryId;
-      opt.textContent = _catName(c);
-      if (Number(c.categoryId) === Number(selectedId)) opt.selected = true;
-      grp.appendChild(opt);
-    });
-    sel.appendChild(grp);
+  cats.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value       = c.categoryId;
+    opt.textContent = _catName(c);
+    if (Number(c.categoryId) === Number(selectedId)) opt.selected = true;
+    sel.appendChild(opt);
   });
 }
 
@@ -562,7 +552,7 @@ function _openAddModal() {
   $('txForm').classList.remove('was-validated');
 
   document.getElementById('typeExpense').checked = true;
-  _renderModalCategories(null);
+  _renderModalCategories(2, null);
 
   // Default date = today
   $('txDate').value = _isoDate(new Date());
@@ -581,7 +571,7 @@ async function _openEditModal(id) {
 
     const typeId = Number(tx.transactionTypeId);
     document.getElementById(typeId === 1 ? 'typeIncome' : 'typeExpense').checked = true;
-    _renderModalCategories(tx.categoryId);
+    _renderModalCategories(typeId, tx.categoryId);
     $('txAmount').value      = tx.amount;
     $('txDate').value        = tx.transactionDate;
     $('txDescription').value = tx.description ?? '';
@@ -674,15 +664,11 @@ function _bindEvents() {
   /* Modal save */
   $('btnSaveTx').addEventListener('click', _saveTx);
 
-  /* Category pick → auto-sync the type radio to match */
-  $('txCategory').addEventListener('change', e => {
-    const catId = parseInt(e.target.value, 10);
-    if (!catId) return;
-    const cat = _s.categories.find(c => Number(c.categoryId) === catId);
-    if (cat) {
-      const typeId = Number(cat.transactionTypeId);
-      document.getElementById(typeId === 1 ? 'typeIncome' : 'typeExpense').checked = true;
-    }
+  /* Modal type radio — re-populate categories for the selected type */
+  $$('input[name="txType"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      _renderModalCategories(parseInt(radio.value, 10), null);
+    });
   });
 
   /* Delete confirm */
