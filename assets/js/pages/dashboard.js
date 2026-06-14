@@ -61,9 +61,8 @@ const COLORS = {
 const _lang = () => getLanguage();
 
 function _fmtAmount(value) {
-  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-EG' : 'en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-JO' : 'en-US', {
+    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
   }).format(value);
 }
 

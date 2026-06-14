@@ -89,15 +89,15 @@ function _pad(n)     { return String(n).padStart(2, '0'); }
    ========================================================================== */
 function _fmtCurrency(amount) {
   const lang = getLanguage();
-  return new Intl.NumberFormat(lang === 'ar' ? 'ar-SA' : 'en-US', {
-    style: 'currency', currency: 'SAR', minimumFractionDigits: 2,
+  return new Intl.NumberFormat(lang === 'ar' ? 'ar-JO' : 'en-US', {
+    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
   }).format(amount);
 }
 
 function _fmtDate(dateStr) {
   const lang = getLanguage();
   const d = new Date(dateStr + 'T00:00:00');
-  return new Intl.DateTimeFormat(lang === 'ar' ? 'ar-SA' : 'en-US', {
+  return new Intl.DateTimeFormat(lang === 'ar' ? 'ar-JO' : 'en-US', {
     year: 'numeric', month: 'short', day: 'numeric',
   }).format(d);
 }
@@ -153,19 +153,29 @@ function _renderFilterCategories() {
 }
 
 /* ==========================================================================
-   Modal category dropdown
+   Modal category dropdown — shows ALL categories in two optgroups.
+   When the user picks a category, the type radio auto-syncs to match.
    ========================================================================== */
-function _renderModalCategories(typeId, selectedId) {
-  const sel  = $('txCategory');
-  const cats = _categoriesForType(typeId);
+function _renderModalCategories(selectedId) {
+  const sel     = $('txCategory');
+  const income  = _s.categories.filter(c => Number(c.transactionTypeId) === 1);
+  const expense = _s.categories.filter(c => Number(c.transactionTypeId) === 2);
 
   sel.innerHTML = `<option value="">${t('transactions.modal_field_category_placeholder')}</option>`;
-  cats.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.categoryId;
-    opt.textContent = _catName(c);
-    if (c.categoryId === selectedId) opt.selected = true;
-    sel.appendChild(opt);
+
+  [{ label: t('transactions.type_income'), list: income },
+   { label: t('transactions.type_expense'), list: expense }].forEach(({ label, list }) => {
+    if (!list.length) return;
+    const grp = document.createElement('optgroup');
+    grp.label = label;
+    list.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value       = c.categoryId;
+      opt.textContent = _catName(c);
+      if (Number(c.categoryId) === Number(selectedId)) opt.selected = true;
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
   });
 }
 
@@ -551,9 +561,8 @@ function _openAddModal() {
   $('txForm').reset();
   $('txForm').classList.remove('was-validated');
 
-  // Default type = expense
   document.getElementById('typeExpense').checked = true;
-  _renderModalCategories(2, null);
+  _renderModalCategories(null);
 
   // Default date = today
   $('txDate').value = _isoDate(new Date());
@@ -570,9 +579,9 @@ async function _openEditModal(id) {
   try {
     const tx = await TransactionService.getById(id);
 
-    const typeId = tx.transactionTypeId;
+    const typeId = Number(tx.transactionTypeId);
     document.getElementById(typeId === 1 ? 'typeIncome' : 'typeExpense').checked = true;
-    _renderModalCategories(typeId, tx.categoryId);
+    _renderModalCategories(tx.categoryId);
     $('txAmount').value      = tx.amount;
     $('txDate').value        = tx.transactionDate;
     $('txDescription').value = tx.description ?? '';
@@ -665,11 +674,15 @@ function _bindEvents() {
   /* Modal save */
   $('btnSaveTx').addEventListener('click', _saveTx);
 
-  /* Modal type radio — re-populate categories */
-  $$('input[name="txType"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      _renderModalCategories(parseInt(radio.value, 10), null);
-    });
+  /* Category pick → auto-sync the type radio to match */
+  $('txCategory').addEventListener('change', e => {
+    const catId = parseInt(e.target.value, 10);
+    if (!catId) return;
+    const cat = _s.categories.find(c => Number(c.categoryId) === catId);
+    if (cat) {
+      const typeId = Number(cat.transactionTypeId);
+      document.getElementById(typeId === 1 ? 'typeIncome' : 'typeExpense').checked = true;
+    }
   });
 
   /* Delete confirm */
