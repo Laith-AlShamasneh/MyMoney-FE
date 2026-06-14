@@ -311,6 +311,8 @@
     "email_current": "البريد الإلكتروني الحالي",
     "email_confirmed": "مؤكد",
     "email_not_confirmed": "غير مؤكد",
+    "resend_verification_btn": "تحقق من البريد",
+    "resend_verification_success": "تم إرسال رابط التحقق إلى بريدك الإلكتروني.",
     "email_change_btn": "تغيير البريد الإلكتروني",
     "email_change_heading": "طلب تغيير البريد الإلكتروني",
     "email_change_new_label": "البريد الإلكتروني الجديد",

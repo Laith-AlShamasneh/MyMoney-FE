@@ -311,6 +311,8 @@
     "email_current": "Current email address",
     "email_confirmed": "Verified",
     "email_not_confirmed": "Unverified",
+    "resend_verification_btn": "Verify Email",
+    "resend_verification_success": "A verification link has been sent to your inbox.",
     "email_change_btn": "Change Email",
     "email_change_heading": "Request email change",
     "email_change_new_label": "New email address",

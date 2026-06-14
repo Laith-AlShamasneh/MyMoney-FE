@@ -41,8 +41,9 @@ const newEmailInput        = document.getElementById('newEmailInput');
 const emailChangePwdInput  = document.getElementById('emailChangePwdInput');
 const submitEmailChangeBtn = document.getElementById('submitEmailChangeBtn');
 const cancelEmailFormBtn   = document.getElementById('cancelEmailFormBtn');
-const emailFormError       = document.getElementById('emailFormError');
-const emailFormErrList     = document.getElementById('emailFormErrorList');
+const emailFormError        = document.getElementById('emailFormError');
+const emailFormErrList      = document.getElementById('emailFormErrorList');
+const resendVerificationBtn = document.getElementById('resendVerificationBtn');
 
 /* --------------------------------------------------------------------------
    DOM refs — sessions
@@ -245,9 +246,11 @@ function _renderEmailSection(state) {
   if (state.isEmailConfirmed) {
     emailVerifiedBadge.classList.remove('d-none');
     emailUnverifiedBadge.classList.add('d-none');
+    resendVerificationBtn.classList.add('d-none');
   } else {
     emailVerifiedBadge.classList.add('d-none');
     emailUnverifiedBadge.classList.remove('d-none');
+    resendVerificationBtn.classList.remove('d-none');
   }
 
   if (state.hasPendingEmailChange && state.pendingEmail) {
@@ -339,6 +342,19 @@ cancelEmailChangeBtn.addEventListener('click', async () => {
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
   } finally {
     Loader.clearButtonLoading(cancelEmailChangeBtn);
+  }
+});
+
+resendVerificationBtn.addEventListener('click', async () => {
+  if (!_emailState?.email) return;
+  Loader.setButtonLoading(resendVerificationBtn);
+  try {
+    await AuthService.resendConfirmationEmail(_emailState.email);
+    showSuccess(t('profile.resend_verification_success'));
+  } catch (err) {
+    showError(err instanceof ApiError ? err.message : t('errors.unknown'));
+  } finally {
+    Loader.clearButtonLoading(resendVerificationBtn);
   }
 });
 
