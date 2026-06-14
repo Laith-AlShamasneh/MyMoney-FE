@@ -45,6 +45,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "transactions": "Transactions",
+    "reports": "Reports",
     "profile": "Profile",
     "settings": "Settings",
     "change_password": "Change Password",
@@ -473,6 +474,71 @@
     "month_4": "Apr", "month_5": "May", "month_6": "Jun",
     "month_7": "Jul", "month_8": "Aug", "month_9": "Sep",
     "month_10": "Oct", "month_11": "Nov", "month_12": "Dec"
+  },
+
+  "reports": {
+    "page_title": "Reports",
+    "eyebrow": "Financial Reports",
+    "heading": "Reports",
+    "subheading": "Generate, download, and manage your financial Excel reports.",
+
+    "generate_section": "Generate New Report",
+    "generate_type_label": "Report Type",
+    "generate_type_placeholder": "Select a report type",
+    "generate_language_label": "Report Language",
+    "generate_language_en": "English",
+    "generate_language_ar": "Arabic",
+    "generate_date_from": "From Date",
+    "generate_date_to": "To Date",
+    "generate_btn": "Generate Report",
+    "generate_loading": "Requesting…",
+    "generate_success": "Report is being generated. You'll receive an email notification when it's ready.",
+
+    "type_financial_summary":  "Financial Summary",
+    "type_transaction_detail": "Transaction Detail",
+    "type_income_analysis":    "Income Analysis",
+    "type_expense_analysis":   "Expense Analysis",
+    "type_category_analysis":  "Category Analysis",
+
+    "history_section": "Report History",
+    "history_empty_title": "No reports yet",
+    "history_empty_desc": "Generate your first report using the form above.",
+    "history_loading": "Loading reports…",
+
+    "col_type":      "Report Type",
+    "col_period":    "Period",
+    "col_language":  "Language",
+    "col_status":    "Status",
+    "col_requested": "Requested",
+    "col_actions":   "Actions",
+
+    "status_pending":    "Pending",
+    "status_processing": "Processing",
+    "status_completed":  "Completed",
+    "status_failed":     "Failed",
+    "status_expired":    "Expired",
+
+    "lang_en": "English",
+    "lang_ar":  "Arabic",
+
+    "btn_download": "Download",
+    "btn_delete":   "Delete",
+    "btn_retry":    "Retry",
+    "downloading":  "Downloading…",
+
+    "delete_confirm":      "Delete this report?",
+    "delete_confirm_desc": "The file will be permanently removed.",
+    "delete_success":      "Report deleted.",
+
+    "download_error":  "Could not download the report. Please try again.",
+    "status_badge_pending":    "bg-secondary",
+    "status_badge_processing": "bg-primary",
+    "status_badge_completed":  "bg-success",
+    "status_badge_failed":     "bg-danger",
+    "status_badge_expired":    "bg-warning",
+
+    "expiry_note": "Reports expire 7 days after generation.",
+    "email_note":  "You will receive an email notification when the report is ready."
   },
 
   "errors_page": {

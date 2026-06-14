@@ -21,6 +21,7 @@ import { getCurrentUser, logout } from '../core/auth.js';
 const NAV_ITEMS = [
   { key: 'dashboard',    path: Config.ROUTES.DASHBOARD,    icon: 'speedometer2',   i18nKey: 'nav.dashboard' },
   { key: 'transactions', path: Config.ROUTES.TRANSACTIONS, icon: 'receipt',        i18nKey: 'nav.transactions' },
+  { key: 'reports',      path: Config.ROUTES.REPORTS,      icon: 'file-earmark-bar-graph', i18nKey: 'nav.reports' },
   { key: 'profile',      path: Config.ROUTES.PROFILE,      icon: 'person-badge',   i18nKey: 'nav.profile' },
   { key: 'settings',     path: Config.ROUTES.SETTINGS,     icon: 'gear',           i18nKey: 'nav.settings' },
 ];

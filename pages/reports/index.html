@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — التقارير">
+  <title data-i18n-page-title="reports.page_title">التقارير | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- ── Page heading ─────────────────────────────────────────────── -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon">
+                <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>
+              </span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="reports.eyebrow">التقارير المالية</p>
+                <h1 class="h3 mb-1" data-i18n="reports.heading">التقارير</h1>
+                <p class="text-muted mb-0" data-i18n="reports.subheading">
+                  أنشئ تقاريرك المالية بصيغة Excel وحمّلها وأدِرها.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+
+            <!-- ── Generate Report Panel ────────────────────────────────── -->
+            <div class="col-12 col-lg-4">
+              <div class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1" data-i18n="reports.generate_section">إنشاء تقرير جديد</h2>
+                    <p class="text-muted small mb-0" data-i18n="reports.email_note">
+                      ستتلقى إشعاراً بالبريد الإلكتروني عند الاكتمال.
+                    </p>
+                  </div>
+                  <i class="bi bi-plus-circle text-muted fs-4" aria-hidden="true"></i>
+                </div>
+
+                <!-- Form errors -->
+                <div class="alert alert-danger d-none mb-3 small" id="generateError" role="alert">
+                  <ul class="mb-0 ps-3" id="generateErrorList"></ul>
+                </div>
+
+                <form id="generateForm" novalidate>
+
+                  <!-- Report type -->
+                  <div class="mb-3">
+                    <label class="form-label" for="reportTypeSelect"
+                           data-i18n="reports.generate_type_label">نوع التقرير</label>
+                    <div id="typeSkeleton" class="placeholder-glow">
+                      <span class="placeholder col-12 d-block" style="height:2.375rem;border-radius:6px;"></span>
+                    </div>
+                    <select class="form-select d-none" id="reportTypeSelect" required>
+                      <option value="" data-i18n="reports.generate_type_placeholder">اختر نوع التقرير</option>
+                    </select>
+                    <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+                  </div>
+
+                  <!-- Language -->
+                  <div class="mb-3">
+                    <label class="form-label" for="reportLanguage"
+                           data-i18n="reports.generate_language_label">لغة التقرير</label>
+                    <select class="form-select" id="reportLanguage">
+                      <option value="ar" data-i18n="reports.generate_language_ar">العربية</option>
+                      <option value="en" data-i18n="reports.generate_language_en">الإنجليزية</option>
+                    </select>
+                  </div>
+
+                  <!-- Date range -->
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <label class="form-label small" for="dateFrom"
+                             data-i18n="reports.generate_date_from">من تاريخ</label>
+                      <input type="date" class="form-control form-control-sm" id="dateFrom" required dir="ltr">
+                      <div class="invalid-feedback" data-i18n="common.required_field">مطلوب.</div>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label small" for="dateTo"
+                             data-i18n="reports.generate_date_to">إلى تاريخ</label>
+                      <input type="date" class="form-control form-control-sm" id="dateTo" required dir="ltr">
+                      <div class="invalid-feedback" data-i18n="common.required_field">مطلوب.</div>
+                    </div>
+                  </div>
+
+                  <!-- Note -->
+                  <p class="text-muted small mb-3" data-i18n="reports.expiry_note">
+                    تنتهي صلاحية التقارير بعد 7 أيام.
+                  </p>
+
+                  <button type="submit" class="btn btn-primary w-100" id="generateBtn">
+                    <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>
+                    <span data-i18n="reports.generate_btn">إنشاء التقرير</span>
+                  </button>
+
+                </form>
+              </div>
+            </div>
+
+            <!-- ── Report History Panel ─────────────────────────────────── -->
+            <div class="col-12 col-lg-8">
+              <div class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1" data-i18n="reports.history_section">سجل التقارير</h2>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshBtn"
+                          title="Refresh">
+                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <!-- Loading -->
+                <div id="historyLoading" class="placeholder-glow py-2">
+                  <span class="placeholder col-12 mb-2 d-block" style="height:3rem;border-radius:6px;"></span>
+                  <span class="placeholder col-12 mb-2 d-block" style="height:3rem;border-radius:6px;"></span>
+                  <span class="placeholder col-12 d-block" style="height:3rem;border-radius:6px;"></span>
+                </div>
+
+                <!-- Empty -->
+                <div id="historyEmpty" class="d-none text-center py-5">
+                  <i class="bi bi-file-earmark-bar-graph text-muted d-block mb-3"
+                     style="font-size:3rem;" aria-hidden="true"></i>
+                  <p class="fw-semibold mb-1" id="historyEmptyTitle"
+                     data-i18n="reports.history_empty_title">لا توجد تقارير بعد</p>
+                  <p class="text-muted small mb-0"
+                     data-i18n="reports.history_empty_desc">
+                    أنشئ تقريرك الأول باستخدام النموذج.
+                  </p>
+                </div>
+
+                <!-- Table -->
+                <div id="historyTable" class="d-none">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                      <thead class="table-light">
+                        <tr>
+                          <th data-i18n="reports.col_type">نوع التقرير</th>
+                          <th data-i18n="reports.col_period">الفترة</th>
+                          <th data-i18n="reports.col_language">اللغة</th>
+                          <th data-i18n="reports.col_status">الحالة</th>
+                          <th data-i18n="reports.col_requested">تاريخ الطلب</th>
+                          <th data-i18n="reports.col_actions" class="text-end">الإجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody id="historyBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div><!-- /.row -->
+
+        </div><!-- /.container-fluid -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/reports.js"></script>
+</body>
+</html>

@@ -37,6 +37,7 @@ export const Config = Object.freeze({
     CONFIRM_EMAIL:   '/pages/auth/confirm-email.html',
     DASHBOARD:       '/pages/dashboard/index.html',
     TRANSACTIONS:    '/pages/transactions/index.html',
+    REPORTS:         '/pages/reports/index.html',
     PROFILE:         '/pages/dashboard/profile.html',
     SETTINGS:        '/pages/dashboard/settings.html',
     CHANGE_PASSWORD: '/pages/dashboard/change-password.html',
@@ -83,6 +84,13 @@ export const Config = Object.freeze({
     }),
     CATEGORY: Object.freeze({
       LIST: '/api/categories/get/list',
+    }),
+    REPORTS: Object.freeze({
+      TYPES:    '/api/reports/types',
+      GENERATE: '/api/reports/generate',
+      LIST:     '/api/reports/list',
+      DOWNLOAD: '/api/reports/download',
+      DELETE:   '/api/reports/delete',
     }),
   }),
 

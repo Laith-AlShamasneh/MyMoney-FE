@@ -45,6 +45,7 @@
   "nav": {
     "dashboard": "لوحة التحكم",
     "transactions": "المعاملات",
+    "reports": "التقارير",
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
     "change_password": "تغيير كلمة المرور",
@@ -473,6 +474,66 @@
     "month_4": "أبريل", "month_5": "مايو",  "month_6": "يونيو",
     "month_7": "يوليو", "month_8": "أغسطس", "month_9": "سبتمبر",
     "month_10": "أكتوبر", "month_11": "نوفمبر", "month_12": "ديسمبر"
+  },
+
+  "reports": {
+    "page_title": "التقارير",
+    "eyebrow": "التقارير المالية",
+    "heading": "التقارير",
+    "subheading": "أنشئ تقاريرك المالية بصيغة Excel وحمّلها وأدِرها.",
+
+    "generate_section": "إنشاء تقرير جديد",
+    "generate_type_label": "نوع التقرير",
+    "generate_type_placeholder": "اختر نوع التقرير",
+    "generate_language_label": "لغة التقرير",
+    "generate_language_en": "الإنجليزية",
+    "generate_language_ar": "العربية",
+    "generate_date_from": "من تاريخ",
+    "generate_date_to": "إلى تاريخ",
+    "generate_btn": "إنشاء التقرير",
+    "generate_loading": "جاري الطلب…",
+    "generate_success": "جاري إنشاء التقرير. ستتلقى إشعاراً بالبريد الإلكتروني عند اكتماله.",
+
+    "type_financial_summary":  "الملخص المالي",
+    "type_transaction_detail": "تفاصيل المعاملات",
+    "type_income_analysis":    "تحليل الدخل",
+    "type_expense_analysis":   "تحليل المصروفات",
+    "type_category_analysis":  "تحليل الفئات",
+
+    "history_section": "سجل التقارير",
+    "history_empty_title": "لا توجد تقارير بعد",
+    "history_empty_desc": "أنشئ تقريرك الأول باستخدام النموذج أعلاه.",
+    "history_loading": "جاري تحميل التقارير…",
+
+    "col_type":      "نوع التقرير",
+    "col_period":    "الفترة",
+    "col_language":  "اللغة",
+    "col_status":    "الحالة",
+    "col_requested": "تاريخ الطلب",
+    "col_actions":   "الإجراءات",
+
+    "status_pending":    "قيد الانتظار",
+    "status_processing": "جاري المعالجة",
+    "status_completed":  "مكتمل",
+    "status_failed":     "فشل",
+    "status_expired":    "منتهي الصلاحية",
+
+    "lang_en": "الإنجليزية",
+    "lang_ar":  "العربية",
+
+    "btn_download": "تحميل",
+    "btn_delete":   "حذف",
+    "btn_retry":    "إعادة المحاولة",
+    "downloading":  "جاري التحميل…",
+
+    "delete_confirm":      "حذف هذا التقرير؟",
+    "delete_confirm_desc": "سيتم حذف الملف نهائياً.",
+    "delete_success":      "تم حذف التقرير.",
+
+    "download_error":  "تعذّر تحميل التقرير. يرجى المحاولة مرة أخرى.",
+
+    "expiry_note": "تنتهي صلاحية التقارير بعد 7 أيام من الإنشاء.",
+    "email_note":  "ستتلقى إشعاراً بالبريد الإلكتروني عندما يصبح التقرير جاهزاً."
   },
 
   "errors_page": {
