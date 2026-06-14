@@ -9,6 +9,10 @@ import { guardPage }                     from '../core/auth.js';
 import { DashboardService }              from '../services/dashboard-service.js';
 import { ApiError }                      from '../core/api.js';
 import { showError }                     from '../components/toast.js';
+import {
+  incomeColors, expenseColors, chartPalette,
+  chartTooltipOptions, chartLegendLabels, chartScales, chartSurfaceColor,
+} from '../core/chart-theme.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
@@ -45,15 +49,10 @@ let _trendChartInstance = null;
 let _donutChartInstance = null;
 
 /* --------------------------------------------------------------------------
-   Palette
+   Last-loaded data — kept so charts can be rebuilt on theme change
+   without a new network request.
    -------------------------------------------------------------------------- */
-const COLORS = {
-  income:   '#198754',
-  expenses: '#dc3545',
-  incomeBg: 'rgba(25,135,84,.15)',
-  expBg:    'rgba(220,53,69,.15)',
-  donut: ['#0d6efd','#6f42c1','#d63384','#fd7e14','#20c997','#0dcaf0','#ffc107','#198754'],
-};
+let _lastData = null;
 
 /* --------------------------------------------------------------------------
    Formatting helpers
@@ -168,6 +167,9 @@ function _renderTrendChart(trend) {
   const incomes  = months.map(m => m.income);
   const expenses = months.map(m => m.expenses);
 
+  const inc = incomeColors();
+  const exp = expenseColors();
+
   const ctx = document.getElementById('trendChart').getContext('2d');
   _trendChartInstance = new Chart(ctx, {
     type: 'bar',
@@ -177,16 +179,16 @@ function _renderTrendChart(trend) {
         {
           label: t('dashboard.trend_income'),
           data: incomes,
-          backgroundColor: COLORS.incomeBg,
-          borderColor: COLORS.income,
+          backgroundColor: inc.backgroundColor,
+          borderColor: inc.borderColor,
           borderWidth: 1.5,
           borderRadius: 4,
         },
         {
           label: t('dashboard.trend_expenses'),
           data: expenses,
-          backgroundColor: COLORS.expBg,
-          borderColor: COLORS.expenses,
+          backgroundColor: exp.backgroundColor,
+          borderColor: exp.borderColor,
           borderWidth: 1.5,
           borderRadius: 4,
         },
@@ -199,28 +201,16 @@ function _renderTrendChart(trend) {
         legend: {
           position: 'top',
           align: 'end',
-          labels: { boxWidth: 12, padding: 16, font: { size: 12 } },
+          labels: chartLegendLabels(),
         },
         tooltip: {
+          ...chartTooltipOptions(),
           callbacks: {
             label: ctx => ` ${ctx.dataset.label}: ${_fmtAmount(ctx.parsed.y)}`,
           },
         },
       },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { font: { size: 11 } },
-        },
-        y: {
-          beginAtZero: true,
-          grid: { color: 'rgba(0,0,0,.05)' },
-          ticks: {
-            font: { size: 11 },
-            callback: val => _fmtAmount(val),
-          },
-        },
-      },
+      scales: chartScales({ yCallback: val => _fmtAmount(val) }),
     },
   });
 }
@@ -243,14 +233,21 @@ function _renderBreakdown(breakdown) {
   const isAr    = _lang() === 'ar';
   const labels  = breakdown.map(b => isAr && b.nameAr ? b.nameAr : b.nameEn);
   const amounts = breakdown.map(b => b.totalAmount);
-  const colors  = COLORS.donut.slice(0, breakdown.length);
+  const palette = chartPalette();
+  const colors  = palette.slice(0, breakdown.length);
 
   const ctx = document.getElementById('donutChart').getContext('2d');
   _donutChartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels,
-      datasets: [{ data: amounts, backgroundColor: colors, borderWidth: 2, hoverOffset: 4 }],
+      datasets: [{
+        data: amounts,
+        backgroundColor: colors,
+        borderColor: chartSurfaceColor(),
+        borderWidth: 2,
+        hoverOffset: 6,
+      }],
     },
     options: {
       responsive: true,
@@ -259,6 +256,7 @@ function _renderBreakdown(breakdown) {
       plugins: {
         legend: { display: false },
         tooltip: {
+          ...chartTooltipOptions(),
           callbacks: {
             label: ctx => ` ${_fmtAmount(ctx.parsed)} (${breakdown[ctx.dataIndex]?.percentage ?? 0}%)`,
           },
@@ -353,6 +351,9 @@ async function loadDashboard() {
     return;
   }
 
+  // Cache for theme-change rebuilds
+  _lastData = data;
+
   kpiCards.classList.remove('d-none');
   _renderKpi(kpi);
 
@@ -363,6 +364,15 @@ async function loadDashboard() {
   _renderBreakdown(categoryBreakdown);
   _renderRecentTransactions(recentTransactions);
 }
+
+/* --------------------------------------------------------------------------
+   Theme change — rebuild charts with correct colours without a network call
+   -------------------------------------------------------------------------- */
+document.addEventListener('mm-theme-change', () => {
+  if (!_lastData) return;
+  _renderTrendChart(_lastData.monthlyTrend);
+  _renderBreakdown(_lastData.categoryBreakdown);
+});
 
 /* --------------------------------------------------------------------------
    Init

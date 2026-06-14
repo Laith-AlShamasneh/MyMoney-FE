@@ -45,6 +45,8 @@ function _applyTheme(theme) {
   document.documentElement.setAttribute('data-bs-theme', theme);
   _saveTheme(theme);
   _updateThemeIcons(theme);
+  // Notify pages (e.g. chart modules) so they can rebuild with correct colours.
+  document.dispatchEvent(new CustomEvent('mm-theme-change', { detail: { theme } }));
 }
 function _updateThemeIcons(theme) {
   const nextLabel = t(theme === 'dark' ? 'layout.switch_to_light' : 'layout.switch_to_dark');

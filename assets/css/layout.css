@@ -343,12 +343,11 @@ html[data-theme="dark"] .admin-navbar.bg-white {
 }
 
 .profile-button .avatar-sm {
-  border: 2px solid #52e7b8;
+  border: 2px solid var(--mm-success);
   box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
 }
 
 html[data-theme="dark"] .profile-button .avatar-sm {
-  border-color: #54f0be;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
 }
 

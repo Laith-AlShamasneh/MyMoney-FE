@@ -10,6 +10,10 @@ import { TransactionService }         from '../services/transaction-service.js';
 import { CategoryService }            from '../services/category-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showToast, showSuccess, showError } from '../components/toast.js';
+import {
+  incomeColors, expenseColors, chartPalette,
+  chartTooltipOptions, chartLegendLabels, chartScales, chartSurfaceColor,
+} from '../core/chart-theme.js';
 
 /* --------------------------------------------------------------------------
    State
@@ -53,13 +57,10 @@ let _pendingDeleteId = null;
 let _searchTimer = null;
 
 /* --------------------------------------------------------------------------
-   Chart palette
+   Analytics data cache — kept so charts rebuild on theme change without
+   a new network request.
    -------------------------------------------------------------------------- */
-const PALETTE = [
-  '#0d6efd','#6f42c1','#d63384','#fd7e14',
-  '#20c997','#0dcaf0','#ffc107','#198754',
-  '#e74c3c','#9b59b6','#3498db','#2ecc71',
-];
+let _lastAnalyticsData = null;
 
 /* ==========================================================================
    Date preset helpers
@@ -448,6 +449,8 @@ async function _loadAnalytics() {
 }
 
 function _renderAnalytics(data) {
+  _lastAnalyticsData = data;
+
   const lang = getLanguage();
   const breakdown = data.categoryBreakdown ?? [];
   const trend     = data.monthlyTrend      ?? [];
@@ -462,6 +465,9 @@ function _renderAnalytics(data) {
 
     if (_donutChart) { _donutChart.destroy(); _donutChart = null; }
 
+    const palette = chartPalette();
+    const colors  = palette.slice(0, breakdown.length);
+
     const donutCtx = $('donutChart').getContext('2d');
     _donutChart = new Chart(donutCtx, {
       type: 'doughnut',
@@ -469,27 +475,31 @@ function _renderAnalytics(data) {
         labels:   breakdown.map(b => lang === 'ar' ? (b.nameAr || b.nameEn) : (b.nameEn || b.nameAr)),
         datasets: [{
           data:            breakdown.map(b => b.totalAmount),
-          backgroundColor: PALETTE.slice(0, breakdown.length),
+          backgroundColor: colors,
           borderWidth:     2,
-          borderColor:     'transparent',
+          borderColor:     chartSurfaceColor(),
           hoverOffset:     6,
         }],
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: {
-          callbacks: {
-            label: ctx => ` ${_fmtCurrency(ctx.parsed)} (${breakdown[ctx.dataIndex]?.percentage ?? 0}%)`,
-          },
-        }},
         cutout: '65%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...chartTooltipOptions(),
+            callbacks: {
+              label: ctx => ` ${_fmtCurrency(ctx.parsed)} (${breakdown[ctx.dataIndex]?.percentage ?? 0}%)`,
+            },
+          },
+        },
       },
     });
 
     const legend = $('donutLegend');
     legend.innerHTML = breakdown.map((b, i) => `
       <div class="donut-legend-item">
-        <span class="donut-legend-dot" style="background:${PALETTE[i % PALETTE.length]};"></span>
+        <span class="donut-legend-dot" style="background:${colors[i % colors.length]};"></span>
         <span class="text-truncate">${_esc(lang === 'ar' ? (b.nameAr || b.nameEn) : (b.nameEn || b.nameAr))}</span>
         <span class="donut-legend-pct">${b.percentage ?? 0}%</span>
       </div>`).join('');
@@ -510,6 +520,9 @@ function _renderAnalytics(data) {
       return `${t(key)} ${p.year}`;
     });
 
+    const inc = incomeColors();
+    const exp = expenseColors();
+
     const trendCtx = $('trendChart').getContext('2d');
     _trendChart = new Chart(trendCtx, {
       type: 'bar',
@@ -519,24 +532,31 @@ function _renderAnalytics(data) {
           {
             label:           t('transactions.analytics_trend_income'),
             data:            trend.map(p => p.income),
-            backgroundColor: 'rgba(25,135,84,.75)',
+            backgroundColor: inc.backgroundColor,
+            borderColor:     inc.borderColor,
+            borderWidth:     1.5,
             borderRadius:    4,
           },
           {
             label:           t('transactions.analytics_trend_expenses'),
             data:            trend.map(p => p.expenses),
-            backgroundColor: 'rgba(220,53,69,.75)',
+            backgroundColor: exp.backgroundColor,
+            borderColor:     exp.borderColor,
+            borderWidth:     1.5,
             borderRadius:    4,
           },
         ],
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } } },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-          y: { grid: { color: 'rgba(0,0,0,.05)' }, ticks: { font: { size: 10 }, callback: v => _fmtCurrency(v) } },
+        plugins: {
+          legend: { position: 'top', align: 'end', labels: chartLegendLabels() },
+          tooltip: {
+            ...chartTooltipOptions(),
+            callbacks: { label: ctx => ` ${ctx.dataset.label}: ${_fmtCurrency(ctx.parsed.y)}` },
+          },
         },
+        scales: chartScales({ yCallback: v => _fmtCurrency(v) }),
       },
     });
   }
@@ -810,6 +830,15 @@ function _syncPlaceholders() {
     el.placeholder = t(el.dataset.i18nPlaceholder);
   });
 }
+
+/* ==========================================================================
+   Theme change — rebuild analytics charts without a network request
+   ========================================================================== */
+document.addEventListener('mm-theme-change', () => {
+  if (_lastAnalyticsData && _s.analyticsVisible) {
+    _renderAnalytics(_lastAnalyticsData);
+  }
+});
 
 /* ==========================================================================
    Init
