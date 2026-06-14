@@ -19,9 +19,10 @@ import { getCurrentUser, logout } from '../core/auth.js';
    Add / remove items here — they auto-reflect on every dashboard page.
    -------------------------------------------------------------------------- */
 const NAV_ITEMS = [
-  { key: 'dashboard',    path: Config.ROUTES.DASHBOARD, icon: 'speedometer2',   i18nKey: 'nav.dashboard' },
-  { key: 'profile',      path: Config.ROUTES.PROFILE,   icon: 'person-badge',   i18nKey: 'nav.profile' },
-  { key: 'settings',     path: Config.ROUTES.SETTINGS,  icon: 'gear',           i18nKey: 'nav.settings' },
+  { key: 'dashboard',    path: Config.ROUTES.DASHBOARD,    icon: 'speedometer2',   i18nKey: 'nav.dashboard' },
+  { key: 'transactions', path: Config.ROUTES.TRANSACTIONS, icon: 'receipt',        i18nKey: 'nav.transactions' },
+  { key: 'profile',      path: Config.ROUTES.PROFILE,      icon: 'person-badge',   i18nKey: 'nav.profile' },
+  { key: 'settings',     path: Config.ROUTES.SETTINGS,     icon: 'gear',           i18nKey: 'nav.settings' },
 ];
 
 /* --------------------------------------------------------------------------

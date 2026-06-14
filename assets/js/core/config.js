@@ -36,6 +36,7 @@ export const Config = Object.freeze({
     RESET:           '/pages/auth/reset-password.html',
     CONFIRM_EMAIL:   '/pages/auth/confirm-email.html',
     DASHBOARD:       '/pages/dashboard/index.html',
+    TRANSACTIONS:    '/pages/transactions/index.html',
     PROFILE:         '/pages/dashboard/profile.html',
     SETTINGS:        '/pages/dashboard/settings.html',
     CHANGE_PASSWORD: '/pages/dashboard/change-password.html',
@@ -71,6 +72,17 @@ export const Config = Object.freeze({
     }),
     DASHBOARD: Object.freeze({
       SUMMARY: '/api/dashboard/summary',
+    }),
+    TRANSACTION: Object.freeze({
+      SEARCH:    '/api/transactions/search',
+      ANALYTICS: '/api/transactions/analytics',
+      GET:       '/api/transactions/get',
+      CREATE:    '/api/transactions/create',
+      UPDATE:    '/api/transactions/update',
+      DELETE:    '/api/transactions/delete',
+    }),
+    CATEGORY: Object.freeze({
+      LIST: '/api/categories/get/list',
     }),
   }),
 

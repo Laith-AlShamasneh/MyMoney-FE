@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — المعاملات">
+  <title data-i18n-page-title="transactions.page_title">المعاملات | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>try{var _l=localStorage.getItem('mm.lang');if(_l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
+
+  <style>
+    /* ── Summary KPI Strip ──────────────────────────────────────────────── */
+    .kpi-card {
+      border: 1px solid var(--mm-border-color, rgba(0,0,0,.08));
+      border-radius: .75rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--mm-card-bg, #fff);
+      transition: box-shadow .15s ease;
+    }
+    .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+    .kpi-icon {
+      width: 2.75rem; height: 2.75rem;
+      border-radius: .6rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .kpi-label { font-size: .72rem; font-weight: 600; color: var(--mm-text-muted, #6c757d); letter-spacing: .04em; text-transform: uppercase; }
+    .kpi-value { font-size: 1.45rem; font-weight: 700; line-height: 1.2; margin: .25rem 0 0; font-variant-numeric: tabular-nums; }
+
+    /* ── Filter Panel ───────────────────────────────────────────────────── */
+    .filter-panel { border-radius: .75rem; border: 1px solid var(--mm-border-color, rgba(0,0,0,.08)); background: var(--mm-card-bg, #fff); }
+    .filter-panel-header { padding: .85rem 1.25rem; border-bottom: 1px solid var(--mm-border-color, rgba(0,0,0,.08)); display: flex; align-items: center; gap: .5rem; }
+    .filter-panel-body { padding: 1rem 1.25rem; }
+
+    .preset-btn {
+      border: 1px solid var(--mm-border-color, rgba(0,0,0,.15));
+      border-radius: 2rem;
+      padding: .28rem .85rem;
+      font-size: .78rem;
+      font-weight: 500;
+      background: transparent;
+      color: var(--mm-text-muted, #6c757d);
+      cursor: pointer;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .preset-btn:hover { border-color: var(--bs-primary); color: var(--bs-primary); background: rgba(13,110,253,.05); }
+    .preset-btn.active {
+      background: var(--bs-primary);
+      border-color: var(--bs-primary);
+      color: #fff;
+    }
+
+    /* ── Transaction Table ──────────────────────────────────────────────── */
+    .tx-table { font-size: .875rem; margin-bottom: 0; }
+    .tx-table thead th {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--mm-text-muted, #6c757d);
+      border-bottom: 2px solid var(--mm-border-color, rgba(0,0,0,.1));
+      padding: .75rem 1rem; white-space: nowrap; cursor: pointer;
+      user-select: none;
+    }
+    .tx-table thead th.non-sort { cursor: default; }
+    .tx-table thead th .sort-icon { opacity: .35; font-size: .7rem; margin-inline-start: .25rem; }
+    .tx-table thead th.sorted .sort-icon { opacity: 1; color: var(--bs-primary); }
+    .tx-table tbody td { padding: .75rem 1rem; vertical-align: middle; border-color: var(--mm-border-color, rgba(0,0,0,.06)); }
+    .tx-table tbody tr:hover { background: var(--mm-hover-bg, rgba(0,0,0,.02)); }
+
+    .tx-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .72rem; font-weight: 600; padding: .25rem .6rem;
+      border-radius: 2rem; letter-spacing: .02em;
+    }
+    .tx-badge-income  { background: rgba(25,135,84,.12);  color: #146c43; }
+    .tx-badge-expense { background: rgba(220,53,69,.12);  color: #b02a37; }
+
+    .tx-amount { font-weight: 700; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    .tx-amount-income  { color: #198754; }
+    .tx-amount-expense { color: #dc3545; }
+
+    .tx-cat-icon {
+      width: 1.8rem; height: 1.8rem; border-radius: .4rem;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: .85rem; flex-shrink: 0;
+    }
+    .tx-cat-income  { background: rgba(25,135,84,.1);  color: #198754; }
+    .tx-cat-expense { background: rgba(220,53,69,.1);  color: #dc3545; }
+
+    .tx-desc { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Row action buttons ─────────────────────────────────────────────── */
+    .btn-row-action {
+      width: 1.85rem; height: 1.85rem; border-radius: .4rem;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: .8rem; border: none; cursor: pointer;
+      transition: background .15s ease;
+    }
+    .btn-row-edit   { background: rgba(13,110,253,.1);   color: #0d6efd; }
+    .btn-row-edit:hover   { background: rgba(13,110,253,.2); }
+    .btn-row-delete { background: rgba(220,53,69,.1);    color: #dc3545; }
+    .btn-row-delete:hover { background: rgba(220,53,69,.2); }
+
+    /* ── Skeleton ───────────────────────────────────────────────────────── */
+    .skeleton-kpi    { height: 5.5rem; border-radius: .75rem; }
+    .skeleton-filter { height: 7rem;   border-radius: .75rem; }
+    .skeleton-table  { height: 20rem;  border-radius: .75rem; }
+    .skeleton-chart  { height: 18rem;  border-radius: .75rem; }
+
+    /* ── Pagination ─────────────────────────────────────────────────────── */
+    .tx-pagination { font-size: .82rem; }
+    .tx-pagination .page-link { padding: .3rem .65rem; font-size: .82rem; border-radius: .4rem; }
+    .tx-pagination .page-item.active .page-link { font-weight: 600; }
+
+    /* ── Analytics section ──────────────────────────────────────────────── */
+    .analytics-toggle-btn {
+      border: 1px solid var(--mm-border-color, rgba(0,0,0,.15));
+      border-radius: 2rem; padding: .3rem 1rem;
+      font-size: .8rem; font-weight: 500;
+      background: transparent; cursor: pointer;
+      transition: all .15s;
+    }
+    .analytics-toggle-btn:hover { border-color: var(--bs-primary); color: var(--bs-primary); }
+
+    .chart-wrap { position: relative; }
+    .chart-wrap canvas { max-width: 100%; }
+
+    .donut-legend-dot { width: .65rem; height: .65rem; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .donut-legend-item { display: flex; align-items: center; gap: .45rem; font-size: .78rem; margin-bottom: .3rem; }
+    .donut-legend-pct { margin-inline-start: auto; font-weight: 600; min-width: 2.5rem; text-align: end; }
+
+    /* ── Empty state ────────────────────────────────────────────────────── */
+    .tx-empty-state { padding: 3.5rem 1rem; text-align: center; }
+    .tx-empty-icon  { font-size: 3.5rem; opacity: .18; display: block; margin-bottom: 1rem; }
+
+    /* ── Custom date row ────────────────────────────────────────────────── */
+    #customDateRow { display: none; }
+    #customDateRow.visible { display: flex; }
+
+    /* ── Modal type radio group ─────────────────────────────────────────── */
+    .type-radio-group { display: flex; gap: .5rem; }
+    .type-radio-group input[type=radio] { display: none; }
+    .type-radio-group label {
+      flex: 1; text-align: center; padding: .5rem;
+      border: 1.5px solid var(--mm-border-color, rgba(0,0,0,.2));
+      border-radius: .5rem; font-size: .85rem; font-weight: 500;
+      cursor: pointer; transition: all .15s;
+    }
+    .type-radio-group input[type=radio]:checked + label.income-lbl {
+      border-color: #198754; background: rgba(25,135,84,.1); color: #146c43;
+    }
+    .type-radio-group input[type=radio]:checked + label.expense-lbl {
+      border-color: #dc3545; background: rgba(220,53,69,.1); color: #b02a37;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- ── Page heading ───────────────────────────────────────────── -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-receipt" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="transactions.eyebrow">السجلات المالية</p>
+                <h1 class="h3 mb-1" data-i18n="transactions.heading">المعاملات</h1>
+                <p class="text-muted mb-0" data-i18n="transactions.subheading">تتبّع وفلترة وتحليل كل حركة مالية.</p>
+              </div>
+            </div>
+            <div class="page-heading-actions">
+              <button id="btnAddTransaction" class="btn btn-primary d-flex align-items-center gap-2">
+                <i class="bi bi-plus-lg"></i>
+                <span data-i18n="transactions.add_btn">إضافة معاملة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Summary Strip — Skeletons ─────────────────────────────── -->
+          <div id="summarySkeletons" class="row g-3 mb-4">
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
+          </div>
+
+          <!-- ── Summary Strip ─────────────────────────────────────────── -->
+          <div id="summaryStrip" class="row g-3 mb-4 d-none">
+            <!-- Income -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(25,135,84,.1);color:#198754;">
+                    <i class="bi bi-arrow-down-circle-fill"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="transactions.summary_income">إجمالي الدخل</span>
+                </div>
+                <div class="kpi-value tx-amount-income" id="kpiIncome">—</div>
+              </div>
+            </div>
+            <!-- Expenses -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(220,53,69,.1);color:#dc3545;">
+                    <i class="bi bi-arrow-up-circle-fill"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="transactions.summary_expenses">إجمالي المصروفات</span>
+                </div>
+                <div class="kpi-value tx-amount-expense" id="kpiExpenses">—</div>
+              </div>
+            </div>
+            <!-- Net -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(13,110,253,.1);color:#0d6efd;">
+                    <i class="bi bi-calculator-fill"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="transactions.summary_net">الرصيد الصافي</span>
+                </div>
+                <div class="kpi-value" id="kpiNet">—</div>
+              </div>
+            </div>
+            <!-- Count -->
+            <div class="col-6 col-xl-3">
+              <div class="kpi-card d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="kpi-icon" style="background:rgba(111,66,193,.1);color:#6f42c1;">
+                    <i class="bi bi-hash"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="transactions.summary_count">المعاملات</span>
+                </div>
+                <div class="kpi-value" id="kpiCount">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Filter Panel ───────────────────────────────────────────── -->
+          <div class="filter-panel mb-4">
+            <div class="filter-panel-header">
+              <i class="bi bi-funnel text-muted" style="font-size:.9rem;"></i>
+              <span class="fw-semibold" style="font-size:.88rem;" data-i18n="transactions.filter_title">الفلاتر</span>
+              <button id="btnClearFilters" class="btn btn-sm btn-link text-muted ms-auto p-0 text-decoration-none" style="font-size:.8rem;" data-i18n="transactions.filter_clear">مسح الفلاتر</button>
+            </div>
+            <div class="filter-panel-body">
+
+              <!-- Date presets row -->
+              <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+                <span class="text-muted" style="font-size:.78rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap;" data-i18n="transactions.filter_date_label">نطاق التاريخ</span>
+                <div class="d-flex flex-wrap gap-1" id="presetBtns">
+                  <button class="preset-btn" data-preset="today" data-i18n="transactions.filter_preset_today">اليوم</button>
+                  <button class="preset-btn" data-preset="7d" data-i18n="transactions.filter_preset_7d">آخر 7 أيام</button>
+                  <button class="preset-btn" data-preset="30d" data-i18n="transactions.filter_preset_30d">آخر 30 يوماً</button>
+                  <button class="preset-btn active" data-preset="this_month" data-i18n="transactions.filter_preset_this_month">هذا الشهر</button>
+                  <button class="preset-btn" data-preset="last_month" data-i18n="transactions.filter_preset_last_month">الشهر الماضي</button>
+                  <button class="preset-btn" data-preset="this_year" data-i18n="transactions.filter_preset_this_year">هذه السنة</button>
+                  <button class="preset-btn" data-preset="all" data-i18n="transactions.filter_preset_custom">الكل</button>
+                </div>
+              </div>
+
+              <!-- Custom date range (visible when preset=custom) -->
+              <div id="customDateRow" class="gap-3 align-items-end mb-3">
+                <div>
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_date_from">من</label>
+                  <input type="date" id="filterDateFrom" class="form-control form-control-sm" style="min-width:150px;">
+                </div>
+                <div>
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_date_to">إلى</label>
+                  <input type="date" id="filterDateTo" class="form-control form-control-sm" style="min-width:150px;">
+                </div>
+                <div class="d-flex align-items-end">
+                  <button id="btnApplyCustomDate" class="btn btn-primary btn-sm" data-i18n="transactions.filter_apply">تطبيق</button>
+                </div>
+              </div>
+
+              <!-- Filters row: Type | Category | Amount Min | Amount Max -->
+              <div class="row g-2 mb-3">
+                <div class="col-6 col-md-3">
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_type_label">النوع</label>
+                  <select id="filterType" class="form-select form-select-sm">
+                    <option value="" data-i18n="transactions.filter_type_all">جميع الأنواع</option>
+                    <option value="1" data-i18n="transactions.filter_type_income">دخل</option>
+                    <option value="2" data-i18n="transactions.filter_type_expense">مصروف</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_category_label">الفئة</label>
+                  <select id="filterCategory" class="form-select form-select-sm">
+                    <option value="" data-i18n="transactions.filter_category_all">جميع الفئات</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_amount_min">الحد الأدنى</label>
+                  <input type="number" id="filterAmountMin" class="form-control form-control-sm" min="0" step="0.01" placeholder="0.00">
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_amount_max">الحد الأقصى</label>
+                  <input type="number" id="filterAmountMax" class="form-control form-control-sm" min="0" step="0.01" placeholder="∞">
+                </div>
+              </div>
+
+              <!-- Search row -->
+              <div class="row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_search_label">بحث</label>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text"><i class="bi bi-search" style="font-size:.75rem;"></i></span>
+                    <input type="text" id="filterSearch" class="form-control" data-i18n-placeholder="transactions.filter_search_placeholder" placeholder="ابحث في الوصف…">
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label small fw-semibold mb-1" data-i18n="transactions.filter_sort_label">ترتيب حسب</label>
+                  <select id="filterSortBy" class="form-select form-select-sm">
+                    <option value="Date" data-i18n="transactions.filter_sort_date">التاريخ</option>
+                    <option value="Amount" data-i18n="transactions.filter_sort_amount">المبلغ</option>
+                    <option value="Category" data-i18n="transactions.filter_sort_category">الفئة</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label small fw-semibold mb-1">&nbsp;</label>
+                  <select id="filterSortDir" class="form-select form-select-sm">
+                    <option value="DESC" data-i18n="transactions.filter_sort_desc">تنازلي</option>
+                    <option value="ASC" data-i18n="transactions.filter_sort_asc">تصاعدي</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ── Table Skeleton ─────────────────────────────────────────── -->
+          <div id="tableSkeletons" class="mb-4">
+            <div class="skeleton skeleton-table"></div>
+          </div>
+
+          <!-- ── Transaction Table Panel ────────────────────────────────── -->
+          <div id="tablePanel" class="panel mb-4 d-none p-0" style="overflow:hidden;">
+
+            <!-- Table header with count -->
+            <div class="d-flex align-items-center justify-content-between px-3 py-2" style="border-bottom: 1px solid var(--mm-border-color, rgba(0,0,0,.08));">
+              <span id="tableResultCount" class="text-muted" style="font-size:.8rem;"></span>
+              <div class="d-flex align-items-center gap-2">
+                <label class="text-muted small mb-0">
+                  <span data-i18n="transactions.pagination_rows">صفوف</span>:
+                </label>
+                <select id="pageSizeSelect" class="form-select form-select-sm" style="width:auto;">
+                  <option value="10">10</option>
+                  <option value="20" selected>20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <div id="txEmpty" class="d-none tx-empty-state">
+              <i class="bi bi-inbox tx-empty-icon"></i>
+              <h5 class="fw-semibold mb-1" data-i18n="transactions.empty_title">لا توجد معاملات</h5>
+              <p class="text-muted small mb-0" data-i18n="transactions.empty_desc">حاول تعديل الفلاتر أو أضف معاملتك الأولى.</p>
+            </div>
+
+            <!-- Table (scrollable on mobile) -->
+            <div id="txTableWrap" class="table-responsive">
+              <table class="table tx-table">
+                <thead>
+                  <tr>
+                    <th class="sorted" data-sort="Date">
+                      <span data-i18n="transactions.col_date">التاريخ</span>
+                      <i class="bi bi-caret-down-fill sort-icon" id="sortIconDate"></i>
+                    </th>
+                    <th class="non-sort">
+                      <span data-i18n="transactions.col_type">النوع</span>
+                    </th>
+                    <th data-sort="Category">
+                      <span data-i18n="transactions.col_category">الفئة</span>
+                      <i class="bi bi-caret-down-fill sort-icon" id="sortIconCategory"></i>
+                    </th>
+                    <th class="non-sort">
+                      <span data-i18n="transactions.col_description">الوصف</span>
+                    </th>
+                    <th data-sort="Amount" class="text-end">
+                      <span data-i18n="transactions.col_amount">المبلغ</span>
+                      <i class="bi bi-caret-down-fill sort-icon" id="sortIconAmount"></i>
+                    </th>
+                    <th class="non-sort text-center" style="width:5rem;">
+                      <span data-i18n="transactions.col_actions">إجراءات</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="txTbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="txPagination" class="d-flex align-items-center justify-content-between px-3 py-2" style="border-top: 1px solid var(--mm-border-color, rgba(0,0,0,.08));">
+              <span id="paginationInfo" class="text-muted" style="font-size:.8rem;"></span>
+              <nav aria-label="Transaction pagination">
+                <ul class="pagination tx-pagination mb-0" id="paginationList"></ul>
+              </nav>
+            </div>
+
+          </div>
+
+          <!-- ── Analytics Section ──────────────────────────────────────── -->
+          <div class="panel mb-4">
+            <div class="d-flex align-items-start justify-content-between mb-0">
+              <div>
+                <h2 class="h6 fw-semibold mb-0" data-i18n="transactions.analytics_title">التحليلات</h2>
+                <p class="text-muted small mb-0" data-i18n="transactions.analytics_subtitle">تحليل بصري لنشاطك المالي.</p>
+              </div>
+              <button id="btnToggleAnalytics" class="analytics-toggle-btn text-muted" data-i18n="transactions.analytics_toggle_show">
+                عرض التحليلات
+              </button>
+            </div>
+
+            <div id="analyticsBody" class="d-none mt-3">
+
+              <!-- Analytics Skeleton -->
+              <div id="analyticsSkeletons" class="row g-3">
+                <div class="col-lg-5"><div class="skeleton skeleton-chart"></div></div>
+                <div class="col-lg-7"><div class="skeleton skeleton-chart"></div></div>
+              </div>
+
+              <!-- Analytics Charts -->
+              <div id="analyticsCharts" class="row g-4 d-none">
+
+                <!-- Expense Breakdown Donut -->
+                <div class="col-lg-5">
+                  <div>
+                    <h3 class="h6 fw-semibold mb-1" data-i18n="transactions.analytics_breakdown_title">توزيع المصروفات</h3>
+                    <div id="analyticsDonutEmpty" class="d-none text-center py-4">
+                      <i class="bi bi-pie-chart" style="font-size:2.5rem;opacity:.25;display:block;margin-bottom:.5rem;"></i>
+                      <p class="text-muted small mb-0" data-i18n="transactions.analytics_breakdown_empty">لا توجد بيانات مصروفات.</p>
+                    </div>
+                    <div id="analyticsDonutWrap">
+                      <div class="chart-wrap mb-3" style="height:200px;" dir="ltr">
+                        <canvas id="donutChart"></canvas>
+                      </div>
+                      <div id="donutLegend"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 12-Month Trend Bar -->
+                <div class="col-lg-7">
+                  <div>
+                    <h3 class="h6 fw-semibold mb-1" data-i18n="transactions.analytics_trend_title">اتجاه 12 شهراً</h3>
+                    <div id="analyticsTrendEmpty" class="d-none text-center py-4">
+                      <i class="bi bi-bar-chart-line" style="font-size:2.5rem;opacity:.25;display:block;margin-bottom:.5rem;"></i>
+                      <p class="text-muted small mb-0" data-i18n="transactions.analytics_trend_empty">لا توجد بيانات متاحة.</p>
+                    </div>
+                    <div id="analyticsTrendWrap" class="chart-wrap" style="height:220px;" dir="ltr">
+                      <canvas id="trendChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /container-fluid -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       Add / Edit Transaction Modal
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="txModal" tabindex="-1" aria-labelledby="txModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="txModalLabel" data-i18n="transactions.modal_add_title">إضافة معاملة</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="txForm" novalidate>
+            <!-- Type -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="transactions.modal_field_type">النوع</label>
+              <div class="type-radio-group">
+                <input type="radio" name="txType" id="typeIncome" value="1">
+                <label for="typeIncome" class="income-lbl" data-i18n="transactions.type_income">دخل</label>
+                <input type="radio" name="txType" id="typeExpense" value="2" checked>
+                <label for="typeExpense" class="expense-lbl" data-i18n="transactions.type_expense">مصروف</label>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+              <label for="txCategory" class="form-label fw-semibold" data-i18n="transactions.modal_field_category">الفئة</label>
+              <select id="txCategory" class="form-select" required>
+                <option value="" data-i18n="transactions.modal_field_category_placeholder">اختر فئة</option>
+              </select>
+              <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+            </div>
+
+            <!-- Amount -->
+            <div class="mb-3">
+              <label for="txAmount" class="form-label fw-semibold" data-i18n="transactions.modal_field_amount">المبلغ</label>
+              <input type="number" id="txAmount" class="form-control" min="0.01" step="0.01" required
+                data-i18n-placeholder="transactions.modal_field_amount_placeholder" placeholder="0.00">
+              <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+            </div>
+
+            <!-- Date -->
+            <div class="mb-3">
+              <label for="txDate" class="form-label fw-semibold" data-i18n="transactions.modal_field_date">التاريخ</label>
+              <input type="date" id="txDate" class="form-control" required>
+              <div class="invalid-feedback" data-i18n="common.required_field">هذا الحقل مطلوب.</div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="txDescription" class="form-label fw-semibold">
+                <span data-i18n="transactions.modal_field_description">الوصف</span>
+                <span class="text-muted fw-normal small ms-1" data-i18n="common.optional">(اختياري)</span>
+              </label>
+              <input type="text" id="txDescription" class="form-control"
+                data-i18n-placeholder="transactions.modal_field_description_placeholder" placeholder="وصف مختصر" maxlength="500">
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-3">
+              <label for="txNotes" class="form-label fw-semibold">
+                <span data-i18n="transactions.modal_field_notes">ملاحظات</span>
+                <span class="text-muted fw-normal small ms-1" data-i18n="common.optional">(اختياري)</span>
+              </label>
+              <textarea id="txNotes" class="form-control" rows="2" maxlength="1000"
+                data-i18n-placeholder="transactions.modal_field_notes_placeholder" placeholder="ملاحظات إضافية"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="transactions.modal_cancel">إلغاء</button>
+          <button type="button" id="btnSaveTx" class="btn btn-primary">
+            <span id="btnSaveTxLabel" data-i18n="transactions.modal_save">حفظ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       Delete Confirmation Modal
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title text-danger" id="deleteModalLabel" data-i18n="transactions.modal_delete_confirm">حذف هذه المعاملة؟</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-1">
+          <p class="text-muted small mb-0" data-i18n="transactions.modal_delete_confirm_desc">لا يمكن التراجع عن هذا الإجراء.</p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" data-i18n="transactions.modal_cancel">إلغاء</button>
+          <button type="button" id="btnConfirmDelete" class="btn btn-sm btn-danger">
+            <span id="btnDeleteLabel" data-i18n="transactions.modal_delete_btn">حذف</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="/assets/js/pages/transactions.js"></script>
+</body>
+</html>
