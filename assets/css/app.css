@@ -5,6 +5,14 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
+   0. FOUC Prevention
+   The inline <head> script adds mm-init to <html> before the body renders.
+   i18n.js removes it once the correct translations are applied.
+   This ensures users never see untranslated content or wrong-direction layout.
+   -------------------------------------------------------------------------- */
+html.mm-init body { visibility: hidden; }
+
+/* --------------------------------------------------------------------------
    1. Custom Properties (Light Mode)
    -------------------------------------------------------------------------- */
 :root {
