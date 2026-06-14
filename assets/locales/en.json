@@ -249,7 +249,8 @@
 
     "breakdown_title": "Expense Breakdown",
     "breakdown_subtitle": "This month by category",
-    "breakdown_empty": "No expenses recorded this month.",
+    "breakdown_empty": "No expenses this month",
+    "breakdown_empty_desc": "Expense breakdown will appear here once you record transactions.",
 
     "recent_title": "Recent Transactions",
     "recent_view_all": "View All",
@@ -257,7 +258,8 @@
     "recent_category": "Category",
     "recent_description": "Description",
     "recent_amount": "Amount",
-    "recent_empty": "No transactions recorded yet.",
+    "recent_empty": "No transactions yet",
+    "recent_empty_desc": "Add your first transaction to start your financial journey.",
 
     "income_label": "Income",
     "expense_label": "Expense",

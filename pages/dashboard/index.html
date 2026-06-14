@@ -66,7 +66,7 @@
             <div class="col-6 col-xl-3"><div class="skeleton skeleton-kpi"></div></div>
           </div>
 
-          <div id="kpiCards" class="row g-3 mb-4 d-none">
+          <div id="kpiCards" class="row g-3 mb-4 d-none animate-stagger">
             <!-- Income -->
             <div class="col-6 col-xl-3">
               <div class="kpi-card d-flex flex-column gap-2">
@@ -126,7 +126,7 @@
             <div class="col-12"><div class="skeleton skeleton-chart"></div></div>
           </div>
 
-          <div id="chartsRow" class="row g-3 mb-4 d-none">
+          <div id="chartsRow" class="row g-3 mb-4 d-none animate-fade-up">
             <!-- Bar chart: 6-month trend -->
             <div class="col-12">
               <div class="panel">
@@ -149,7 +149,7 @@
             <div class="col-lg-7"><div class="skeleton skeleton-table"></div></div>
           </div>
 
-          <div id="bottomRow" class="row g-3 mb-4 d-none">
+          <div id="bottomRow" class="row g-3 mb-4 d-none animate-fade-up">
             <!-- Category breakdown donut -->
             <div class="col-lg-5">
               <div class="panel h-100 d-flex flex-column">
@@ -157,10 +157,11 @@
                   <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.breakdown_title">توزيع المصروفات</h2>
                   <p class="text-muted small mb-0" data-i18n="dashboard.breakdown_subtitle">هذا الشهر حسب الفئة</p>
                 </div>
-                <div id="breakdownEmpty" class="d-none text-center text-muted py-4 small flex-grow-1 d-flex align-items-center justify-content-center">
-                  <div>
-                    <i class="bi bi-pie-chart" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:.5rem;"></i>
-                    <span data-i18n="dashboard.breakdown_empty">لا توجد مصروفات مسجّلة هذا الشهر.</span>
+                <div id="breakdownEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">
+                  <div class="empty-state">
+                    <span class="empty-state-icon"><i class="bi bi-pie-chart" aria-hidden="true"></i></span>
+                    <p class="empty-state-title" data-i18n="dashboard.breakdown_empty">لا توجد مصروفات هذا الشهر</p>
+                    <p class="empty-state-desc" data-i18n="dashboard.breakdown_empty_desc">سيظهر توزيع المصروفات هنا عند تسجيل معاملاتك.</p>
                   </div>
                 </div>
                 <div id="breakdownChart" class="d-none flex-grow-1">
@@ -180,10 +181,11 @@
                     <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.recent_title">آخر المعاملات</h2>
                   </div>
                 </div>
-                <div id="recentEmpty" class="d-none text-center text-muted py-4 small flex-grow-1 d-flex align-items-center justify-content-center">
-                  <div>
-                    <i class="bi bi-receipt" style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:.5rem;"></i>
-                    <span data-i18n="dashboard.recent_empty">لا توجد معاملات مسجّلة بعد.</span>
+                <div id="recentEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">
+                  <div class="empty-state">
+                    <span class="empty-state-icon"><i class="bi bi-receipt" aria-hidden="true"></i></span>
+                    <p class="empty-state-title" data-i18n="dashboard.recent_empty">لا توجد معاملات بعد</p>
+                    <p class="empty-state-desc" data-i18n="dashboard.recent_empty_desc">أضف معاملتك الأولى لتبدأ رحلتك المالية.</p>
                   </div>
                 </div>
                 <div id="recentTableWrap" class="d-none flex-grow-1">
@@ -206,11 +208,19 @@
           </div>
 
           <!-- ── Global empty state (zero transactions ever) ────────────── -->
-          <div id="emptyState" class="d-none">
-            <div class="panel py-5 text-center">
-              <i class="bi bi-bar-chart-line" style="font-size:4rem;opacity:.2;display:block;margin-bottom:1rem;"></i>
-              <h2 class="h5 fw-semibold mb-2" data-i18n="dashboard.empty_title">لا توجد بيانات حتى الآن</h2>
-              <p class="text-muted mb-0 small" data-i18n="dashboard.empty_desc">ابدأ بتسجيل معاملاتك لتظهر تحليلاتك المالية هنا.</p>
+          <div id="emptyState" class="d-none animate-fade-up">
+            <div class="panel">
+              <div class="empty-state py-3">
+                <span class="empty-state-icon" style="background:var(--mm-primary-light);">
+                  <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                </span>
+                <h2 class="empty-state-title" data-i18n="dashboard.empty_title">لا توجد بيانات حتى الآن</h2>
+                <p class="empty-state-desc" data-i18n="dashboard.empty_desc">ابدأ بتسجيل معاملاتك لتظهر تحليلاتك المالية هنا.</p>
+                <a href="/pages/transactions/index.html" class="btn btn-primary btn-sm mt-1">
+                  <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                  <span data-i18n="transactions.add_btn">إضافة معاملة</span>
+                </a>
+              </div>
             </div>
           </div>
 

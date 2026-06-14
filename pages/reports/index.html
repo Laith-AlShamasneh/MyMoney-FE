@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <div class="row g-4">
+          <div class="row g-4 animate-stagger">
 
             <!-- ── Generate Report Panel ────────────────────────────────── -->
             <div class="col-12 col-lg-4">
@@ -156,15 +156,17 @@
                 </div>
 
                 <!-- Empty -->
-                <div id="historyEmpty" class="d-none text-center py-5">
-                  <i class="bi bi-file-earmark-bar-graph text-muted d-block mb-3"
-                     style="font-size:3rem;" aria-hidden="true"></i>
-                  <p class="fw-semibold mb-1" id="historyEmptyTitle"
-                     data-i18n="reports.history_empty_title">لا توجد تقارير بعد</p>
-                  <p class="text-muted small mb-0"
-                     data-i18n="reports.history_empty_desc">
-                    أنشئ تقريرك الأول باستخدام النموذج.
-                  </p>
+                <div id="historyEmpty" class="d-none">
+                  <div class="empty-state">
+                    <span class="empty-state-icon">
+                      <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>
+                    </span>
+                    <p class="empty-state-title" id="historyEmptyTitle"
+                       data-i18n="reports.history_empty_title">لا توجد تقارير بعد</p>
+                    <p class="empty-state-desc" data-i18n="reports.history_empty_desc">
+                      أنشئ تقريرك الأول باستخدام النموذج.
+                    </p>
+                  </div>
                 </div>
 
                 <!-- Table -->

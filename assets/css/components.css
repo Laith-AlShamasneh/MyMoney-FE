@@ -63,27 +63,57 @@ html[data-theme="dark"] .section-title i {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border-radius: 8px;
-  font-weight: 700;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
-  transition: border-color 0.16s ease, background 0.16s ease,
-              box-shadow 0.16s ease, transform 0.16s ease;
+  border-radius: var(--mm-radius);
+  font-weight: 600;
+  box-shadow: var(--mm-shadow-xs);
+  transition: border-color var(--mm-duration-base) var(--mm-ease),
+              background var(--mm-duration-base) var(--mm-ease),
+              background-position var(--mm-duration-base) var(--mm-ease),
+              box-shadow var(--mm-duration-base) var(--mm-ease),
+              transform var(--mm-duration-base) var(--mm-ease-spring);
 }
 
 .btn:hover,
 .btn:focus {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--mm-shadow-sm);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: var(--mm-shadow-xs);
+  transition-duration: 80ms;
 }
 
 .btn-primary {
   border-color: var(--mm-primary);
-  background: var(--mm-primary);
+  background: linear-gradient(135deg, #3b82f6 0%, var(--mm-primary) 50%, var(--mm-primary-dark) 100%);
+  background-size: 200% 100%;
+  background-position: right center;
+  color: #ffffff;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
   border-color: var(--mm-primary-dark);
-  background: var(--mm-primary-dark);
+  background-position: left center;
+  box-shadow: var(--mm-shadow-primary);
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  background-size: 200% 100%;
+  background-position: right center;
+  color: #0f172a;
+  border-color: #3b82f6;
+}
+
+html[data-theme="dark"] .btn-primary:hover,
+html[data-theme="dark"] .btn-primary:focus {
+  background-position: left center;
+  box-shadow: var(--mm-shadow-primary);
+  color: #0f172a;
 }
 
 .btn-light {
@@ -108,6 +138,13 @@ html[data-theme="dark"] .btn-outline-secondary:hover,
 html[data-theme="dark"] .btn-outline-secondary:focus {
   background: var(--mm-primary-light);
   color: #bfdbfe;
+}
+
+/* Focus-visible ring for accessibility */
+.btn:focus-visible {
+  outline: 2px solid var(--mm-primary);
+  outline-offset: 2px;
+  box-shadow: var(--mm-ring);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -433,8 +470,11 @@ html[data-theme="dark"] .profile-avatar {
    10. Badges
    -------------------------------------------------------------------------- */
 .badge {
-  border-radius: 8px;
-  padding: 0.45rem 0.65rem;
+  border-radius: var(--mm-radius-full);
+  padding: 0.3rem 0.65rem;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
 }
 
 /* --------------------------------------------------------------------------
@@ -654,6 +694,47 @@ html[data-theme="dark"] .progress {
   margin-bottom: 0.9rem;
 }
 
+/* Premium empty state (replaces bare icon pattern) */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--mm-radius-xl);
+  background: var(--mm-primary-light);
+  color: var(--mm-primary);
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+html[data-theme="dark"] .empty-state-icon {
+  color: #93c5fd;
+}
+
+.empty-state-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--mm-text);
+  margin: 0;
+}
+
+.empty-state-desc {
+  font-size: 0.875rem;
+  color: var(--mm-muted);
+  max-width: 320px;
+  margin: 0;
+  line-height: 1.6;
+}
+
 /* --------------------------------------------------------------------------
    17. Form Controls (dark mode overrides)
    -------------------------------------------------------------------------- */
@@ -662,11 +743,14 @@ html[data-theme="dark"] .progress {
   border-color: var(--mm-border);
   background-color: var(--mm-surface);
   color: var(--mm-text);
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              box-shadow var(--mm-duration-fast) var(--mm-ease),
+              background-color var(--mm-duration-fast) var(--mm-ease);
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: #93c5fd;
+  border-color: var(--mm-primary);
   background-color: var(--mm-surface);
   color: var(--mm-text);
   box-shadow: var(--mm-ring);
@@ -1170,6 +1254,19 @@ html[data-theme="dark"] .kpi-card {
 
 .kpi-change {
   font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.kpi-change.positive {
+  color: var(--mm-income);
+}
+
+.kpi-change.negative {
+  color: var(--mm-expense);
+}
+
+.kpi-change.neutral {
+  color: var(--mm-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1566,11 +1663,20 @@ html[data-theme="dark"] .btn-row-delete {
 }
 
 .tx-empty-icon {
-  font-size: 3rem;
-  opacity: 0.2;
-  display: block;
-  margin-bottom: 1rem;
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--mm-radius-lg);
+  background: var(--mm-surface-soft);
+  font-size: 1.6rem;
   color: var(--mm-muted);
+  margin: 0 auto 1rem;
+  border: 1px solid var(--mm-border);
+}
+
+html[data-theme="dark"] .tx-empty-icon {
+  background: var(--mm-surface-raised);
 }
 
 /* --------------------------------------------------------------------------

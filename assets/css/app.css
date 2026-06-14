@@ -4,6 +4,8 @@
    Load order: vendor/bootstrap.min.css → app.css → layout.css / auth.css → components.css
    ========================================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap');
+
 /* --------------------------------------------------------------------------
    0. FOUC Prevention
    The inline <head> script adds mm-init to <html> before the body renders.
@@ -55,6 +57,7 @@ html.mm-init body { visibility: hidden; }
   --mm-duration-slow: 320ms;
   --mm-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --mm-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --mm-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ── Background surfaces */
   --mm-bg: #f5f7fb;
@@ -100,10 +103,11 @@ html.mm-init body { visibility: hidden; }
   --mm-sidebar-shadow: 18px 0 42px rgba(15, 23, 42, 0.08);
 
   /* ── Elevation */
-  --mm-shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --mm-shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 4px rgba(15, 23, 42, 0.04);
-  --mm-shadow:    0 10px 24px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
-  --mm-shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.10), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --mm-shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.05);
+  --mm-shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.09), 0 1px 4px rgba(15, 23, 42, 0.05);
+  --mm-shadow:    0 10px 24px rgba(15, 23, 42, 0.10), 0 2px 8px rgba(15, 23, 42, 0.05);
+  --mm-shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.13), 0 4px 12px rgba(15, 23, 42, 0.07);
+  --mm-shadow-primary: 0 8px 24px rgba(37, 99, 235, 0.28), 0 2px 8px rgba(37, 99, 235, 0.16);
   --mm-ring: 0 0 0 3px rgba(37, 99, 235, 0.18);
   --mm-ring-danger: 0 0 0 3px rgba(220, 38, 38, 0.18);
 }
@@ -146,11 +150,12 @@ html[data-theme="dark"] {
   --mm-sidebar-icon: #bfdbfe;
   --mm-sidebar-shadow: 18px 0 42px rgba(0, 0, 0, 0.34);
 
-  /* Elevation (dark) */
-  --mm-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --mm-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.28);
-  --mm-shadow:    0 10px 24px rgba(0, 0, 0, 0.32);
-  --mm-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.42);
+  /* Elevation (dark — color-tinted for depth on dark surfaces) */
+  --mm-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --mm-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.34), 0 1px 4px rgba(0, 0, 0, 0.20);
+  --mm-shadow:    0 10px 24px rgba(0, 0, 0, 0.38), 0 2px 8px rgba(0, 0, 0, 0.24);
+  --mm-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.48), 0 4px 12px rgba(0, 0, 0, 0.28);
+  --mm-shadow-primary: 0 8px 24px rgba(96, 165, 250, 0.22), 0 2px 8px rgba(96, 165, 250, 0.12);
   --mm-ring: 0 0 0 3px rgba(96, 165, 250, 0.22);
   --mm-ring-danger: 0 0 0 3px rgba(248, 113, 113, 0.22);
 

@@ -73,7 +73,7 @@
           </div>
 
           <!-- ── Summary Strip ─────────────────────────────────────────── -->
-          <div id="summaryStrip" class="row g-3 mb-4 d-none">
+          <div id="summaryStrip" class="row g-3 mb-4 d-none animate-stagger">
             <!-- Income -->
             <div class="col-6 col-xl-3">
               <div class="kpi-card d-flex flex-column gap-2">
@@ -223,7 +223,7 @@
           </div>
 
           <!-- ── Transaction Table Panel ────────────────────────────────── -->
-          <div id="tablePanel" class="panel panel-flush mb-4 d-none">
+          <div id="tablePanel" class="panel panel-flush mb-4 d-none animate-fade-up">
 
             <!-- Table header with count -->
             <div class="panel-inner-bar panel-inner-bar--top">
@@ -242,10 +242,12 @@
             </div>
 
             <!-- Empty state -->
-            <div id="txEmpty" class="d-none tx-empty-state">
-              <i class="bi bi-inbox tx-empty-icon"></i>
-              <h5 class="fw-semibold mb-1" data-i18n="transactions.empty_title">لا توجد معاملات</h5>
-              <p class="text-muted small mb-0" data-i18n="transactions.empty_desc">حاول تعديل الفلاتر أو أضف معاملتك الأولى.</p>
+            <div id="txEmpty" class="d-none">
+              <div class="empty-state">
+                <span class="tx-empty-icon"><i class="bi bi-inbox" aria-hidden="true"></i></span>
+                <p class="empty-state-title" data-i18n="transactions.empty_title">لا توجد معاملات</p>
+                <p class="empty-state-desc" data-i18n="transactions.empty_desc">حاول تعديل الفلاتر أو أضف معاملتك الأولى.</p>
+              </div>
             </div>
 
             <!-- Table (scrollable on mobile) -->

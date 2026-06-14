@@ -249,7 +249,8 @@
 
     "breakdown_title": "توزيع المصروفات",
     "breakdown_subtitle": "هذا الشهر حسب الفئة",
-    "breakdown_empty": "لا توجد مصروفات مسجّلة هذا الشهر.",
+    "breakdown_empty": "لا توجد مصروفات هذا الشهر",
+    "breakdown_empty_desc": "سيظهر توزيع المصروفات هنا عند تسجيل معاملاتك.",
 
     "recent_title": "آخر المعاملات",
     "recent_view_all": "عرض الكل",
@@ -257,7 +258,8 @@
     "recent_category": "الفئة",
     "recent_description": "الوصف",
     "recent_amount": "المبلغ",
-    "recent_empty": "لا توجد معاملات مسجّلة بعد.",
+    "recent_empty": "لا توجد معاملات بعد",
+    "recent_empty_desc": "أضف معاملتك الأولى لتبدأ رحلتك المالية.",
 
     "income_label": "دخل",
     "expense_label": "مصروف",
