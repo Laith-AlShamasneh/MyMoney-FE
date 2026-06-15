@@ -6,6 +6,7 @@
 import { initI18n, t, getLanguage }     from '../core/i18n.js';
 import { initLayout }                    from '../components/layout.js';
 import { guardPage }                     from '../core/auth.js';
+import { initOnboarding }                from '../components/onboarding.js';
 import { DashboardService }              from '../services/dashboard-service.js';
 import { ApiError }                      from '../core/api.js';
 import { showError }                     from '../components/toast.js';
@@ -382,6 +383,7 @@ async function init() {
   await guardPage();
   initLayout();
   await loadDashboard();
+  initOnboarding();
 }
 
 init();

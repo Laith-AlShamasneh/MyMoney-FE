@@ -6,6 +6,7 @@
 import { initI18n, t, getLanguage }        from '../core/i18n.js';
 import { initLayout, updateLayoutUser }    from '../components/layout.js';
 import { guardPage, updateCurrentUser }    from '../core/auth.js';
+import { initOnboarding }                 from '../components/onboarding.js';
 import { ProfileService }                  from '../services/profile-service.js';
 import { ApiError }                        from '../core/api.js';
 import { Config }                          from '../core/config.js';
@@ -418,6 +419,7 @@ async function init() {
   await guardPage();
   initLayout();
   await loadProfile();
+  initOnboarding();
 }
 
 init();

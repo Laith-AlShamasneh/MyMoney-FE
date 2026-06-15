@@ -554,5 +554,35 @@
     "500_message": "A server error occurred. Please try again later.",
     "go_home": "Go Home",
     "go_back": "Go Back"
+  },
+
+  "onboarding": {
+    "steps": {
+      "welcome": {
+        "title": "Welcome to MyMoney 👋",
+        "desc":  "Your personal finance dashboard is ready. Let's take 2 minutes to set things up so you can start tracking your money right away."
+      },
+      "add_category": {
+        "title": "Create a Category",
+        "desc":  "Categories help you organise your spending. Head to Settings and add your first category — like Food, Transport, or Entertainment."
+      },
+      "first_transaction": {
+        "title": "Record Your First Transaction",
+        "desc":  "Add an income or expense entry to see your finances come alive. Even a single transaction unlocks your dashboard charts."
+      },
+      "explore_dashboard": {
+        "title": "Explore Your Dashboard",
+        "desc":  "Check your KPIs, spending trends, and category breakdown. Everything updates in real time as you add transactions."
+      },
+      "complete": {
+        "title": "You're All Set!",
+        "desc":  "One last click and your workspace is ready. Click Finish Setup to close this guide and start managing your money."
+      }
+    },
+    "complete": {
+      "title": "Setup Complete!",
+      "desc":  "You're all set. Your dashboard is ready to help you take control of your finances. Great job!",
+      "cta":   "Start Using MyMoney"
+    }
   }
 }

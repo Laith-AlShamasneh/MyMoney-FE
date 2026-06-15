@@ -6,6 +6,7 @@
 import { initI18n, t, getLanguage }   from '../core/i18n.js';
 import { initLayout }                  from '../components/layout.js';
 import { guardPage }                   from '../core/auth.js';
+import { initOnboarding }              from '../components/onboarding.js';
 import { ReportService }               from '../services/report-service.js';
 import { ApiError }                    from '../core/api.js';
 import { Loader }                      from '../components/loading.js';
@@ -312,6 +313,7 @@ async function init() {
   _setDefaultDates();
   _syncLanguageDropdown();
   await Promise.all([loadTypes(), loadHistory()]);
+  initOnboarding();
 }
 
 init();

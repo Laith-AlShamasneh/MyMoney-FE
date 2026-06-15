@@ -174,11 +174,14 @@ function _applySession(result) {
 
   const payload = _decodeJwt(result.accessToken);
   _currentUser = {
-    userId:          payload?.nameid    || '',
-    email:           result.email       || payload?.email || '',
-    displayName:     result.displayName || '',
-    roles:           Array.isArray(result.roles) ? result.roles : [],
-    profileImageUrl: result.profileImageUrl || null,
+    userId:                 payload?.nameid    || '',
+    email:                  result.email       || payload?.email || '',
+    displayName:            result.displayName || '',
+    roles:                  Array.isArray(result.roles) ? result.roles : [],
+    profileImageUrl:        result.profileImageUrl || null,
+    hasCompletedOnboarding: result.hasCompletedOnboarding
+      ?? _currentUser?.hasCompletedOnboarding
+      ?? false,
   };
 
   /* Persist access token so it survives page navigation.

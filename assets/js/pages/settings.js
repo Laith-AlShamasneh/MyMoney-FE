@@ -6,6 +6,7 @@
 import { initI18n, t, getLanguage }        from '../core/i18n.js';
 import { initLayout }                      from '../components/layout.js';
 import { guardPage, clearSession }         from '../core/auth.js';
+import { initOnboarding }                 from '../components/onboarding.js';
 import { ProfileService }                  from '../services/profile-service.js';
 import { AuthService }                     from '../services/auth-service.js';
 import { ApiError }                        from '../core/api.js';
@@ -392,6 +393,7 @@ async function init() {
   await guardPage();
   initLayout();
   await Promise.all([loadEmailState(), loadSessions()]);
+  initOnboarding();
 }
 
 init();

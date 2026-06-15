@@ -6,6 +6,7 @@
 import { initI18n, t, getLanguage }  from '../core/i18n.js';
 import { initLayout }                 from '../components/layout.js';
 import { guardPage }                  from '../core/auth.js';
+import { initOnboarding }             from '../components/onboarding.js';
 import { TransactionService }         from '../services/transaction-service.js';
 import { CategoryService }            from '../services/category-service.js';
 import { ApiError }                   from '../core/api.js';
@@ -857,6 +858,7 @@ async function init() {
 
   // Default: this month
   _applyPreset('this_month');
+  initOnboarding();
 }
 
 init();

@@ -25,6 +25,7 @@ export const Config = Object.freeze({
     REFRESH_TOKEN:         'mm.refreshToken',
     REFRESH_TOKEN_EXPIRY:  'mm.refreshTokenExpiry',
     USER:                  'mm.user',
+    ONBOARDING:            'mm.onboarding',
   }),
 
   /** Application routes. */
@@ -91,6 +92,11 @@ export const Config = Object.freeze({
       LIST:     '/api/reports/list',
       DOWNLOAD: '/api/reports/download',
       DELETE:   '/api/reports/delete',
+    }),
+    ONBOARDING: Object.freeze({
+      STATE:   '/api/onboarding/state',
+      ADVANCE: '/api/onboarding/advance',
+      SKIP:    '/api/onboarding/skip',
     }),
   }),
 

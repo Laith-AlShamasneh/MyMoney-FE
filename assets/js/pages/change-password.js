@@ -3,9 +3,10 @@
  * Authenticated page: change password form with strength indicator.
  */
 
-import { initI18n, t }   from '../core/i18n.js';
-import { initLayout }    from '../components/layout.js';
-import { guardPage }     from '../core/auth.js';
+import { initI18n, t }     from '../core/i18n.js';
+import { initLayout }      from '../components/layout.js';
+import { guardPage }       from '../core/auth.js';
+import { initOnboarding }  from '../components/onboarding.js';
 import { AuthService }   from '../services/auth-service.js';
 import { ApiError }      from '../core/api.js';
 import { Config }        from '../core/config.js';
@@ -197,6 +198,7 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  initOnboarding();
 }
 
 init();
