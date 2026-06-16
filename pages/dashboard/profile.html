@@ -247,71 +247,124 @@
     </div>
   </div>
 
-  <!-- ── Avatar Preview Modal ──────────────────────────────────────────────── -->
-  <div class="modal fade" id="avatarPreviewModal" tabindex="-1"
-       aria-labelledby="avatarPreviewLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="avatarPreviewLabel"
-              data-i18n="profile.avatar_preview">عرض الصورة الشخصية</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"
-                  data-i18n-aria-label="common.close" aria-label="إغلاق"></button>
-        </div>
-        <div class="modal-body text-center p-3">
-          <img id="avatarPreviewImg" src="" alt=""
-               class="img-fluid rounded" style="max-height:420px;">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Avatar Upload Modal ──────────────────────────────────────────────── -->
+  <!-- ── Avatar Upload Modal (drop zone) ────────────────────────────────── -->
   <div class="modal fade" id="avatarUploadModal" tabindex="-1"
        aria-labelledby="avatarUploadLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header border-0 pb-0">
           <h5 class="modal-title" id="avatarUploadLabel"
-              data-i18n="profile.avatar_upload">تغيير الصورة</h5>
+              data-i18n="profile.avatar_drop_title">Upload a profile photo</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
-                  data-i18n-aria-label="common.close" aria-label="إغلاق"></button>
+                  data-i18n-aria-label="common.close" aria-label="Close"></button>
         </div>
-        <div class="modal-body pt-3">
-          <!-- Drop zone -->
-          <div id="avatarDropZone" role="button" tabindex="0"
-               style="border:2px dashed var(--mm-border,#dee2e6);border-radius:0.75rem;padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:border-color 0.15s,background-color 0.15s;">
-            <i class="bi bi-cloud-upload fs-1 text-muted d-block mb-2" aria-hidden="true"></i>
-            <p class="mb-1 fw-medium" data-i18n="profile.avatar_drop_hint">اسحب وأفلت صورتك هنا، أو انقر للاختيار</p>
-            <p class="text-muted small mb-0" data-i18n="profile.avatar_hint">JPG أو PNG أو WebP — الحد الأقصى 5 ميغابايت</p>
+        <div class="modal-body pt-3 pb-4">
+          <div id="avatarDropZone" class="avatar-drop-zone" role="button" tabindex="0"
+               aria-label="Upload profile photo">
+            <div class="avatar-drop-icon" aria-hidden="true">
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+            </div>
+            <p class="avatar-drop-title mb-1" data-i18n="profile.avatar_drop_title">Upload a profile photo</p>
+            <p class="avatar-drop-hint" data-i18n="profile.avatar_hint">JPG, PNG or WebP — max 5 MB</p>
           </div>
           <input type="file" id="avatarFileInput" class="d-none"
                  accept="image/jpeg,image/png,image/webp">
-          <!-- Selected file preview -->
-          <div id="avatarUploadPreview" class="d-none mt-3 p-2 rounded"
-               style="background:var(--mm-surface-2,rgba(0,0,0,0.04));">
-            <div class="d-flex align-items-center gap-3">
-              <img id="avatarUploadPreviewImg" src="" alt=""
-                   class="rounded-circle flex-shrink-0"
-                   style="width:64px;height:64px;object-fit:cover;">
-              <div class="flex-grow-1 overflow-hidden">
-                <p class="small fw-medium mb-0 text-truncate" id="avatarUploadFileName"></p>
-              </div>
-              <button type="button" class="btn-close flex-shrink-0" id="clearUploadBtn"
-                      data-i18n-aria-label="common.close" aria-label="إزالة"></button>
-            </div>
+          <div class="d-flex justify-content-center mt-3">
+            <button type="button" id="avatarBrowseBtn"
+                    class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-folder2-open me-1" aria-hidden="true"></i>
+              <span data-i18n="profile.avatar_drop_browse">Browse Files</span>
+            </button>
           </div>
-        </div>
-        <div class="modal-footer border-0 pt-0">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
-                  data-i18n="common.cancel">إلغاء</button>
-          <button type="button" class="btn btn-primary d-none" id="confirmUploadBtn">
-            <i class="bi bi-upload me-1" aria-hidden="true"></i>
-            <span data-i18n="profile.avatar_upload_confirm">رفع الصورة</span>
-          </button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ── Avatar Inspect Modal (premium viewer) ────────────────────────── -->
+  <div class="modal fade" id="avatarInspectModal" tabindex="-1"
+       aria-labelledby="avatarInspectLabel" aria-hidden="true">
+    <div class="modal-dialog avatar-inspect-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-2">
+          <h5 class="modal-title" id="avatarInspectLabel"
+              data-i18n="profile.avatar_preview_heading">Preview Photo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  data-i18n-aria-label="common.close" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="avatar-inspect-layout">
+
+            <!-- ── Image viewer pane ── -->
+            <div class="avatar-inspect-viewer">
+              <div id="avatarInspectCanvas" class="avatar-inspect-canvas"
+                   role="img" aria-label="Image preview">
+                <img id="avatarInspectImg" class="avatar-inspect-img" src="" alt="">
+              </div>
+              <div class="avatar-zoom-bar">
+                <button id="avatarZoomOutBtn" type="button" class="avatar-zoom-btn"
+                        data-i18n-aria-label="profile.avatar_zoom_out"
+                        aria-label="Zoom out">
+                  <i class="bi bi-dash-lg" aria-hidden="true"></i>
+                </button>
+                <span id="avatarZoomLevelLabel" class="avatar-zoom-level">100%</span>
+                <button id="avatarZoomInBtn" type="button" class="avatar-zoom-btn"
+                        data-i18n-aria-label="profile.avatar_zoom_in"
+                        aria-label="Zoom in">
+                  <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                </button>
+                <span class="avatar-zoom-sep" aria-hidden="true"></span>
+                <button id="avatarZoomResetBtn" type="button" class="avatar-zoom-btn"
+                        data-i18n-aria-label="profile.avatar_zoom_reset"
+                        aria-label="Fit to screen"
+                        style="width:auto;padding-inline:0.45rem;">
+                  <i class="bi bi-arrows-angle-contract me-1" aria-hidden="true"
+                     style="font-size:0.7rem;"></i>
+                  <span data-i18n="profile.avatar_zoom_reset">Fit</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- ── Sidebar ── -->
+            <div class="avatar-inspect-sidebar">
+              <div class="avatar-circle-chip">
+                <div class="avatar-circle-ring">
+                  <img id="avatarCirclePreviewImg" src="" alt="">
+                </div>
+                <p class="avatar-chip-label"
+                   data-i18n="profile.avatar_preview_how_it_looks">Preview as avatar</p>
+              </div>
+              <div class="avatar-file-meta">
+                <div class="avatar-meta-row">
+                  <span class="avatar-meta-label"
+                        data-i18n="profile.avatar_preview_file_size">File size</span>
+                  <span class="avatar-meta-value" id="avatarMetaFileSize">—</span>
+                </div>
+                <div class="avatar-meta-row">
+                  <span class="avatar-meta-label"
+                        data-i18n="profile.avatar_preview_dimensions">Dimensions</span>
+                  <span class="avatar-meta-value" id="avatarMetaDimensions">—</span>
+                </div>
+              </div>
+              <div class="avatar-inspect-actions" id="avatarInspectActions">
+                <button type="button" class="btn btn-primary btn-sm w-100"
+                        id="saveAvatarBtn">
+                  <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+                  <span data-i18n="profile.avatar_preview_save">Save Photo</span>
+                </button>
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm w-100"
+                        id="chooseAnotherBtn">
+                  <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>
+                  <span data-i18n="profile.avatar_preview_choose_another">Choose Another</span>
+                </button>
+              </div>
+            </div>
+
+          </div><!-- /.avatar-inspect-layout -->
+        </div><!-- /.modal-body -->
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
   </div>
 
   <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>

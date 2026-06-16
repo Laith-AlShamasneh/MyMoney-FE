@@ -16,8 +16,25 @@ import { showSuccess, showError }          from '../components/toast.js';
 /* --------------------------------------------------------------------------
    State
    -------------------------------------------------------------------------- */
-let _profile      = null;
-let _selectedFile = null;
+let _profile             = null;
+let _selectedFile        = null;
+let _blobUrl             = null;
+let _scale               = 1;
+let _tx                  = 0;
+let _ty                  = 0;
+let _isPanning           = false;
+let _panStartX           = 0;
+let _panStartY           = 0;
+let _panStartTx          = 0;
+let _panStartTy          = 0;
+let _pinchStartDist      = 0;
+let _pinchStartScale     = 0;
+let _removeConfirmActive = false;
+let _removeConfirmTimer  = null;
+
+const ZOOM_MIN  = 0.5;
+const ZOOM_MAX  = 4.0;
+const ZOOM_STEP = 1.3;
 
 /* --------------------------------------------------------------------------
    DOM refs — avatar hero
@@ -32,18 +49,26 @@ const heroEmail       = document.getElementById('heroEmail');
 const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
 const removeAvatarBtn = document.getElementById('removeAvatarBtn');
 
-/* DOM refs — avatar upload modal */
-const avatarUploadModalEl    = document.getElementById('avatarUploadModal');
-const avatarDropZone         = document.getElementById('avatarDropZone');
-const avatarFileInput        = document.getElementById('avatarFileInput');
-const avatarUploadPreview    = document.getElementById('avatarUploadPreview');
-const avatarUploadPreviewImg = document.getElementById('avatarUploadPreviewImg');
-const avatarUploadFileName   = document.getElementById('avatarUploadFileName');
-const clearUploadBtn         = document.getElementById('clearUploadBtn');
-const confirmUploadBtn       = document.getElementById('confirmUploadBtn');
+/* DOM refs — avatar upload modal (drop zone) */
+const avatarUploadModalEl = document.getElementById('avatarUploadModal');
+const avatarDropZone      = document.getElementById('avatarDropZone');
+const avatarFileInput     = document.getElementById('avatarFileInput');
+const avatarBrowseBtn     = document.getElementById('avatarBrowseBtn');
 
-/* DOM refs — avatar preview modal */
-const avatarPreviewImg = document.getElementById('avatarPreviewImg');
+/* DOM refs — avatar inspect modal */
+const avatarInspectModalEl   = document.getElementById('avatarInspectModal');
+const avatarInspectCanvas    = document.getElementById('avatarInspectCanvas');
+const avatarInspectImg       = document.getElementById('avatarInspectImg');
+const avatarCirclePreviewImg = document.getElementById('avatarCirclePreviewImg');
+const avatarZoomOutBtn       = document.getElementById('avatarZoomOutBtn');
+const avatarZoomInBtn        = document.getElementById('avatarZoomInBtn');
+const avatarZoomResetBtn     = document.getElementById('avatarZoomResetBtn');
+const avatarZoomLevelLabel   = document.getElementById('avatarZoomLevelLabel');
+const avatarMetaFileSize     = document.getElementById('avatarMetaFileSize');
+const avatarMetaDimensions   = document.getElementById('avatarMetaDimensions');
+const avatarInspectActions   = document.getElementById('avatarInspectActions');
+const saveAvatarBtn          = document.getElementById('saveAvatarBtn');
+const chooseAnotherBtn       = document.getElementById('chooseAnotherBtn');
 
 /* DOM refs — personal info */
 const infoSkeleton    = document.getElementById('infoSkeleton');
@@ -125,6 +150,18 @@ function _hideInfoErrors() {
   infoFormErrList.innerHTML = '';
 }
 
+function _formatFileSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function _getTouchDist(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
 /* --------------------------------------------------------------------------
    Avatar rendering
    -------------------------------------------------------------------------- */
@@ -137,7 +174,6 @@ function _renderAvatar(profileImageUrl, displayName) {
     avatarCircle.style.cursor = 'pointer';
     avatarCircle.title = t('profile.avatar_preview');
     removeAvatarBtn.classList.remove('d-none');
-    avatarPreviewImg.src = url;
   } else {
     avatarImg.style.display = 'none';
     avatarImg.src = '';
@@ -146,7 +182,6 @@ function _renderAvatar(profileImageUrl, displayName) {
     avatarCircle.style.cursor = 'default';
     avatarCircle.title = '';
     removeAvatarBtn.classList.add('d-none');
-    avatarPreviewImg.src = '';
   }
 }
 
@@ -197,30 +232,190 @@ async function loadProfile() {
 }
 
 /* --------------------------------------------------------------------------
-   Avatar — click circle to preview
+   Avatar — click circle to view current photo
    -------------------------------------------------------------------------- */
 avatarCircle.addEventListener('click', () => {
   if (!_profile?.profileImageUrl) return;
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('avatarPreviewModal')).show();
+  _openInspectModalViewMode();
 });
 
 /* --------------------------------------------------------------------------
-   Avatar upload modal
+   Zoom / pan — inspect modal
    -------------------------------------------------------------------------- */
-function _resetUploadModal() {
-  _selectedFile = null;
-  avatarFileInput.value = '';
-  if (avatarUploadPreviewImg.src.startsWith('blob:')) {
-    URL.revokeObjectURL(avatarUploadPreviewImg.src);
+function _applyTransform(animated) {
+  if (animated) {
+    avatarInspectImg.classList.add('zoom-animated');
+    setTimeout(() => avatarInspectImg.classList.remove('zoom-animated'), 180);
   }
-  avatarUploadPreviewImg.src = '';
-  avatarUploadFileName.textContent = '';
-  avatarUploadPreview.classList.add('d-none');
-  confirmUploadBtn.classList.add('d-none');
-  avatarDropZone.style.borderColor = '';
-  avatarDropZone.style.backgroundColor = '';
+  avatarInspectImg.style.transform = `translate(${_tx}px, ${_ty}px) scale(${_scale})`;
+  avatarZoomLevelLabel.textContent  = `${Math.round(_scale * 100)}%`;
+  avatarZoomOutBtn.disabled = _scale <= ZOOM_MIN;
+  avatarZoomInBtn.disabled  = _scale >= ZOOM_MAX;
 }
 
+function _zoomTo(newScale, animated = true) {
+  _scale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, newScale));
+  if (_scale <= 1) { _tx = 0; _ty = 0; }
+  _applyTransform(animated);
+}
+
+function _resetView(animated = true) {
+  _scale = 1; _tx = 0; _ty = 0;
+  _applyTransform(animated);
+}
+
+/* Mouse wheel zoom */
+avatarInspectCanvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  _zoomTo(_scale * (e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP));
+}, { passive: false });
+
+/* Mouse drag pan */
+avatarInspectCanvas.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
+  _isPanning  = true;
+  _panStartX  = e.clientX; _panStartY  = e.clientY;
+  _panStartTx = _tx;       _panStartTy = _ty;
+  avatarInspectCanvas.classList.add('is-panning');
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (!_isPanning) return;
+  _tx = _panStartTx + (e.clientX - _panStartX);
+  _ty = _panStartTy + (e.clientY - _panStartY);
+  _applyTransform(false);
+});
+
+window.addEventListener('mouseup', () => {
+  if (!_isPanning) return;
+  _isPanning = false;
+  avatarInspectCanvas.classList.remove('is-panning');
+});
+
+/* Touch pinch + pan */
+avatarInspectCanvas.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    _isPanning  = true;
+    _panStartX  = e.touches[0].clientX; _panStartY  = e.touches[0].clientY;
+    _panStartTx = _tx;                  _panStartTy = _ty;
+  } else if (e.touches.length === 2) {
+    _isPanning       = false;
+    _pinchStartDist  = _getTouchDist(e.touches);
+    _pinchStartScale = _scale;
+  }
+}, { passive: true });
+
+avatarInspectCanvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  if (e.touches.length === 1 && _isPanning) {
+    _tx = _panStartTx + (e.touches[0].clientX - _panStartX);
+    _ty = _panStartTy + (e.touches[0].clientY - _panStartY);
+    _applyTransform(false);
+  } else if (e.touches.length === 2) {
+    _zoomTo(_pinchStartScale * (_getTouchDist(e.touches) / _pinchStartDist), false);
+  }
+}, { passive: false });
+
+avatarInspectCanvas.addEventListener('touchend', () => { _isPanning = false; });
+
+/* Zoom buttons */
+avatarZoomOutBtn.addEventListener('click',   () => _zoomTo(_scale / ZOOM_STEP));
+avatarZoomInBtn.addEventListener('click',    () => _zoomTo(_scale * ZOOM_STEP));
+avatarZoomResetBtn.addEventListener('click', () => _resetView());
+
+/* --------------------------------------------------------------------------
+   Avatar inspect modal — open / close / upload
+   -------------------------------------------------------------------------- */
+function _revokeBlobUrl() {
+  if (_blobUrl) { URL.revokeObjectURL(_blobUrl); _blobUrl = null; }
+}
+
+function _loadFileMetadata(file, url) {
+  avatarMetaFileSize.textContent   = _formatFileSize(file.size);
+  avatarMetaDimensions.textContent = '—';
+  const img = new Image();
+  img.onload = () => { avatarMetaDimensions.textContent = `${img.naturalWidth} × ${img.naturalHeight}`; };
+  img.src = url;
+}
+
+function _openInspectModal() {
+  if (!_blobUrl) return;
+  avatarInspectModalEl.dataset.mode = 'upload';
+  avatarInspectImg.src              = _blobUrl;
+  avatarCirclePreviewImg.src        = _blobUrl;
+  avatarInspectActions.classList.remove('d-none');
+  _loadFileMetadata(_selectedFile, _blobUrl);
+  _resetView(false);
+  bootstrap.Modal.getOrCreateInstance(avatarInspectModalEl).show();
+}
+
+function _openInspectModalViewMode() {
+  const url = _buildImageUrl(_profile.profileImageUrl);
+  avatarInspectModalEl.dataset.mode = 'view';
+  avatarInspectImg.src              = url;
+  avatarCirclePreviewImg.src        = url;
+  avatarInspectActions.classList.add('d-none');
+  avatarMetaFileSize.textContent    = '—';
+  avatarMetaDimensions.textContent  = '—';
+  _resetView(false);
+  bootstrap.Modal.getOrCreateInstance(avatarInspectModalEl).show();
+}
+
+/* Cleanup on close */
+avatarInspectModalEl.addEventListener('hidden.bs.modal', () => {
+  _isPanning = false;
+  avatarInspectCanvas.classList.remove('is-panning');
+  _revokeBlobUrl();
+  _selectedFile                     = null;
+  avatarInspectImg.src              = '';
+  avatarCirclePreviewImg.src        = '';
+  avatarFileInput.value             = '';
+  avatarInspectModalEl.dataset.mode = '';
+  _resetView(false);
+});
+
+/* Save photo */
+saveAvatarBtn.addEventListener('click', async () => {
+  if (!_selectedFile) return;
+  Loader.setButtonLoading(saveAvatarBtn);
+  try {
+    const newImageUrl = await ProfileService.updateProfilePicture(_selectedFile);
+    _profile.profileImageUrl = newImageUrl;
+    bootstrap.Modal.getOrCreateInstance(avatarInspectModalEl).hide();
+    _renderHero(_profile);
+    const fullUrl = _buildImageUrl(newImageUrl);
+    updateLayoutUser({ profileImageUrl: fullUrl });
+    updateCurrentUser({ profileImageUrl: fullUrl });
+    _playAvatarUpdateAnimation();
+    showSuccess(t('profile.avatar_upload_success'));
+  } catch (err) {
+    showError(err instanceof ApiError ? err.message : t('errors.unknown'));
+  } finally {
+    Loader.clearButtonLoading(saveAvatarBtn);
+  }
+});
+
+/* Choose another photo */
+chooseAnotherBtn.addEventListener('click', () => {
+  avatarInspectModalEl.addEventListener('hidden.bs.modal', () => {
+    bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).show();
+  }, { once: true });
+  bootstrap.Modal.getOrCreateInstance(avatarInspectModalEl).hide();
+});
+
+/* Avatar pop animation */
+function _playAvatarUpdateAnimation() {
+  avatarCircle.classList.remove('avatar-pop');
+  void avatarCircle.offsetWidth;
+  avatarCircle.classList.add('avatar-pop');
+  avatarCircle.addEventListener('animationend', () => {
+    avatarCircle.classList.remove('avatar-pop');
+  }, { once: true });
+}
+
+/* --------------------------------------------------------------------------
+   Avatar upload modal — drop zone
+   -------------------------------------------------------------------------- */
 function _handleFileSelected(file) {
   if (!file) return;
 
@@ -229,97 +424,85 @@ function _handleFileSelected(file) {
 
   if (!allowed.includes(file.type)) {
     showError(t('auth.register.profile_image_error_type'));
+    avatarFileInput.value = '';
     return;
   }
   if (file.size > maxSize) {
     showError(t('auth.register.profile_image_error_size'));
+    avatarFileInput.value = '';
     return;
   }
 
   _selectedFile = file;
-  avatarUploadPreviewImg.src = URL.createObjectURL(file);
-  avatarUploadFileName.textContent = file.name;
-  avatarUploadPreview.classList.remove('d-none');
-  confirmUploadBtn.classList.remove('d-none');
+  _revokeBlobUrl();
+  _blobUrl = URL.createObjectURL(file);
+
+  avatarUploadModalEl.addEventListener('hidden.bs.modal', _openInspectModal, { once: true });
+  bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).hide();
 }
 
 /* Open upload modal */
 uploadAvatarBtn.addEventListener('click', () => {
-  _resetUploadModal();
   bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).show();
 });
 
-/* Reset on modal close */
-avatarUploadModalEl.addEventListener('hidden.bs.modal', _resetUploadModal);
-
-/* Drop zone — click */
-avatarDropZone.addEventListener('click', () => avatarFileInput.click());
+/* Drop zone — click + keyboard */
+avatarDropZone.addEventListener('click',   () => avatarFileInput.click());
 avatarDropZone.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    avatarFileInput.click();
-  }
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); avatarFileInput.click(); }
 });
+
+/* Browse button */
+avatarBrowseBtn.addEventListener('click', () => avatarFileInput.click());
 
 /* Drop zone — drag/drop */
 avatarDropZone.addEventListener('dragover', (e) => {
   e.preventDefault();
-  avatarDropZone.style.borderColor = 'var(--mm-primary, #0d6efd)';
-  avatarDropZone.style.backgroundColor = 'rgba(13,110,253,0.04)';
+  avatarDropZone.classList.add('drop-active');
 });
-
 avatarDropZone.addEventListener('dragleave', () => {
-  avatarDropZone.style.borderColor = '';
-  avatarDropZone.style.backgroundColor = '';
+  avatarDropZone.classList.remove('drop-active');
 });
-
 avatarDropZone.addEventListener('drop', (e) => {
   e.preventDefault();
-  avatarDropZone.style.borderColor = '';
-  avatarDropZone.style.backgroundColor = '';
+  avatarDropZone.classList.remove('drop-active');
   _handleFileSelected(e.dataTransfer.files?.[0]);
 });
 
-/* File input change */
+/* File input */
 avatarFileInput.addEventListener('change', () => {
   _handleFileSelected(avatarFileInput.files?.[0]);
-});
-
-/* Clear selected file */
-clearUploadBtn.addEventListener('click', () => {
-  _resetUploadModal();
-});
-
-/* Confirm upload */
-confirmUploadBtn.addEventListener('click', async () => {
-  if (!_selectedFile) return;
-  Loader.setButtonLoading(confirmUploadBtn);
-  try {
-    const newImageUrl = await ProfileService.updateProfilePicture(_selectedFile);
-    _profile.profileImageUrl = newImageUrl;
-    _renderHero(_profile);
-    const fullUrl = _buildImageUrl(newImageUrl);
-    updateLayoutUser({ profileImageUrl: fullUrl });
-    updateCurrentUser({ profileImageUrl: fullUrl });
-    bootstrap.Modal.getOrCreateInstance(avatarUploadModalEl).hide();
-    showSuccess(t('profile.avatar_upload_success'));
-  } catch (err) {
-    showError(err instanceof ApiError ? err.message : t('errors.unknown'));
-  } finally {
-    Loader.clearButtonLoading(confirmUploadBtn);
-  }
+  avatarFileInput.value = '';
 });
 
 /* --------------------------------------------------------------------------
-   Remove avatar
+   Remove avatar — two-step confirmation
    -------------------------------------------------------------------------- */
+function _resetRemoveBtn() {
+  _removeConfirmActive = false;
+  clearTimeout(_removeConfirmTimer);
+  _removeConfirmTimer = null;
+  removeAvatarBtn.innerHTML = `<i class="bi bi-trash3 me-1" aria-hidden="true"></i><span>${t('profile.avatar_remove')}</span>`;
+  removeAvatarBtn.classList.remove('btn-danger');
+  removeAvatarBtn.classList.add('btn-outline-danger');
+}
+
 removeAvatarBtn.addEventListener('click', async () => {
-  if (!window.confirm(t('profile.avatar_remove_confirm'))) return;
+  if (!_removeConfirmActive) {
+    _removeConfirmActive = true;
+    removeAvatarBtn.innerHTML = `<i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i><span>${t('profile.avatar_remove_confirm_btn')}</span>`;
+    removeAvatarBtn.classList.remove('btn-outline-danger');
+    removeAvatarBtn.classList.add('btn-danger');
+    _removeConfirmTimer = setTimeout(_resetRemoveBtn, 3000);
+    return;
+  }
+
+  clearTimeout(_removeConfirmTimer);
+  _removeConfirmActive = false;
   Loader.setButtonLoading(removeAvatarBtn);
   try {
     await ProfileService.removeProfilePicture();
     _profile.profileImageUrl = null;
-    _renderAvatar(null, _profile.displayNameEn);
     _renderHero(_profile);
     updateLayoutUser({ profileImageUrl: '/assets/images/avatar/avatar.jpg' });
     updateCurrentUser({ profileImageUrl: null });
@@ -328,6 +511,7 @@ removeAvatarBtn.addEventListener('click', async () => {
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
   } finally {
     Loader.clearButtonLoading(removeAvatarBtn);
+    _resetRemoveBtn();
   }
 });
 
