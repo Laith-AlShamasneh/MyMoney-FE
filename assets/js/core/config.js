@@ -7,7 +7,7 @@ export const Config = Object.freeze({
   /** Backend API base URL. Override via window.MM_API_BASE_URL for environment switching. */
   API_BASE_URL: (typeof window !== 'undefined' && window.MM_API_BASE_URL)
     ? window.MM_API_BASE_URL
-    : 'http://localhost:44320',
+    : 'https://localhost:44320',
 
   /** Application name used in page titles and UI. */
   APP_NAME: 'My Money',
