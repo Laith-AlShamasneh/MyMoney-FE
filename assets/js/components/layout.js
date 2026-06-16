@@ -13,6 +13,7 @@
 import { Config } from '../core/config.js';
 import { t, getLanguage, setLanguage } from '../core/i18n.js';
 import { getCurrentUser, logout } from '../core/auth.js';
+import { initNotificationBell } from './notifications.js';
 
 /* --------------------------------------------------------------------------
    Navigation item definitions
@@ -149,6 +150,29 @@ function _buildNavbar(user) {
                   title="${themeLabel}">
             <i class="bi bi-moon-stars" data-theme-icon aria-hidden="true"></i>
           </button>
+
+          <div class="notification-bell-wrap" id="notificationBellWrap">
+            <button class="icon-button notification-bell-btn" type="button"
+                    id="notificationBellBtn"
+                    aria-label="${t('notifications.bell_aria')}"
+                    title="${t('notifications.bell_aria')}">
+              <i class="bi bi-bell" aria-hidden="true"></i>
+              <span class="notification-badge d-none" id="notificationBadge" aria-live="polite" aria-atomic="true"></span>
+            </button>
+            <div class="notification-dropdown d-none" id="notificationDropdown"
+                 role="dialog"
+                 aria-label="${t('notifications.dropdown_title')}">
+              <div class="notif-dropdown-header">
+                <span data-i18n="notifications.dropdown_title">${t('notifications.dropdown_title')}</span>
+                <button class="notif-mark-all-btn d-none" type="button" id="notifMarkAllBtn"
+                        data-i18n="notifications.mark_all_read">${t('notifications.mark_all_read')}</button>
+              </div>
+              <div class="notif-dropdown-body" id="notifDropdownBody"></div>
+              <div class="notif-dropdown-footer">
+                <a href="${Config.ROUTES.NOTIFICATIONS}" data-i18n="notifications.view_all">${t('notifications.view_all')}</a>
+              </div>
+            </div>
+          </div>
 
           <div class="dropdown">
             <button class="profile-button dropdown-toggle" type="button"
@@ -301,6 +325,9 @@ export function initLayout() {
 
   /* Wire interactive behaviour */
   _wireEvents();
+
+  /* Notification bell */
+  initNotificationBell();
 }
 
 /**

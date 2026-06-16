@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — الإشعارات">
+  <title data-i18n-page-title="notifications.page_title">الإشعارات | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-bell" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="notifications.eyebrow">المنصة</p>
+                <h1 class="h3 mb-1" data-i18n="notifications.heading">الإشعارات</h1>
+                <p class="text-muted mb-0" data-i18n="notifications.subheading">تتبع تنبيهاتك وأنشطتك الأخيرة.</p>
+              </div>
+            </div>
+            <!-- Mark all read action -->
+            <div class="page-heading-actions">
+              <button type="button" class="btn btn-outline-primary btn-sm d-none" id="pageMarkAllReadBtn">
+                <i class="bi bi-check2-all me-1" aria-hidden="true"></i>
+                <span data-i18n="notifications.mark_all_read">تحديد الكل كمقروء</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter tabs -->
+          <div class="notif-page-filters" role="group" aria-label="فلترة الإشعارات" id="notifFilters">
+            <button class="notif-filter-btn active" type="button" data-filter="all"
+                    data-i18n="notifications.filter_all">الكل</button>
+            <button class="notif-filter-btn" type="button" data-filter="unread"
+                    data-i18n="notifications.filter_unread">غير المقروء</button>
+            <button class="notif-filter-btn" type="button" data-filter="read"
+                    data-i18n="notifications.filter_read">المقروء</button>
+            <button class="notif-filter-btn" type="button" data-filter="archived"
+                    data-i18n="notifications.filter_archived">المؤرشف</button>
+          </div>
+
+          <!-- Loading skeleton -->
+          <div id="notifLoading" class="placeholder-glow">
+            <div class="placeholder col-12 d-block mb-2" style="height:4.5rem;border-radius:0.5rem;"></div>
+            <div class="placeholder col-12 d-block mb-2" style="height:4.5rem;border-radius:0.5rem;"></div>
+            <div class="placeholder col-12 d-block mb-2" style="height:4.5rem;border-radius:0.5rem;"></div>
+            <div class="placeholder col-12 d-block mb-2" style="height:4.5rem;border-radius:0.5rem;"></div>
+            <div class="placeholder col-12 d-block"       style="height:4.5rem;border-radius:0.5rem;"></div>
+          </div>
+
+          <!-- Error state -->
+          <div id="notifError" class="d-none">
+            <div class="alert alert-danger small" role="alert" id="notifErrorMsg"></div>
+          </div>
+
+          <!-- Notification list -->
+          <div id="notifList" class="notif-page-list d-none"></div>
+
+          <!-- Empty state -->
+          <div id="notifEmpty" class="d-none text-center py-5">
+            <i class="bi bi-bell-slash text-muted d-block mb-3" style="font-size:3rem;" aria-hidden="true"></i>
+            <p class="text-muted mb-0" id="notifEmptyMsg" data-i18n="notifications.empty">لا توجد إشعارات.</p>
+          </div>
+
+          <!-- Pagination -->
+          <div id="notifPagination" class="notif-pagination d-none"></div>
+
+        </div><!-- /.container-fluid -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/notifications.js"></script>
+</body>
+</html>

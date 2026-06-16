@@ -568,6 +568,68 @@
     "go_back": "Go Back"
   },
 
+  "notifications": {
+    "page_title":       "Notifications",
+    "eyebrow":          "Notification Centre",
+    "heading":          "Notifications",
+    "subheading":       "Stay up to date with your account activity.",
+
+    "bell_aria":        "View notifications",
+    "dropdown_title":   "Notifications",
+    "view_all":         "View all",
+    "mark_all_read":    "Mark all as read",
+    "mark_read":        "Mark as read",
+    "archive":          "Archive",
+    "dismiss":          "Dismiss",
+    "delete":           "Delete",
+
+    "filter_all":       "All",
+    "filter_unread":    "Unread",
+    "filter_read":      "Read",
+    "filter_archived":  "Archived",
+
+    "loading":          "Loading notifications...",
+    "empty":            "No notifications.",
+    "empty_filtered":   "No notifications match this filter.",
+    "just_now":         "Just now",
+
+    "delete_confirm":         "Permanently delete this notification?",
+    "mark_read_success":      "Marked as read.",
+    "mark_all_read_success":  "All notifications marked as read.",
+    "archive_success":        "Notification archived.",
+    "dismiss_success":        "Notification dismissed.",
+    "delete_success":         "Notification deleted.",
+
+    "priority_critical": "Critical",
+    "priority_high":     "High",
+    "priority_normal":   "Normal",
+    "priority_low":      "Low",
+
+    "cat_security":  "Security",
+    "cat_financial": "Financial",
+    "cat_system":    "System",
+    "cat_reports":   "Reports",
+    "cat_profile":   "Profile",
+
+    "prefs_heading":       "Notification Preferences",
+    "prefs_desc":          "Choose which notification categories to receive.",
+    "prefs_save":          "Save Preferences",
+    "prefs_saving":        "Saving…",
+    "prefs_saved":         "Preferences saved.",
+    "prefs_loading":       "Loading preferences...",
+
+    "pref_security":       "Security",
+    "pref_security_desc":  "Password changes, sessions, and security alerts.",
+    "pref_financial":      "Financial",
+    "pref_financial_desc": "Large transactions and budget alerts.",
+    "pref_system":         "System",
+    "pref_system_desc":    "System announcements and maintenance alerts.",
+    "pref_reports":        "Reports",
+    "pref_reports_desc":   "Report ready and generation failure alerts.",
+    "pref_profile":        "Profile",
+    "pref_profile_desc":   "Profile updates and picture changes."
+  },
+
   "onboarding": {
     "steps": {
       "welcome": {

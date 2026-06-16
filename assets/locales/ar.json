@@ -563,6 +563,68 @@
     "go_back": "رجوع"
   },
 
+  "notifications": {
+    "page_title":       "الإشعارات",
+    "eyebrow":          "مركز الإشعارات",
+    "heading":          "الإشعارات",
+    "subheading":       "ابق على اطلاع بآخر تحديثات حسابك.",
+
+    "bell_aria":        "عرض الإشعارات",
+    "dropdown_title":   "الإشعارات",
+    "view_all":         "عرض الكل",
+    "mark_all_read":    "تحديد الكل كمقروء",
+    "mark_read":        "تحديد كمقروء",
+    "archive":          "أرشفة",
+    "dismiss":          "تجاهل",
+    "delete":           "حذف",
+
+    "filter_all":       "الكل",
+    "filter_unread":    "غير مقروء",
+    "filter_read":      "مقروء",
+    "filter_archived":  "مؤرشف",
+
+    "loading":          "جاري تحميل الإشعارات...",
+    "empty":            "لا توجد إشعارات.",
+    "empty_filtered":   "لا توجد إشعارات تطابق هذا الفلتر.",
+    "just_now":         "الآن",
+
+    "delete_confirm":         "هل تريد حذف هذا الإشعار نهائياً؟",
+    "mark_read_success":      "تم التحديد كمقروء.",
+    "mark_all_read_success":  "تم تحديد جميع الإشعارات كمقروءة.",
+    "archive_success":        "تم أرشفة الإشعار.",
+    "dismiss_success":        "تم تجاهل الإشعار.",
+    "delete_success":         "تم حذف الإشعار.",
+
+    "priority_critical": "حرج",
+    "priority_high":     "عالي",
+    "priority_normal":   "عادي",
+    "priority_low":      "منخفض",
+
+    "cat_security":  "الأمان",
+    "cat_financial": "المالية",
+    "cat_system":    "النظام",
+    "cat_reports":   "التقارير",
+    "cat_profile":   "الملف الشخصي",
+
+    "prefs_heading":       "تفضيلات الإشعارات",
+    "prefs_desc":          "اختر الفئات التي تريد تلقي إشعاراتها.",
+    "prefs_save":          "حفظ التفضيلات",
+    "prefs_saving":        "جاري الحفظ...",
+    "prefs_saved":         "تم حفظ التفضيلات بنجاح.",
+    "prefs_loading":       "جاري تحميل التفضيلات...",
+
+    "pref_security":       "الأمان",
+    "pref_security_desc":  "تغييرات كلمة المرور، الجلسات، والتنبيهات الأمنية.",
+    "pref_financial":      "المالية",
+    "pref_financial_desc": "المعاملات الكبيرة وتنبيهات الميزانية.",
+    "pref_system":         "النظام",
+    "pref_system_desc":    "إعلانات النظام وتنبيهات الصيانة.",
+    "pref_reports":        "التقارير",
+    "pref_reports_desc":   "جاهزية التقارير وتنبيهات الفشل.",
+    "pref_profile":        "الملف الشخصي",
+    "pref_profile_desc":   "تحديثات الملف الشخصي وتغييرات الصورة."
+  },
+
   "onboarding": {
     "steps": {
       "welcome": {

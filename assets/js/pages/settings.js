@@ -9,6 +9,7 @@ import { guardPage, clearSession }         from '../core/auth.js';
 import { initOnboarding }                 from '../components/onboarding.js';
 import { ProfileService }                  from '../services/profile-service.js';
 import { AuthService }                     from '../services/auth-service.js';
+import { NotificationService }             from '../services/notification-service.js';
 import { ApiError }                        from '../core/api.js';
 import { Config }                          from '../core/config.js';
 import { Loader }                          from '../components/loading.js';
@@ -388,11 +389,71 @@ function _getRefreshToken() {
 /* --------------------------------------------------------------------------
    Init
    -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Notification preferences
+   -------------------------------------------------------------------------- */
+const prefsLoading  = document.getElementById('prefsLoading');
+const prefsList     = document.getElementById('prefsList');
+const prefsError    = document.getElementById('prefsError');
+const prefsErrorMsg = document.getElementById('prefsErrorMsg');
+
+const prefToggles = {
+  security:  document.getElementById('prefSecurity'),
+  financial: document.getElementById('prefFinancial'),
+  system:    document.getElementById('prefSystem'),
+  reports:   document.getElementById('prefReports'),
+  profile:   document.getElementById('prefProfile'),
+};
+
+async function loadNotificationPrefs() {
+  try {
+    const prefs = await NotificationService.getPreferences();
+    if (prefToggles.security)  prefToggles.security.checked  = prefs.securityEnabled  ?? true;
+    if (prefToggles.financial) prefToggles.financial.checked = prefs.financialEnabled ?? true;
+    if (prefToggles.system)    prefToggles.system.checked    = prefs.systemEnabled    ?? true;
+    if (prefToggles.reports)   prefToggles.reports.checked   = prefs.reportsEnabled   ?? true;
+    if (prefToggles.profile)   prefToggles.profile.checked   = prefs.profileEnabled   ?? true;
+
+    prefsLoading?.classList.add('d-none');
+    prefsList?.classList.remove('d-none');
+  } catch {
+    prefsLoading?.classList.add('d-none');
+    prefsError?.classList.remove('d-none');
+    if (prefsErrorMsg) prefsErrorMsg.textContent = t('errors.unknown');
+  }
+}
+
+async function _savePref(key) {
+  const toggle = prefToggles[key];
+  if (!toggle) return;
+  const prev = !toggle.checked;
+  try {
+    await NotificationService.updatePreferences({
+      securityEnabled:  prefToggles.security?.checked  ?? true,
+      financialEnabled: prefToggles.financial?.checked ?? true,
+      systemEnabled:    prefToggles.system?.checked    ?? true,
+      reportsEnabled:   prefToggles.reports?.checked   ?? true,
+      profileEnabled:   prefToggles.profile?.checked   ?? true,
+    });
+    showSuccess(t('notifications.prefs_saved'));
+  } catch {
+    toggle.checked = prev;
+    showError(t('errors.unknown'));
+  }
+}
+
+function wirePrefsToggles() {
+  Object.entries(prefToggles).forEach(([key, toggle]) => {
+    toggle?.addEventListener('change', () => _savePref(key));
+  });
+}
+
 async function init() {
   await initI18n();
   await guardPage();
   initLayout();
-  await Promise.all([loadEmailState(), loadSessions()]);
+  wirePrefsToggles();
+  await Promise.all([loadEmailState(), loadSessions(), loadNotificationPrefs()]);
   initOnboarding();
 }
 

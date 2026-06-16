@@ -232,6 +232,102 @@
 
           </div><!-- /.row -->
 
+          <!-- ── Notification Preferences ──────────────────────────────── -->
+          <div class="row g-4 mt-1 animate-stagger">
+            <div class="col-12">
+              <div class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1" data-i18n="notifications.prefs_heading">تفضيلات الإشعارات</h2>
+                    <p class="text-muted small mb-0" data-i18n="notifications.prefs_desc">
+                      اختر أنواع الإشعارات التي تريد تلقّيها.
+                    </p>
+                  </div>
+                  <i class="bi bi-bell-fill text-muted fs-4" aria-hidden="true"></i>
+                </div>
+
+                <!-- Loading skeleton -->
+                <div id="prefsLoading" class="placeholder-glow">
+                  <span class="placeholder col-12 d-block mb-2" style="height:2.75rem;border-radius:0.5rem;"></span>
+                  <span class="placeholder col-12 d-block mb-2" style="height:2.75rem;border-radius:0.5rem;"></span>
+                  <span class="placeholder col-12 d-block mb-2" style="height:2.75rem;border-radius:0.5rem;"></span>
+                  <span class="placeholder col-12 d-block mb-2" style="height:2.75rem;border-radius:0.5rem;"></span>
+                  <span class="placeholder col-12 d-block"       style="height:2.75rem;border-radius:0.5rem;"></span>
+                </div>
+
+                <!-- Prefs list -->
+                <div id="prefsList" class="d-none">
+                  <div class="notif-pref-item">
+                    <div class="notif-pref-info">
+                      <span class="notif-pref-icon cat-security"><i class="bi bi-shield-fill-exclamation" aria-hidden="true"></i></span>
+                      <div>
+                        <p class="mb-0 small fw-semibold" data-i18n="notifications.pref_security">الأمان</p>
+                        <p class="mb-0 text-muted" style="font-size:0.75rem;" data-i18n="notifications.pref_security_desc">تسجيل الدخول، تغيير كلمة المرور، الجلسات</p>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                      <input class="form-check-input" type="checkbox" role="switch" id="prefSecurity">
+                    </div>
+                  </div>
+                  <div class="notif-pref-item">
+                    <div class="notif-pref-info">
+                      <span class="notif-pref-icon cat-financial"><i class="bi bi-cash-coin" aria-hidden="true"></i></span>
+                      <div>
+                        <p class="mb-0 small fw-semibold" data-i18n="notifications.pref_financial">المالية</p>
+                        <p class="mb-0 text-muted" style="font-size:0.75rem;" data-i18n="notifications.pref_financial_desc">الميزانيات، التنبيهات، الملخصات</p>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                      <input class="form-check-input" type="checkbox" role="switch" id="prefFinancial">
+                    </div>
+                  </div>
+                  <div class="notif-pref-item">
+                    <div class="notif-pref-info">
+                      <span class="notif-pref-icon cat-system"><i class="bi bi-gear-fill" aria-hidden="true"></i></span>
+                      <div>
+                        <p class="mb-0 small fw-semibold" data-i18n="notifications.pref_system">النظام</p>
+                        <p class="mb-0 text-muted" style="font-size:0.75rem;" data-i18n="notifications.pref_system_desc">تحديثات التطبيق، صيانة النظام</p>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                      <input class="form-check-input" type="checkbox" role="switch" id="prefSystem">
+                    </div>
+                  </div>
+                  <div class="notif-pref-item">
+                    <div class="notif-pref-info">
+                      <span class="notif-pref-icon cat-reports"><i class="bi bi-file-earmark-bar-graph-fill" aria-hidden="true"></i></span>
+                      <div>
+                        <p class="mb-0 small fw-semibold" data-i18n="notifications.pref_reports">التقارير</p>
+                        <p class="mb-0 text-muted" style="font-size:0.75rem;" data-i18n="notifications.pref_reports_desc">إشعارات اكتمال التقارير وفشلها</p>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                      <input class="form-check-input" type="checkbox" role="switch" id="prefReports">
+                    </div>
+                  </div>
+                  <div class="notif-pref-item">
+                    <div class="notif-pref-info">
+                      <span class="notif-pref-icon cat-profile"><i class="bi bi-person-fill" aria-hidden="true"></i></span>
+                      <div>
+                        <p class="mb-0 small fw-semibold" data-i18n="notifications.pref_profile">الملف الشخصي</p>
+                        <p class="mb-0 text-muted" style="font-size:0.75rem;" data-i18n="notifications.pref_profile_desc">تحديثات البيانات الشخصية</p>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                      <input class="form-check-input" type="checkbox" role="switch" id="prefProfile">
+                    </div>
+                  </div>
+                </div><!-- /#prefsList -->
+
+                <!-- Error state -->
+                <div id="prefsError" class="d-none">
+                  <div class="alert alert-danger py-2 small mb-0" id="prefsErrorMsg" role="alert"></div>
+                </div>
+
+              </div><!-- /.panel -->
+            </div>
+          </div><!-- /.row (prefs) -->
+
         </div><!-- /.container-fluid -->
       </main>
 
