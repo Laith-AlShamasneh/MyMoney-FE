@@ -14,7 +14,7 @@
  */
 
 import { Config }          from '../core/config.js';
-import { get, post }       from '../core/api.js';
+import { post }            from '../core/api.js';
 import { getCurrentUser, updateCurrentUser } from '../core/auth.js';
 import { t, getLanguage }  from '../core/i18n.js';
 
@@ -94,7 +94,7 @@ export async function initOnboarding() {
       return;
     }
 
-    const result = await get(Config.API.ONBOARDING.STATE);
+    const result = await post(Config.API.ONBOARDING.STATE);
     if (!result) return;
 
     _state = result;
@@ -264,7 +264,7 @@ async function _handleSkipAll() {
 
 async function _refreshAndRender() {
   try {
-    const result = await get(Config.API.ONBOARDING.STATE);
+    const result = await post(Config.API.ONBOARDING.STATE);
     if (!result) return;
 
     _state = result;

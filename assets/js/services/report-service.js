@@ -3,13 +3,13 @@
  * Report generation, listing, downloading, and deletion.
  */
 
-import { get, post, del, downloadBlob } from '../core/api.js';
+import { post, downloadBlob } from '../core/api.js';
 import { Config } from '../core/config.js';
 
 export const ReportService = Object.freeze({
   /** Returns all available report types. */
   getTypes() {
-    return get(Config.API.REPORTS.TYPES);
+    return post(Config.API.REPORTS.TYPES);
   },
 
   /**
@@ -22,7 +22,7 @@ export const ReportService = Object.freeze({
 
   /** Returns the current user's report history. */
   getList() {
-    return get(Config.API.REPORTS.LIST);
+    return post(Config.API.REPORTS.LIST);
   },
 
   /**
@@ -39,6 +39,6 @@ export const ReportService = Object.freeze({
    * @param {number} reportId
    */
   deleteReport(reportId) {
-    return del(`${Config.API.REPORTS.DELETE}/${reportId}`);
+    return post(Config.API.REPORTS.DELETE, { id: reportId });
   },
 });

@@ -3,7 +3,7 @@
  * All transaction API calls go through this module (ADR-004).
  */
 
-import { post, get, put, del } from '../core/api.js';
+import { post } from '../core/api.js';
 import { Config } from '../core/config.js';
 
 const A = Config.API.TRANSACTION;
@@ -20,9 +20,9 @@ export const TransactionService = Object.freeze({
     return post(A.ANALYTICS, params);
   },
 
-  /** GET /api/transactions/get/{id} — single transaction detail */
+  /** POST /api/transactions/get — single transaction detail */
   async getById(id) {
-    return get(`${A.GET}/${id}`);
+    return post(A.GET, { id });
   },
 
   /** POST /api/transactions/create */
@@ -30,14 +30,14 @@ export const TransactionService = Object.freeze({
     return post(A.CREATE, data);
   },
 
-  /** PUT /api/transactions/update/{id} */
+  /** POST /api/transactions/update */
   async update(id, data) {
-    return put(`${A.UPDATE}/${id}`, data);
+    return post(A.UPDATE, { id, ...data });
   },
 
-  /** DELETE /api/transactions/delete/{id} */
+  /** POST /api/transactions/delete */
   async remove(id) {
-    return del(`${A.DELETE}/${id}`);
+    return post(A.DELETE, { id });
   },
 
 });
