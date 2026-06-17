@@ -42,9 +42,10 @@ export const Config = Object.freeze({
     PROFILE:         '/pages/dashboard/profile.html',
     SETTINGS:        '/pages/dashboard/settings.html',
     CHANGE_PASSWORD:  '/pages/dashboard/change-password.html',
-    NOTIFICATIONS:    '/pages/dashboard/notifications.html',
-    ERROR_404:       '/pages/errors/404.html',
-    ERROR_500:       '/pages/errors/500.html',
+    NOTIFICATIONS:          '/pages/dashboard/notifications.html',
+    FINANCIAL_INTELLIGENCE: '/pages/financial-intelligence/index.html',
+    ERROR_404:              '/pages/errors/404.html',
+    ERROR_500:              '/pages/errors/500.html',
   }),
 
   /** Backend API endpoint paths (relative to API_BASE_URL). */
@@ -98,6 +99,15 @@ export const Config = Object.freeze({
       STATE:   '/api/onboarding/state',
       ADVANCE: '/api/onboarding/advance',
       SKIP:    '/api/onboarding/skip',
+    }),
+    FIL: Object.freeze({
+      DASHBOARD:               '/api/financial-intelligence/dashboard',
+      INSIGHTS:                '/api/financial-intelligence/insights',
+      INSIGHTS_MARK_READ:      '/api/financial-intelligence/insights/mark-read',
+      PATTERNS:                '/api/financial-intelligence/patterns',
+      RECOMMENDATIONS:         '/api/financial-intelligence/recommendations',
+      RECOMMENDATIONS_APPLY:   '/api/financial-intelligence/recommendations/apply',
+      RECOMMENDATIONS_DISMISS: '/api/financial-intelligence/recommendations/dismiss',
     }),
     NOTIFICATIONS: Object.freeze({
       LIST:               '/api/notifications/list',

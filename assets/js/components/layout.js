@@ -20,11 +20,12 @@ import { initNotificationBell } from './notifications.js';
    Add / remove items here — they auto-reflect on every dashboard page.
    -------------------------------------------------------------------------- */
 const NAV_ITEMS = [
-  { key: 'dashboard',    path: Config.ROUTES.DASHBOARD,    icon: 'speedometer2',   i18nKey: 'nav.dashboard' },
-  { key: 'transactions', path: Config.ROUTES.TRANSACTIONS, icon: 'receipt',        i18nKey: 'nav.transactions' },
-  { key: 'reports',      path: Config.ROUTES.REPORTS,      icon: 'file-earmark-bar-graph', i18nKey: 'nav.reports' },
-  { key: 'profile',      path: Config.ROUTES.PROFILE,      icon: 'person-badge',   i18nKey: 'nav.profile' },
-  { key: 'settings',     path: Config.ROUTES.SETTINGS,     icon: 'gear',           i18nKey: 'nav.settings' },
+  { key: 'dashboard',             path: Config.ROUTES.DASHBOARD,             icon: 'speedometer2',         i18nKey: 'nav.dashboard' },
+  { key: 'transactions',          path: Config.ROUTES.TRANSACTIONS,          icon: 'receipt',              i18nKey: 'nav.transactions' },
+  { key: 'financial_intelligence',path: Config.ROUTES.FINANCIAL_INTELLIGENCE,icon: 'lightbulb',            i18nKey: 'nav.financial_intelligence' },
+  { key: 'reports',               path: Config.ROUTES.REPORTS,               icon: 'file-earmark-bar-graph', i18nKey: 'nav.reports' },
+  { key: 'profile',               path: Config.ROUTES.PROFILE,               icon: 'person-badge',         i18nKey: 'nav.profile' },
+  { key: 'settings',              path: Config.ROUTES.SETTINGS,              icon: 'gear',                 i18nKey: 'nav.settings' },
 ];
 
 /* --------------------------------------------------------------------------

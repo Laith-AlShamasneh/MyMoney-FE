@@ -48,6 +48,7 @@
     "reports": "Reports",
     "profile": "Profile",
     "settings": "Settings",
+    "financial_intelligence": "Intelligence",
     "change_password": "Change Password",
     "logout": "Sign out",
     "users": "Users",
@@ -628,6 +629,90 @@
     "pref_reports_desc":   "Report ready and generation failure alerts.",
     "pref_profile":        "Profile",
     "pref_profile_desc":   "Profile updates and picture changes."
+  },
+
+  "fil": {
+    "page_title":    "Financial Intelligence",
+    "eyebrow":       "Your Personal Financial Assistant",
+    "heading":       "Financial Intelligence",
+    "subheading":    "Smart insights and personalised recommendations to improve your financial health.",
+
+    "strip_score_label":  "Financial Health",
+    "strip_insight_label":"Latest Insight",
+    "strip_rec_label":    "Top Recommendation",
+    "view_all":           "View All",
+    "view_intelligence":  "View Financial Intelligence",
+
+    "score_excellent": "Excellent",
+    "score_great":     "Great",
+    "score_good":      "Good",
+    "score_fair":      "Fair",
+    "score_at_risk":   "At Risk",
+
+    "score_label":         "Score",
+    "score_breakdown":     "Score Breakdown",
+    "score_savings":       "Savings Rate",
+    "score_expense_ctrl":  "Expense Control",
+    "score_activity":      "Transaction Activity",
+
+    "health_section":       "Financial Health",
+    "intelligence_section": "Spending Intelligence",
+
+    "tab_overview":       "Overview",
+    "tab_insights":       "Insights",
+    "tab_recommendations":"Recommendations",
+
+    "insights_section":      "Financial Insights",
+    "insights_empty_title":  "No new insights",
+    "insights_empty_desc":   "You're on track! New insights will appear here when financial patterns are detected.",
+    "insight_unread":        "Unread",
+    "mark_read":             "Mark as read",
+    "mark_read_success":     "Insight marked as read.",
+
+    "sev_critical": "Critical",
+    "sev_high":     "High",
+    "sev_medium":   "Medium",
+    "sev_low":      "Low",
+    "sev_info":     "Info",
+
+    "type_warning":     "Warning",
+    "type_info":        "Info",
+    "type_opportunity": "Opportunity",
+    "type_achievement": "Achievement",
+
+    "recommendations_section":      "Smart Recommendations",
+    "recommendations_empty_title":  "No recommendations right now",
+    "recommendations_empty_desc":   "Your finances are looking great! New recommendations will appear when improvement opportunities arise.",
+    "apply":              "Apply",
+    "dismiss":            "Dismiss",
+    "applied":            "Applied",
+    "apply_success":      "Recommendation marked as applied.",
+    "dismiss_success":    "Recommendation dismissed.",
+
+    "pri_high":   "High Priority",
+    "pri_medium": "Medium Priority",
+    "pri_low":    "Low Priority",
+
+    "expected_impact": "Expected Impact",
+
+    "spending_section":        "Spending Analysis",
+    "spending_empty_title":    "No spending data",
+    "spending_empty_desc":     "Add transactions to see spending analysis here.",
+    "category_trend_title":    "Top Spending Categories",
+    "category_trend_subtitle": "Current period vs previous period",
+
+    "patterns_section": "Behaviour Patterns",
+    "patterns_empty":   "No patterns detected yet.",
+    "confidence":       "Confidence",
+
+    "no_data_title": "Not enough data yet",
+    "no_data_desc":  "Add your transactions to start your financial intelligence journey.",
+
+    "trend_up_label":     "Rising",
+    "trend_down_label":   "Falling",
+    "trend_stable_label": "Stable",
+
+    "loading": "Loading financial intelligence..."
   },
 
   "onboarding": {

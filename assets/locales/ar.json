@@ -48,6 +48,7 @@
     "reports": "التقارير",
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
+    "financial_intelligence": "الذكاء المالي",
     "change_password": "تغيير كلمة المرور",
     "logout": "تسجيل الخروج",
     "users": "المستخدمون",
@@ -623,6 +624,90 @@
     "pref_reports_desc":   "جاهزية التقارير وتنبيهات الفشل.",
     "pref_profile":        "الملف الشخصي",
     "pref_profile_desc":   "تحديثات الملف الشخصي وتغييرات الصورة."
+  },
+
+  "fil": {
+    "page_title":    "الذكاء المالي",
+    "eyebrow":       "مساعدك المالي الذكي",
+    "heading":       "الذكاء المالي",
+    "subheading":    "رؤى ذكية وتوصيات شخصية لتحسين صحتك المالية.",
+
+    "strip_score_label":  "الصحة المالية",
+    "strip_insight_label":"أحدث رؤية",
+    "strip_rec_label":    "أهم توصية",
+    "view_all":           "عرض الكل",
+    "view_intelligence":  "عرض الذكاء المالي",
+
+    "score_excellent": "ممتاز",
+    "score_great":     "جيد جداً",
+    "score_good":      "جيد",
+    "score_fair":      "مقبول",
+    "score_at_risk":   "يحتاج انتباه",
+
+    "score_label":         "النقاط",
+    "score_breakdown":     "تفاصيل النقاط",
+    "score_savings":       "معدل الادخار",
+    "score_expense_ctrl":  "ضبط المصروفات",
+    "score_activity":      "نشاط المعاملات",
+
+    "health_section":    "الصحة المالية",
+    "intelligence_section": "التحليل الذكي",
+
+    "tab_overview":       "نظرة عامة",
+    "tab_insights":       "الرؤى",
+    "tab_recommendations":"التوصيات",
+
+    "insights_section":      "الرؤى المالية",
+    "insights_empty_title":  "لا توجد رؤى جديدة",
+    "insights_empty_desc":   "أنت على المسار الصحيح! ستظهر الرؤى الجديدة هنا عند اكتشاف أنماط مالية.",
+    "insight_unread":        "غير مقروء",
+    "mark_read":             "تحديد كمقروء",
+    "mark_read_success":     "تم تحديد الرؤية كمقروءة.",
+
+    "sev_critical": "حرج",
+    "sev_high":     "مرتفع",
+    "sev_medium":   "متوسط",
+    "sev_low":      "منخفض",
+    "sev_info":     "معلومة",
+
+    "type_warning":     "تنبيه",
+    "type_info":        "معلومة",
+    "type_opportunity": "فرصة",
+    "type_achievement": "إنجاز",
+
+    "recommendations_section":      "التوصيات الذكية",
+    "recommendations_empty_title":  "لا توجد توصيات حالياً",
+    "recommendations_empty_desc":   "أداؤك المالي رائع! ستظهر التوصيات الجديدة عند وجود فرص للتحسين.",
+    "apply":              "تطبيق",
+    "dismiss":            "تجاهل",
+    "applied":            "تم التطبيق",
+    "apply_success":      "تم تحديد التوصية كمطبّقة.",
+    "dismiss_success":    "تم تجاهل التوصية.",
+
+    "pri_high":   "أولوية عالية",
+    "pri_medium": "أولوية متوسطة",
+    "pri_low":    "أولوية منخفضة",
+
+    "expected_impact": "التأثير المتوقع",
+
+    "spending_section":        "تحليل الإنفاق",
+    "spending_empty_title":    "لا توجد بيانات إنفاق",
+    "spending_empty_desc":     "أضف معاملاتك لتظهر تحليلات الإنفاق هنا.",
+    "category_trend_title":    "الفئات الأعلى إنفاقاً",
+    "category_trend_subtitle": "مقارنة الفترة الحالية بالسابقة",
+
+    "patterns_section":     "الأنماط السلوكية",
+    "patterns_empty":       "لا توجد أنماط مكتشفة بعد.",
+    "confidence":           "الثقة",
+
+    "no_data_title": "لا توجد بيانات كافية",
+    "no_data_desc":  "أضف معاملاتك لتبدأ رحلة تحليل ذكاءك المالي.",
+
+    "trend_up_label":     "ارتفاع",
+    "trend_down_label":   "انخفاض",
+    "trend_stable_label": "مستقر",
+
+    "loading": "جاري تحميل الذكاء المالي..."
   },
 
   "onboarding": {

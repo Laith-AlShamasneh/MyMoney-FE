@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — الذكاء المالي">
+  <title data-i18n-page-title="fil.page_title">الذكاء المالي | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-lightbulb" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="fil.eyebrow">مساعدك المالي الذكي</p>
+                <h1 class="h3 mb-1" data-i18n="fil.heading">الذكاء المالي</h1>
+                <p class="text-muted mb-0" data-i18n="fil.subheading">رؤى ذكية وتوصيات شخصية لتحسين صحتك المالية.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Full-page loading skeleton ──────────────────────────────── -->
+          <div id="filPageSkeleton">
+            <div class="row g-3 mb-4">
+              <div class="col-12"><div class="skeleton" style="height:11rem;"></div></div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-lg-6"><div class="skeleton skeleton-chart"></div></div>
+              <div class="col-lg-6"><div class="skeleton skeleton-chart"></div></div>
+            </div>
+            <div class="row g-3">
+              <div class="col-12"><div class="skeleton skeleton-table"></div></div>
+            </div>
+          </div>
+
+          <!-- ── No data state (shown when user has no transactions) ──────── -->
+          <div id="filNoData" class="d-none animate-fade-up">
+            <div class="panel">
+              <div class="empty-state py-4">
+                <span class="empty-state-icon" style="background:var(--mm-primary-light);">
+                  <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                </span>
+                <h2 class="empty-state-title" data-i18n="fil.no_data_title">لا توجد بيانات كافية</h2>
+                <p class="empty-state-desc" data-i18n="fil.no_data_desc">أضف معاملاتك لتبدأ رحلة تحليل ذكاءك المالي.</p>
+                <a href="/pages/transactions/index.html" class="btn btn-primary btn-sm mt-1">
+                  <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                  <span data-i18n="transactions.add_btn">إضافة معاملة</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Main content (hidden until data loads) ──────────────────── -->
+          <div id="filContent" class="d-none">
+
+            <!-- ── Financial Health Card ──────────────────────────────────── -->
+            <div class="row g-3 mb-4 animate-fade-up">
+              <div class="col-12">
+                <div class="panel">
+                  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                      <h2 class="h6 fw-semibold mb-0" data-i18n="fil.health_section">الصحة المالية</h2>
+                      <p class="text-muted small mb-0" data-i18n="fil.score_breakdown">تفاصيل النقاط</p>
+                    </div>
+                  </div>
+                  <div class="row g-3 align-items-center">
+                    <!-- Score ring + level -->
+                    <div class="col-auto">
+                      <div id="healthScoreRing" class="fil-score-ring fil-score-ring-lg">
+                        <span class="fil-score-num" id="healthScoreNum">—</span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <span id="healthScoreLevel" class="fil-score-level">—</span>
+                        <span class="text-muted small" id="healthScoreContext"></span>
+                      </div>
+                      <!-- Breakdown bars -->
+                      <div id="healthBreakdown" style="max-width:420px;"></div>
+                    </div>
+                    <!-- Key stats -->
+                    <div class="col-lg-auto">
+                      <div id="healthStats" class="row g-2" style="min-width:220px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Spending Intelligence + Patterns ───────────────────────── -->
+            <div class="row g-3 mb-4 animate-fade-up">
+              <!-- Category Trends -->
+              <div class="col-lg-6">
+                <div class="panel h-100 d-flex flex-column">
+                  <div class="mb-3">
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="fil.category_trend_title">الفئات الأعلى إنفاقاً</h2>
+                    <p class="text-muted small mb-0" data-i18n="fil.category_trend_subtitle">مقارنة الفترة الحالية بالسابقة</p>
+                  </div>
+                  <div id="categoryTrendsEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">
+                    <div class="fil-empty">
+                      <div class="fil-empty-icon"><i class="bi bi-bar-chart-line" aria-hidden="true"></i></div>
+                      <p class="fil-empty-title" data-i18n="fil.spending_empty_title">لا توجد بيانات إنفاق</p>
+                      <p class="fil-empty-desc" data-i18n="fil.spending_empty_desc">أضف معاملاتك لتظهر تحليلات الإنفاق هنا.</p>
+                    </div>
+                  </div>
+                  <div id="categoryTrendsList" class="d-none flex-grow-1"></div>
+                </div>
+              </div>
+
+              <!-- Behavior Patterns -->
+              <div class="col-lg-6">
+                <div class="panel h-100 d-flex flex-column">
+                  <div class="mb-3">
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="fil.patterns_section">الأنماط السلوكية</h2>
+                  </div>
+                  <div id="patternsEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">
+                    <div class="fil-empty">
+                      <div class="fil-empty-icon"><i class="bi bi-graph-up" aria-hidden="true"></i></div>
+                      <p class="fil-empty-title" data-i18n="fil.patterns_empty">لا توجد أنماط مكتشفة بعد.</p>
+                    </div>
+                  </div>
+                  <div id="patternsList" class="d-none flex-grow-1"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Tabs: Insights + Recommendations ───────────────────────── -->
+            <div class="panel animate-fade-up mb-4" id="filTabsPanel">
+              <div class="fil-tabs" role="tablist">
+                <button class="fil-tab-btn active" role="tab" aria-selected="true"
+                        data-tab="insights" data-i18n="fil.tab_insights">
+                  الرؤى
+                  <span class="fil-tab-count d-none" id="insightUnreadBadge"></span>
+                </button>
+                <button class="fil-tab-btn" role="tab" aria-selected="false"
+                        data-tab="recommendations" data-i18n="fil.tab_recommendations">
+                  التوصيات
+                </button>
+              </div>
+
+              <!-- Insights tab -->
+              <div class="fil-tab-panel active" id="tabInsights" role="tabpanel">
+                <div id="insightsEmpty" class="d-none">
+                  <div class="fil-empty">
+                    <div class="fil-empty-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
+                    <p class="fil-empty-title" data-i18n="fil.insights_empty_title">لا توجد رؤى جديدة</p>
+                    <p class="fil-empty-desc" data-i18n="fil.insights_empty_desc">أنت على المسار الصحيح! ستظهر الرؤى الجديدة هنا عند اكتشاف أنماط مالية.</p>
+                  </div>
+                </div>
+                <div id="insightsList" class="d-none">
+                  <div class="row g-3" id="insightsGrid"></div>
+                  <div id="insightsLoadMore" class="text-center mt-3 d-none">
+                    <button class="btn btn-outline-secondary btn-sm" id="insightsLoadMoreBtn">
+                      <span data-i18n="common.loading">جاري التحميل...</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recommendations tab -->
+              <div class="fil-tab-panel" id="tabRecommendations" role="tabpanel">
+                <div id="recsEmpty" class="d-none">
+                  <div class="fil-empty">
+                    <div class="fil-empty-icon"><i class="bi bi-check2-all" aria-hidden="true"></i></div>
+                    <p class="fil-empty-title" data-i18n="fil.recommendations_empty_title">لا توجد توصيات حالياً</p>
+                    <p class="fil-empty-desc" data-i18n="fil.recommendations_empty_desc">أداؤك المالي رائع! ستظهر التوصيات الجديدة عند وجود فرص للتحسين.</p>
+                  </div>
+                </div>
+                <div id="recsList" class="d-none">
+                  <div class="row g-3" id="recsGrid"></div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /filContent -->
+
+        </div>
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/financial-intelligence.js"></script>
+</body>
+</html>

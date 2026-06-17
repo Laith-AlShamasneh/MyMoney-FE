@@ -10,6 +10,7 @@
  */
 
 import { t, getLanguage }       from '../core/i18n.js';
+import { Config }               from '../core/config.js';
 import { NotificationService }  from '../services/notification-service.js';
 import { showSuccess, showError } from './toast.js';
 
@@ -103,17 +104,28 @@ function _updateBadge(count) {
 }
 
 /* ── Dropdown item builder ────────────────────────────────────────────────── */
-function _buildItem(n) {
-  const isAr   = getLanguage() === 'ar';
-  const title  = _esc(n.title);
-  const msg    = _esc(n.message);
-  const time   = _relativeTime(n.createdAtUtc);
-  const cat    = CAT_META[n.category] ?? CAT_META[3];
-  const typ    = TYPE_META[n.type]    ?? TYPE_META[1];
-  const unread = n.status === 1;
+function _deepLinkFor(payloadJson) {
+  if (!payloadJson) return null;
+  try {
+    const p = JSON.parse(payloadJson);
+    if (typeof p?.code === 'string' && p.code.startsWith('FIL_')) {
+      return Config.ROUTES.FINANCIAL_INTELLIGENCE;
+    }
+  } catch { /* ignore */ }
+  return null;
+}
 
-  return `
-    <div class="notif-item${unread ? ' notif-unread' : ''}" data-notif-id="${n.notificationId}">
+function _buildItem(n) {
+  const isAr    = getLanguage() === 'ar';
+  const title   = _esc(n.title);
+  const msg     = _esc(n.message);
+  const time    = _relativeTime(n.createdAtUtc);
+  const cat     = CAT_META[n.category] ?? CAT_META[3];
+  const typ     = TYPE_META[n.type]    ?? TYPE_META[1];
+  const unread  = n.status === 1;
+  const deepLink = _deepLinkFor(n.payloadJson);
+
+  const inner = `
       <span class="notif-cat-icon ${cat.cls}" aria-hidden="true">
         <i class="bi bi-${cat.icon}"></i>
       </span>
@@ -127,7 +139,18 @@ function _buildItem(n) {
               title="${_esc(t('notifications.mark_read'))}"
               aria-label="${_esc(t('notifications.mark_read'))}">
         <i class="bi bi-${typ.icon} ${typ.cls}" aria-hidden="true"></i>
-      </button>` : ''}
+      </button>` : ''}`;
+
+  if (deepLink) {
+    return `
+    <a href="${_esc(deepLink)}" class="notif-item notif-item-link${unread ? ' notif-unread' : ''}" data-notif-id="${n.notificationId}">
+      ${inner}
+    </a>`;
+  }
+
+  return `
+    <div class="notif-item${unread ? ' notif-unread' : ''}" data-notif-id="${n.notificationId}">
+      ${inner}
     </div>`;
 }
 

@@ -8,6 +8,7 @@ import { initLayout }                    from '../components/layout.js';
 import { guardPage }                     from '../core/auth.js';
 import { initOnboarding }                from '../components/onboarding.js';
 import { DashboardService }              from '../services/dashboard-service.js';
+import { FinancialIntelligenceService }  from '../services/financial-intelligence-service.js';
 import { ApiError }                      from '../core/api.js';
 import { showError }                     from '../components/toast.js';
 import {
@@ -34,6 +35,9 @@ const kpiNetVal         = document.getElementById('kpiNetVal');
 const kpiNetChange      = document.getElementById('kpiNetChange');
 const kpiCountVal       = document.getElementById('kpiCountVal');
 const kpiCountChange    = document.getElementById('kpiCountChange');
+
+const filSkeletons      = document.getElementById('filSkeletons');
+const filStrip          = document.getElementById('filStrip');
 
 const breakdownEmpty    = document.getElementById('breakdownEmpty');
 const breakdownChart    = document.getElementById('breakdownChart');
@@ -312,12 +316,169 @@ function _renderRecentTransactions(transactions) {
 }
 
 /* --------------------------------------------------------------------------
+   FIL helpers
+   -------------------------------------------------------------------------- */
+function _computeHealthScore(snapshot, insights = []) {
+  if (!snapshot || snapshot.totalIncome <= 0) return null;
+  const expenseRatio = snapshot.totalExpense / snapshot.totalIncome;
+  const savingsRate  = snapshot.netBalance   / snapshot.totalIncome;
+
+  const s = savingsRate >= 0.30 ? 40
+          : savingsRate >= 0.20 ? 32
+          : savingsRate >= 0.10 ? 22
+          : savingsRate >= 0.05 ? 14
+          : savingsRate >= 0    ? 8 : 0;
+
+  const e = expenseRatio <= 0.50 ? 40
+          : expenseRatio <= 0.60 ? 35
+          : expenseRatio <= 0.70 ? 28
+          : expenseRatio <= 0.80 ? 20
+          : expenseRatio <= 0.90 ? 12
+          : expenseRatio <= 1.00 ? 5 : 0;
+
+  const cnt = snapshot.transactionCount || 0;
+  const a   = cnt >= 10 ? 20 : cnt >= 5 ? 15 : cnt >= 2 ? 10 : cnt >= 1 ? 5 : 0;
+
+  const critical = insights.filter(i => i.severity === 4).length;
+  const high     = insights.filter(i => i.severity === 3).length;
+  const penalty  = Math.min(critical * 5 + high * 2, 20);
+
+  return Math.max(0, Math.min(100, s + e + a - penalty));
+}
+
+function _scoreLevelCls(score) {
+  return score >= 90 ? 'fil-score-excellent'
+       : score >= 75 ? 'fil-score-great'
+       : score >= 60 ? 'fil-score-good'
+       : score >= 40 ? 'fil-score-fair'
+       : 'fil-score-at-risk';
+}
+
+function _sevCls(severity) {
+  return ['', 'fil-sev-low', 'fil-sev-medium', 'fil-sev-high', 'fil-sev-critical'][severity] || 'fil-sev-info';
+}
+
+function _sevIcon(severity) {
+  return [, 'bi-info-circle', 'bi-exclamation-circle', 'bi-exclamation-triangle-fill', 'bi-x-octagon-fill'][severity] || 'bi-info-circle';
+}
+
+function _recIcon(type) {
+  return [, 'bi-graph-down-arrow', 'bi-piggy-bank', 'bi-folder2-open', 'bi-pie-chart', 'bi-cash-stack'][type] || 'bi-lightbulb';
+}
+
+function _priCls(priority) {
+  return priority >= 3 ? 'fil-pri-high' : priority >= 2 ? 'fil-pri-medium' : 'fil-pri-low';
+}
+
+function _timeAgo(isoUtc) {
+  if (!isoUtc) return '';
+  const ms   = Date.now() - new Date(isoUtc).getTime();
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1)   return t('notifications.just_now');
+  if (mins < 60)  return `${mins}m`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24)   return `${hrs}h`;
+  return `${Math.floor(hrs / 24)}d`;
+}
+
+function _renderFilStrip(data) {
+  if (!data) return;
+
+  const { latestSnapshot, topInsights = [], recommendations = [] } = data;
+  const score    = _computeHealthScore(latestSnapshot, topInsights);
+  const levelCls = score !== null ? _scoreLevelCls(score) : null;
+  const isAr     = _lang() === 'ar';
+
+  /* ── Health Score section ── */
+  const scoreHtml = score !== null ? `
+    <div class="d-flex align-items-center gap-3">
+      <div class="fil-score-ring ${levelCls}" style="--score:${score}">
+        <span class="fil-score-num">${score}</span>
+      </div>
+      <div>
+        <div class="fil-score-level ${levelCls} mb-1">${t(`fil.score_${levelCls.replace('fil-score-', '').replace(/-/g, '_')}`)}</div>
+        <p class="text-muted mb-0" style="font-size:0.78rem;line-height:1.4;">${t('fil.subheading').split('.')[0]}.</p>
+      </div>
+    </div>` : `
+    <div class="fil-empty" style="padding:0.75rem 0;">
+      <i class="bi bi-hourglass-split text-muted fs-4"></i>
+      <p class="text-muted small mb-0">${t('fil.no_data_desc')}</p>
+    </div>`;
+
+  /* ── Top Insight section ── */
+  const topInsight = topInsights.find(i => !i.isRead) || topInsights[0];
+  const insightHtml = topInsight ? `
+    <div class="d-flex align-items-start gap-2">
+      <div class="fil-sev-icon ${_sevCls(topInsight.severity)} flex-shrink-0">
+        <i class="bi ${_sevIcon(topInsight.severity)}"></i>
+      </div>
+      <div style="min-width:0;">
+        <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+          <span class="fil-sev-badge ${_sevCls(topInsight.severity)}">${t(`fil.sev_${_sevCls(topInsight.severity).replace('fil-sev-', '')}`)}</span>
+          <span class="text-muted" style="font-size:0.68rem;">${_timeAgo(topInsight.generatedAtUtc)}</span>
+        </div>
+        <p class="fw-semibold mb-1 text-truncate" style="font-size:0.875rem;" title="${_esc(topInsight.title)}">${_esc(topInsight.title)}</p>
+        <p class="text-muted mb-0" style="font-size:0.78rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${_esc(topInsight.description)}</p>
+      </div>
+    </div>` : `
+    <div class="fil-empty" style="padding:0.5rem 0;">
+      <i class="bi bi-check-circle text-success fs-5"></i>
+      <p class="text-muted small mb-0">${t('fil.insights_empty_title')}</p>
+    </div>`;
+
+  /* ── Top Recommendation section ── */
+  const topRec = recommendations.find(r => !r.isApplied && !r.isDismissed);
+  const recHtml = topRec ? `
+    <div class="d-flex align-items-start gap-2">
+      <div class="fil-rec-icon flex-shrink-0">
+        <i class="bi ${_recIcon(topRec.type)}"></i>
+      </div>
+      <div style="min-width:0;">
+        <div class="mb-1">
+          <span class="fil-pri-badge ${_priCls(topRec.priority)}">${t(`fil.pri_${_priCls(topRec.priority).replace('fil-pri-', '')}`)}</span>
+        </div>
+        <p class="fw-semibold mb-1 text-truncate" style="font-size:0.875rem;" title="${_esc(topRec.title)}">${_esc(topRec.title)}</p>
+        <p class="text-muted mb-0" style="font-size:0.78rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${_esc(topRec.message)}</p>
+      </div>
+    </div>` : `
+    <div class="fil-empty" style="padding:0.5rem 0;">
+      <i class="bi bi-check2-all text-success fs-5"></i>
+      <p class="text-muted small mb-0">${t('fil.recommendations_empty_title')}</p>
+    </div>`;
+
+  filStrip.innerHTML = `
+    <div class="panel p-0 overflow-hidden">
+      <div class="fil-strip">
+        <div class="fil-strip-section">
+          <p class="fil-strip-label"><i class="bi bi-heart-pulse me-1" aria-hidden="true"></i>${t('fil.strip_score_label')}</p>
+          ${scoreHtml}
+        </div>
+        <div class="fil-strip-section">
+          <p class="fil-strip-label"><i class="bi bi-lightbulb me-1" aria-hidden="true"></i>${t('fil.strip_insight_label')}</p>
+          ${insightHtml}
+        </div>
+        <div class="fil-strip-section">
+          <p class="fil-strip-label"><i class="bi bi-stars me-1" aria-hidden="true"></i>${t('fil.strip_rec_label')}</p>
+          ${recHtml}
+        </div>
+      </div>
+      <div class="fil-strip-footer">
+        <a href="/pages/financial-intelligence/index.html" class="btn btn-sm btn-outline-secondary" style="font-size:0.78rem;padding:0.2rem 0.7rem;">
+          ${t('fil.view_intelligence')} <i class="bi bi-arrow-${isAr ? 'left' : 'right'}-short" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>`;
+  filStrip.classList.remove('d-none');
+}
+
+/* --------------------------------------------------------------------------
    Skeleton state helpers
    -------------------------------------------------------------------------- */
 function _showSkeletons() {
   kpiSkeletons.classList.remove('d-none');    kpiCards.classList.add('d-none');
   chartsSkeletons.classList.remove('d-none'); chartsRow.classList.add('d-none');
   bottomSkeletons.classList.remove('d-none'); bottomRow.classList.add('d-none');
+  filSkeletons.classList.remove('d-none');    filStrip.classList.add('d-none');
   emptyState.classList.add('d-none');
 }
 
@@ -325,6 +486,7 @@ function _hideSkeletons() {
   kpiSkeletons.classList.add('d-none');
   chartsSkeletons.classList.add('d-none');
   bottomSkeletons.classList.add('d-none');
+  filSkeletons.classList.add('d-none');
 }
 
 /* --------------------------------------------------------------------------
@@ -333,16 +495,24 @@ function _hideSkeletons() {
 async function loadDashboard() {
   _showSkeletons();
 
-  let data;
-  try {
-    data = await DashboardService.getSummary();
-  } catch (err) {
-    _hideSkeletons();
+  const [dashResult, filResult] = await Promise.allSettled([
+    DashboardService.getSummary(),
+    FinancialIntelligenceService.getDashboard(),
+  ]);
+
+  _hideSkeletons();
+
+  if (filResult.status === 'fulfilled' && filResult.value) {
+    _renderFilStrip(filResult.value);
+  }
+
+  if (dashResult.status === 'rejected') {
+    const err = dashResult.reason;
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
     return;
   }
 
-  _hideSkeletons();
+  const data = dashResult.value;
 
   const { kpi, monthlyTrend, categoryBreakdown, recentTransactions } = data;
 

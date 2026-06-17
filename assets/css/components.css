@@ -2220,6 +2220,8 @@ html[data-theme="dark"] .avatar-circle-ring {
 .notif-item:last-child { border-bottom: none; }
 .notif-item:hover { background: var(--mm-surface-hover, rgba(0,0,0,.03)); }
 .notif-item.notif-unread { background: var(--mm-primary-soft, rgba(var(--bs-primary-rgb), 0.05)); }
+a.notif-item-link { text-decoration: none; color: inherit; cursor: pointer; }
+a.notif-item-link:hover { background: var(--mm-primary-light); }
 
 .notif-cat-icon {
   flex-shrink: 0;
@@ -2434,3 +2436,447 @@ html[data-theme="dark"] .avatar-circle-ring {
 
 /* ── text-orange helper (used for urgent type icon) ─── */
 .text-orange { color: #f97316; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FINANCIAL INTELLIGENCE LAYER (FIL)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Health Score Ring ─── */
+.fil-score-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--fil-score-color, var(--mm-primary)) calc(var(--score, 0) * 1%),
+    var(--mm-border-soft, #eef2f7) 0
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.fil-score-ring::after {
+  content: '';
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--mm-surface);
+}
+.fil-score-num {
+  position: relative;
+  z-index: 1;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.fil-score-ring-lg {
+  width: 120px;
+  height: 120px;
+}
+.fil-score-ring-lg::after {
+  width: 88px;
+  height: 88px;
+}
+.fil-score-ring-lg .fil-score-num {
+  font-size: 1.75rem;
+}
+
+/* Score level colouring — sets ring fill colour via CSS variable cascade */
+.fil-score-excellent { --fil-score-color: var(--mm-success); }
+.fil-score-great     { --fil-score-color: var(--mm-info); }
+.fil-score-good      { --fil-score-color: var(--mm-primary); }
+.fil-score-fair      { --fil-score-color: var(--mm-warning); }
+.fil-score-at-risk   { --fil-score-color: var(--mm-danger); }
+
+/* Score level badge chip */
+.fil-score-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--mm-radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fil-score-level.fil-score-excellent { color: var(--mm-success); background: var(--mm-success-light); }
+.fil-score-level.fil-score-great     { color: var(--mm-info);    background: var(--mm-info-light);    }
+.fil-score-level.fil-score-good      { color: var(--mm-primary); background: var(--mm-primary-light); }
+.fil-score-level.fil-score-fair      { color: var(--mm-warning); background: var(--mm-warning-light); }
+.fil-score-level.fil-score-at-risk   { color: var(--mm-danger);  background: var(--mm-danger-light);  }
+
+/* ── FIL Intelligence Strip (Dashboard) ─── */
+.fil-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+}
+.fil-strip-section {
+  padding: 1.25rem;
+  border-inline-end: 1px solid var(--mm-border);
+}
+.fil-strip-section:last-child {
+  border-inline-end: none;
+}
+.fil-strip-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mm-muted);
+  margin-bottom: 0.65rem;
+}
+.fil-strip-footer {
+  padding: 0.6rem 1.25rem;
+  border-top: 1px solid var(--mm-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ── Severity icon tiles ─── */
+.fil-sev-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--mm-radius-sm);
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+.fil-sev-icon.fil-sev-critical { background: var(--mm-danger-light);         color: var(--mm-danger);  }
+.fil-sev-icon.fil-sev-high     { background: rgba(249, 115, 22, 0.12);       color: #f97316;           }
+.fil-sev-icon.fil-sev-medium   { background: var(--mm-warning-light);        color: var(--mm-warning); }
+.fil-sev-icon.fil-sev-low      { background: var(--mm-info-light);           color: var(--mm-info);    }
+.fil-sev-icon.fil-sev-info     { background: var(--mm-primary-light);        color: var(--mm-primary); }
+
+/* ── Severity badge chips ─── */
+.fil-sev-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--mm-radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fil-sev-badge.fil-sev-critical { background: var(--mm-danger-light);   color: var(--mm-danger);  }
+.fil-sev-badge.fil-sev-high     { background: rgba(249,115,22,.12);      color: #ea580c;           }
+.fil-sev-badge.fil-sev-medium   { background: var(--mm-warning-light);  color: var(--mm-warning); }
+.fil-sev-badge.fil-sev-low      { background: var(--mm-info-light);     color: var(--mm-info);    }
+.fil-sev-badge.fil-sev-info     { background: var(--mm-primary-light);  color: var(--mm-primary); }
+
+/* ── Insight Cards ─── */
+.fil-insight-card {
+  border: 1px solid var(--mm-border);
+  border-inline-start-width: 3px;
+  border-inline-start-style: solid;
+  border-inline-start-color: var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  padding: 1rem 1.15rem;
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow-xs);
+  transition: border-color var(--mm-duration-base) var(--mm-ease),
+              box-shadow var(--mm-duration-base) var(--mm-ease);
+}
+.fil-insight-card:hover    { box-shadow: var(--mm-shadow-sm); }
+.fil-insight-card.fil-unread { background: var(--mm-surface-soft); }
+
+.fil-insight-card.fil-sev-critical { border-inline-start-color: var(--mm-danger);  }
+.fil-insight-card.fil-sev-high     { border-inline-start-color: #f97316;            }
+.fil-insight-card.fil-sev-medium   { border-inline-start-color: var(--mm-warning);  }
+.fil-insight-card.fil-sev-low      { border-inline-start-color: var(--mm-info);     }
+.fil-insight-card.fil-sev-info     { border-inline-start-color: var(--mm-primary);  }
+
+/* ── Recommendation Cards ─── */
+.fil-rec-card {
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  padding: 1rem 1.15rem;
+  background: var(--mm-surface);
+  box-shadow: var(--mm-shadow-xs);
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease);
+}
+.fil-rec-card:hover     { box-shadow: var(--mm-shadow-sm); }
+.fil-rec-card.fil-applied { opacity: 0.55; }
+
+.fil-rec-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--mm-radius-md);
+  font-size: 1rem;
+  flex-shrink: 0;
+  background: var(--mm-primary-light);
+  color: var(--mm-primary);
+}
+html[data-theme="dark"] .fil-rec-icon { color: #93c5fd; }
+
+/* ── Priority badge chips ─── */
+.fil-pri-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--mm-radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fil-pri-badge.fil-pri-high   { background: var(--mm-danger-light);   color: var(--mm-danger);  }
+.fil-pri-badge.fil-pri-medium { background: var(--mm-warning-light);  color: var(--mm-warning); }
+.fil-pri-badge.fil-pri-low    { background: var(--mm-info-light);     color: var(--mm-info);    }
+
+/* Expected impact chip */
+.fil-impact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-success-light);
+  color: var(--mm-success);
+}
+
+/* ── Category Trend Items ─── */
+.fil-cat-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--mm-border-soft);
+}
+.fil-cat-trend:last-child { border-bottom: none; }
+
+.fil-cat-name {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.fil-cat-amount {
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.fil-cat-change {
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-width: 3.2rem;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.fil-trend-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: var(--mm-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+.fil-trend-up   { color: var(--mm-danger);  background: var(--mm-danger-light); }
+.fil-trend-down { color: var(--mm-success); background: var(--mm-success-light); }
+.fil-trend-stable { color: var(--mm-muted); background: var(--mm-border-soft); }
+
+/* ── Behavior Pattern Cards ─── */
+.fil-pattern-card {
+  padding: 0.85rem;
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  background: var(--mm-surface-soft);
+  font-size: 0.875rem;
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease);
+}
+.fil-pattern-card:hover { box-shadow: var(--mm-shadow-xs); }
+
+.fil-pattern-confidence {
+  height: 0.3rem;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-border);
+  overflow: hidden;
+  margin-top: 0.6rem;
+}
+.fil-pattern-confidence-fill {
+  height: 100%;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-primary);
+  transition: width 0.8s var(--mm-ease);
+}
+
+/* ── Health Score Breakdown Bars ─── */
+.fil-breakdown-item {
+  display: grid;
+  gap: 0.2rem;
+  margin-bottom: 0.75rem;
+}
+.fil-breakdown-item:last-child { margin-bottom: 0; }
+.fil-breakdown-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--mm-muted);
+  font-weight: 500;
+}
+.fil-breakdown-bar {
+  height: 0.3rem;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-border);
+  overflow: hidden;
+}
+.fil-breakdown-fill {
+  height: 100%;
+  border-radius: var(--mm-radius-full);
+  transition: width 0.8s var(--mm-ease);
+}
+
+/* ── FIL Tab Navigation ─── */
+.fil-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--mm-border);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.fil-tabs::-webkit-scrollbar { display: none; }
+
+.fil-tab-btn {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--mm-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--mm-duration-fast) var(--mm-ease),
+              border-color var(--mm-duration-fast) var(--mm-ease);
+  flex-shrink: 0;
+}
+.fil-tab-btn:hover { color: var(--mm-text); }
+.fil-tab-btn.active {
+  color: var(--mm-primary);
+  border-bottom-color: var(--mm-primary);
+}
+
+.fil-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: var(--mm-danger);
+  color: #fff;
+  margin-inline-start: 0.3rem;
+  vertical-align: middle;
+}
+
+.fil-tab-panel { display: none; }
+.fil-tab-panel.active { display: block; }
+
+/* ── FIL Empty / No-data States ─── */
+.fil-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+.fil-empty-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--mm-radius-lg);
+  background: var(--mm-primary-light);
+  color: var(--mm-primary);
+  font-size: 1.5rem;
+}
+html[data-theme="dark"] .fil-empty-icon { color: #93c5fd; }
+
+.fil-empty-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--mm-text);
+  margin: 0;
+}
+.fil-empty-desc {
+  font-size: 0.8125rem;
+  color: var(--mm-muted);
+  max-width: 300px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Insight type icon backgrounds ─── */
+.fil-type-warning     { background: var(--mm-warning-light); color: var(--mm-warning); }
+.fil-type-info        { background: var(--mm-info-light);    color: var(--mm-info);    }
+.fil-type-opportunity { background: var(--mm-success-light); color: var(--mm-success); }
+.fil-type-achievement { background: rgba(245,158,11,.12);    color: #b45309;           }
+
+/* ── Dark mode overrides ─── */
+html[data-theme="dark"] .fil-score-ring::after {
+  background: var(--mm-surface);
+}
+html[data-theme="dark"] .fil-insight-card.fil-unread {
+  background: var(--mm-surface-raised);
+}
+html[data-theme="dark"] .fil-pattern-card {
+  background: var(--mm-surface-raised);
+}
+html[data-theme="dark"] .fil-trend-up    { background: var(--mm-danger-light); }
+html[data-theme="dark"] .fil-trend-down  { background: var(--mm-success-light); }
+html[data-theme="dark"] .fil-trend-stable { background: var(--mm-border-soft); }
+
+/* ── Responsive — tablet ─── */
+@media (max-width: 991.98px) {
+  .fil-strip {
+    grid-template-columns: 1fr;
+  }
+  .fil-strip-section {
+    border-inline-end: none;
+    border-bottom: 1px solid var(--mm-border);
+  }
+  .fil-strip-section:last-child {
+    border-bottom: none;
+  }
+}
+
+/* ── Responsive — mobile ─── */
+@media (max-width: 575.98px) {
+  .fil-score-ring             { width: 68px; height: 68px; }
+  .fil-score-ring::after      { width: 50px; height: 50px; }
+  .fil-score-num              { font-size: 1.05rem; }
+  .fil-score-ring-lg          { width: 96px; height: 96px; }
+  .fil-score-ring-lg::after   { width: 70px; height: 70px; }
+  .fil-score-ring-lg .fil-score-num { font-size: 1.4rem; }
+  .fil-tab-btn                { padding: 0.6rem 0.85rem; font-size: 0.8rem; }
+  .fil-strip-section          { padding: 1rem; }
+}
+
+/* ── Skeleton size for FIL strip ─── */
+.skeleton-fil { height: 9rem; }
