@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "MyMoney-FE",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-p", "5500", "."],
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "E:\\Development\\Frontend\\MyMoney-FE"],
       "port": 5500
     }
   ]

@@ -104,6 +104,7 @@ export const Config = Object.freeze({
       DASHBOARD:               '/api/financial-intelligence/dashboard',
       INSIGHTS:                '/api/financial-intelligence/insights',
       INSIGHTS_MARK_READ:      '/api/financial-intelligence/insights/mark-read',
+      INSIGHTS_MARK_ALL_READ:  '/api/financial-intelligence/insights/mark-all-read',
       PATTERNS:                '/api/financial-intelligence/patterns',
       RECOMMENDATIONS:         '/api/financial-intelligence/recommendations',
       RECOMMENDATIONS_APPLY:   '/api/financial-intelligence/recommendations/apply',

@@ -257,7 +257,7 @@ function _renderPatterns(patterns = []) {
   patternsList.classList.remove('d-none');
 
   patternsList.innerHTML = `<div class="d-grid gap-2">` + patterns.map(p => {
-    const confPct = Math.round(p.confidenceScore * 100);
+    const confPct = Math.round(p.confidenceScore);
     return `<div class="fil-pattern-card">
       <div class="d-flex align-items-start justify-content-between gap-2">
         <p class="mb-0 small fw-semibold">${_esc(p.patternTypeName)}</p>
@@ -535,9 +535,19 @@ async function loadPage() {
   const insightsData = insightsResult.status === 'fulfilled' ? insightsResult.value : null;
   const recsData     = recsResult.status === 'fulfilled' ? recsResult.value : null;
 
-  const hasSnapshot = dash?.latestSnapshot?.totalIncome > 0;
+  // Show content if any meaningful FIS data exists: insights, recommendations,
+  // a financial snapshot, spending patterns, or category trends.
+  // "No data" only when the system has produced nothing for this user yet.
+  const hasAnyData =
+    (insightsData?.totalCount ?? 0) > 0 ||
+    (recsData?.totalCount ?? 0) > 0 ||
+    (dash?.latestSnapshot != null) ||
+    (dash?.topInsights?.length ?? 0) > 0 ||
+    (dash?.patterns?.length ?? 0) > 0 ||
+    (dash?.categoryTrends?.length ?? 0) > 0 ||
+    (dash?.recommendations?.length ?? 0) > 0;
 
-  if (!hasSnapshot) {
+  if (!hasAnyData) {
     filNoData.classList.remove('d-none');
     return;
   }
@@ -545,17 +555,17 @@ async function loadPage() {
   _lastDashData = dash;
   filContent.classList.remove('d-none');
 
-  _renderHealth(dash.latestSnapshot, dash.topInsights ?? []);
-  _renderCategoryTrends(dash.categoryTrends ?? []);
-  _renderPatterns(dash.patterns ?? []);
+  _renderHealth(dash?.latestSnapshot ?? null, dash?.topInsights ?? []);
+  _renderCategoryTrends(dash?.categoryTrends ?? []);
+  _renderPatterns(dash?.patterns ?? []);
 
   _renderInsights(
-    insightsData?.items ?? dash.topInsights ?? [],
-    insightsData?.totalCount ?? (dash.topInsights?.length ?? 0),
+    insightsData?.items ?? dash?.topInsights ?? [],
+    insightsData?.totalCount ?? (dash?.topInsights?.length ?? 0),
     insightsData?.unreadCount ?? 0,
   );
 
-  _renderRecommendations(recsData?.items ?? dash.recommendations ?? []);
+  _renderRecommendations(recsData?.items ?? dash?.recommendations ?? []);
 }
 
 /* --------------------------------------------------------------------------

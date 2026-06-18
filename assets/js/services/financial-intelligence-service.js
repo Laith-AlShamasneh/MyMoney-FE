@@ -3,16 +3,16 @@
  * All Financial Intelligence Layer API calls go through this module.
  */
 
-import { post } from '../core/api.js';
+import { get, post } from '../core/api.js';
 import { Config } from '../core/config.js';
 
 const A = Config.API.FIL;
 
 export const FinancialIntelligenceService = Object.freeze({
 
-  /** POST /api/financial-intelligence/dashboard */
+  /** GET /api/financial-intelligence/dashboard */
   async getDashboard() {
-    return post(A.DASHBOARD);
+    return get(A.DASHBOARD);
   },
 
   /** POST /api/financial-intelligence/insights */
@@ -25,6 +25,11 @@ export const FinancialIntelligenceService = Object.freeze({
   /** POST /api/financial-intelligence/insights/mark-read */
   async markInsightRead(insightId) {
     return post(A.INSIGHTS_MARK_READ, { insightId });
+  },
+
+  /** POST /api/financial-intelligence/insights/mark-all-read */
+  async markAllInsightsRead() {
+    return post(A.INSIGHTS_MARK_ALL_READ);
   },
 
   /** POST /api/financial-intelligence/patterns */
