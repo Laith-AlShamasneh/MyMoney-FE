@@ -12,7 +12,7 @@ export const FinancialIntelligenceService = Object.freeze({
 
   /** GET /api/financial-intelligence/dashboard */
   async getDashboard() {
-    return get(A.DASHBOARD);
+    return post(A.DASHBOARD);
   },
 
   /** POST /api/financial-intelligence/insights */
