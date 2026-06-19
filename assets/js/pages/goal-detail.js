@@ -620,8 +620,8 @@ async function _submitDelete() {
 /* ── Main ────────────────────────────────────────────────────────────────────── */
 (async () => {
   await initI18n();
-  await initLayout();
-  guardPage();
+  await guardPage();
+  initLayout();
 
   // Parse goal ID from query string
   const params = new URLSearchParams(window.location.search);

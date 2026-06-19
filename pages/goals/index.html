@@ -34,17 +34,16 @@
   </script>
 </head>
 <body>
-  <div id="mm-sidebar-wrap">
-    <aside id="mm-sidebar" class="mm-sidebar" role="navigation" aria-label="">
-      <div id="mm-sidebar-inner"></div>
-    </aside>
-  </div>
+  <div class="admin-shell">
 
-  <div id="mm-main-wrap" class="mm-main-wrap">
-    <header id="mm-topbar" class="mm-topbar"></header>
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
 
-    <main id="mm-main" class="mm-main">
-      <div class="container-fluid mm-page-content">
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
 
         <!-- ── Skeleton ─────────────────────────────────────────────────── -->
         <div id="goalsPageSkeleton">
@@ -161,11 +160,12 @@
           </nav>
 
         </div><!-- /goalsContent -->
-      </div><!-- /container-fluid -->
-    </main>
+        </div><!-- /container-fluid -->
+      </main>
 
-    <footer id="mm-footer" class="mm-footer"></footer>
-  </div>
+      <div id="footer-root"></div>
+    </div><!-- /admin-main -->
+  </div><!-- /admin-shell -->
 
   <!-- ══════════════════════════════════════════════════════════════════════
        WIZARD MODAL — Multi-step goal creation

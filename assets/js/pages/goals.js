@@ -690,8 +690,8 @@ function _bindGridEvents() {
 /* ── Main ────────────────────────────────────────────────────────────────────── */
 (async () => {
   await initI18n();
-  await initLayout();
-  guardPage();
+  await guardPage();
+  initLayout();
 
   // Bootstrap modal instances
   _wizardModal     = new bootstrap.Modal($('goalWizardModal'));
