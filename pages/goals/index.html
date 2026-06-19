@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — الأهداف المالية">
+  <title data-i18n-page-title="goals.page_title">الأهداف المالية | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/goals.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+<body>
+  <div id="mm-sidebar-wrap">
+    <aside id="mm-sidebar" class="mm-sidebar" role="navigation" aria-label="">
+      <div id="mm-sidebar-inner"></div>
+    </aside>
+  </div>
+
+  <div id="mm-main-wrap" class="mm-main-wrap">
+    <header id="mm-topbar" class="mm-topbar"></header>
+
+    <main id="mm-main" class="mm-main">
+      <div class="container-fluid mm-page-content">
+
+        <!-- ── Skeleton ─────────────────────────────────────────────────── -->
+        <div id="goalsPageSkeleton">
+          <div class="mm-page-header mb-4">
+            <div>
+              <div class="skel mb-2" style="width:80px;height:12px"></div>
+              <div class="skel mb-2" style="width:220px;height:28px"></div>
+              <div class="skel"      style="width:300px;height:14px"></div>
+            </div>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4 col-lg-2" id="_sklKpi1"><div class="goal-card-skeleton"></div></div>
+            <div class="col-6 col-md-4 col-lg-2" id="_sklKpi2"><div class="goal-card-skeleton"></div></div>
+            <div class="col-6 col-md-4 col-lg-2" id="_sklKpi3"><div class="goal-card-skeleton"></div></div>
+            <div class="col-6 col-md-4 col-lg-2" id="_sklKpi4"><div class="goal-card-skeleton"></div></div>
+            <div class="col-6 col-md-4 col-lg-2" id="_sklKpi5"><div class="goal-card-skeleton"></div></div>
+            <div class="col-6 col-md-4 col-lg-2" id="_sklKpi6"><div class="goal-card-skeleton"></div></div>
+          </div>
+          <div class="row g-4">
+            <div class="col-12 col-md-6 col-xl-4"><div class="goal-card-skeleton"></div></div>
+            <div class="col-12 col-md-6 col-xl-4"><div class="goal-card-skeleton"></div></div>
+            <div class="col-12 col-md-6 col-xl-4"><div class="goal-card-skeleton"></div></div>
+          </div>
+        </div>
+
+        <!-- ── No data / first-time empty ───────────────────────────────── -->
+        <div id="goalsNoData" class="d-none">
+          <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between">
+            <div>
+              <p class="eyebrow" data-i18n="goals.eyebrow"></p>
+              <h1 class="mm-page-title" data-i18n="goals.heading"></h1>
+              <p class="text-muted" data-i18n="goals.subheading"></p>
+            </div>
+          </div>
+          <div class="goal-empty-state">
+            <div class="goal-empty-icon">
+              <i class="bi bi-piggy-bank"></i>
+            </div>
+            <h3 class="fw-bold mb-2" data-i18n="goals.empty_title"></h3>
+            <p class="text-muted mb-4" data-i18n="goals.empty_desc"></p>
+            <button id="addGoalBtnEmpty" class="btn btn-primary btn-lg px-5">
+              <i class="bi bi-plus-circle me-2"></i>
+              <span data-i18n="goals.empty_cta"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Main content ──────────────────────────────────────────────── -->
+        <div id="goalsContent" class="d-none">
+
+          <!-- Page header -->
+          <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between flex-wrap gap-3">
+            <div>
+              <p class="eyebrow" data-i18n="goals.eyebrow"></p>
+              <h1 class="mm-page-title" data-i18n="goals.heading"></h1>
+              <p class="text-muted mb-0" data-i18n="goals.subheading"></p>
+            </div>
+            <button id="addGoalBtn" class="btn btn-primary align-self-start">
+              <i class="bi bi-plus-circle me-2"></i>
+              <span data-i18n="goals.add_btn"></span>
+            </button>
+          </div>
+
+          <!-- KPI strip -->
+          <div class="row g-3 mb-4" id="goalsKpiStrip"></div>
+
+          <!-- Filter bar -->
+          <div class="goals-filter-bar mb-4">
+            <select id="filterStatus" class="form-select form-select-sm">
+              <option value="" data-i18n="goals.filter_all_status"></option>
+              <option value="1" data-i18n="goals.status_active"></option>
+              <option value="2" data-i18n="goals.status_paused"></option>
+              <option value="3" data-i18n="goals.status_completed"></option>
+            </select>
+            <select id="filterType" class="form-select form-select-sm">
+              <option value="" data-i18n="goals.filter_all_types"></option>
+              <option value="1" data-i18n="goals.type_emergency_fund"></option>
+              <option value="2" data-i18n="goals.type_car"></option>
+              <option value="3" data-i18n="goals.type_home"></option>
+              <option value="4" data-i18n="goals.type_vacation"></option>
+              <option value="5" data-i18n="goals.type_education"></option>
+              <option value="6" data-i18n="goals.type_investment"></option>
+              <option value="7" data-i18n="goals.type_debt_payoff"></option>
+              <option value="8" data-i18n="goals.type_custom"></option>
+            </select>
+            <select id="filterPriority" class="form-select form-select-sm">
+              <option value="" data-i18n="goals.filter_all_priorities"></option>
+              <option value="4" data-i18n="goals.priority_critical"></option>
+              <option value="3" data-i18n="goals.priority_high"></option>
+              <option value="2" data-i18n="goals.priority_medium"></option>
+              <option value="1" data-i18n="goals.priority_low"></option>
+            </select>
+          </div>
+
+          <!-- Goal cards grid -->
+          <div id="goalsGrid" class="row g-4"></div>
+
+          <!-- Filtered empty -->
+          <div id="goalsFilteredEmpty" class="d-none">
+            <div class="text-center py-5">
+              <i class="bi bi-funnel fs-1 text-muted mb-3 d-block"></i>
+              <h5 data-i18n="goals.empty_filtered_title"></h5>
+              <p class="text-muted" data-i18n="goals.empty_filtered_desc"></p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <nav id="goalsPagination" class="d-flex justify-content-between align-items-center mt-4 d-none" aria-label="pagination">
+            <span id="goalsPaginationInfo" class="text-muted small"></span>
+            <div class="d-flex gap-2">
+              <button id="goalsPrevBtn" class="btn btn-outline-secondary btn-sm" data-i18n="goals.pagination_prev"></button>
+              <button id="goalsNextBtn" class="btn btn-outline-secondary btn-sm" data-i18n="goals.pagination_next"></button>
+            </div>
+          </nav>
+
+        </div><!-- /goalsContent -->
+      </div><!-- /container-fluid -->
+    </main>
+
+    <footer id="mm-footer" class="mm-footer"></footer>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       WIZARD MODAL — Multi-step goal creation
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="goalWizardModal" class="modal fade" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.wizard_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-3 pb-4 px-4">
+
+          <!-- Step progress bar -->
+          <div class="wizard-steps-bar mb-4">
+            <div class="wizard-step-node active" id="wizNode1">
+              <div class="wizard-step-dot" id="wizDot1">1</div>
+              <div class="wizard-step-lbl" data-i18n="goals.wizard_step_type"></div>
+            </div>
+            <div class="wizard-step-node" id="wizNode2">
+              <div class="wizard-step-dot" id="wizDot2">2</div>
+              <div class="wizard-step-lbl" data-i18n="goals.wizard_step_details"></div>
+            </div>
+            <div class="wizard-step-node" id="wizNode3">
+              <div class="wizard-step-dot" id="wizDot3">3</div>
+              <div class="wizard-step-lbl" data-i18n="goals.wizard_step_amount"></div>
+            </div>
+            <div class="wizard-step-node" id="wizNode4">
+              <div class="wizard-step-dot" id="wizDot4">4</div>
+              <div class="wizard-step-lbl" data-i18n="goals.wizard_step_schedule"></div>
+            </div>
+          </div>
+
+          <!-- Step 1: Goal type -->
+          <div id="wizStep1">
+            <p class="text-muted mb-3" data-i18n="goals.wizard_choose_type"></p>
+            <div class="wizard-type-grid" id="wizTypeGrid"></div>
+          </div>
+
+          <!-- Step 2: Name & description -->
+          <div id="wizStep2" class="d-none">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="goals.field_name"></label>
+              <input id="wizName" type="text" class="form-control" autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="goals.field_description"></label>
+              <textarea id="wizDesc" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- Step 3: Amounts -->
+          <div id="wizStep3" class="d-none">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="goals.field_target_amount"></label>
+              <input id="wizTargetAmount" type="number" min="0.001" step="0.001" class="form-control">
+            </div>
+            <div class="mb-2">
+              <label class="form-label fw-semibold" data-i18n="goals.field_initial_amount"></label>
+              <input id="wizInitialAmount" type="number" min="0" step="0.001" class="form-control">
+            </div>
+            <p class="text-muted small" data-i18n="goals.field_initial_amount_hint"></p>
+          </div>
+
+          <!-- Step 4: Schedule & priority -->
+          <div id="wizStep4" class="d-none">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="goals.field_target_date"></label>
+              <input id="wizTargetDate" type="date" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="goals.field_priority"></label>
+              <select id="wizPriority" class="form-select">
+                <option value="4" data-i18n="goals.priority_critical"></option>
+                <option value="3" data-i18n="goals.priority_high"></option>
+                <option value="2" selected data-i18n="goals.priority_medium"></option>
+                <option value="1" data-i18n="goals.priority_low"></option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4 d-flex justify-content-between">
+          <button id="wizBackBtn" class="btn btn-outline-secondary d-none" data-i18n="goals.wizard_back"></button>
+          <div class="ms-auto d-flex gap-2">
+            <button id="wizNextBtn" class="btn btn-primary" disabled data-i18n="goals.wizard_next"></button>
+            <button id="wizCreateBtn" class="btn btn-primary d-none">
+              <i class="bi bi-check-circle me-2"></i>
+              <span data-i18n="goals.wizard_create"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       CONTRIBUTE MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="contributeModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.modal_contribute_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_amount"></label>
+            <input id="ctbAmount" type="number" min="0.001" step="0.001" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_date"></label>
+            <input id="ctbDate" type="date" class="form-control">
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_notes"></label>
+            <textarea id="ctbNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="ctbSubmitBtn" class="btn btn-primary">
+            <span data-i18n="goals.modal_confirm"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       WITHDRAW MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="withdrawModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.modal_withdraw_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_amount"></label>
+            <input id="wthAmount" type="number" min="0.001" step="0.001" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_date"></label>
+            <input id="wthDate" type="date" class="form-control">
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_notes"></label>
+            <textarea id="wthNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="wthSubmitBtn" class="btn btn-danger">
+            <span data-i18n="goals.modal_confirm"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       ADJUST MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="adjustModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.modal_adjust_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-1">
+            <small class="text-muted" data-i18n="goals.modal_current_amount"></small>
+            <span id="adjCurrentVal" class="fw-bold ms-1"></span>
+          </div>
+          <div class="mb-3 mt-2">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_new_amount"></label>
+            <input id="adjNewAmount" type="number" min="0" step="0.001" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_date"></label>
+            <input id="adjDate" type="date" class="form-control">
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_notes"></label>
+            <textarea id="adjNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="adjSubmitBtn" class="btn btn-warning text-dark">
+            <span data-i18n="goals.modal_confirm"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       EDIT GOAL MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="editGoalModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.edit_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="goals.field_name"></label>
+              <input id="editName" type="text" class="form-control" autocomplete="off">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="goals.field_description"></label>
+              <textarea id="editDesc" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="goals.field_target_amount"></label>
+              <input id="editTargetAmount" type="number" min="0.001" step="0.001" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="goals.field_target_date"></label>
+              <input id="editTargetDate" type="date" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="goals.field_priority"></label>
+              <select id="editPriority" class="form-select">
+                <option value="4" data-i18n="goals.priority_critical"></option>
+                <option value="3" data-i18n="goals.priority_high"></option>
+                <option value="2" data-i18n="goals.priority_medium"></option>
+                <option value="1" data-i18n="goals.priority_low"></option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="editSaveBtn" class="btn btn-primary">
+            <span data-i18n="goals.edit_save"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       DELETE CONFIRM MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="deleteGoalModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-danger" data-i18n="goals.delete_confirm_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <p data-i18n="goals.delete_confirm_desc"></p>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="deleteConfirmBtn" class="btn btn-danger">
+            <span data-i18n="goals.delete_confirm_btn"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       GOAL COMPLETED CELEBRATION MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="goalCompletedModal" class="modal fade goal-completed-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 overflow-hidden">
+        <div class="celebration-header">
+          <div class="celebration-trophy">🏆</div>
+          <h3 class="text-white fw-bold mb-0" data-i18n="goals.completed_title"></h3>
+        </div>
+        <div class="modal-body text-center py-4 px-4">
+          <p id="completedGoalDesc" class="text-muted mb-4"></p>
+          <button type="button" class="btn btn-primary btn-lg px-5" data-bs-dismiss="modal"
+                  data-i18n="goals.completed_btn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/goals.js"></script>
+</body>
+</html>

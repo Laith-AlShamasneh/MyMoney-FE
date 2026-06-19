@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — تفاصيل الهدف">
+  <title data-i18n-page-title="goals.detail_page_title">تفاصيل الهدف | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/goals.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+<body>
+  <div id="mm-sidebar-wrap">
+    <aside id="mm-sidebar" class="mm-sidebar" role="navigation" aria-label="">
+      <div id="mm-sidebar-inner"></div>
+    </aside>
+  </div>
+
+  <div id="mm-main-wrap" class="mm-main-wrap">
+    <header id="mm-topbar" class="mm-topbar"></header>
+
+    <main id="mm-main" class="mm-main">
+      <div class="container-fluid mm-page-content">
+
+        <!-- Back link -->
+        <div class="mb-4">
+          <a id="backLink" href="/pages/goals/index.html"
+             class="d-inline-flex align-items-center gap-2 text-muted text-decoration-none fw-semibold">
+            <i class="bi bi-arrow-right"></i>
+            <span data-i18n="goals.detail_back"></span>
+          </a>
+        </div>
+
+        <!-- Skeleton -->
+        <div id="detailSkeleton">
+          <div class="goal-detail-hero mb-4">
+            <div class="skel mb-3" style="width:190px;height:190px;border-radius:50%"></div>
+            <div class="skel mb-2" style="width:60%;height:28px"></div>
+            <div class="skel mb-2" style="width:40%;height:16px"></div>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3"><div class="skel" style="height:80px;border-radius:10px"></div></div>
+            <div class="col-6 col-md-3"><div class="skel" style="height:80px;border-radius:10px"></div></div>
+            <div class="col-6 col-md-3"><div class="skel" style="height:80px;border-radius:10px"></div></div>
+            <div class="col-6 col-md-3"><div class="skel" style="height:80px;border-radius:10px"></div></div>
+          </div>
+        </div>
+
+        <!-- Not found -->
+        <div id="detailNotFound" class="d-none text-center py-5">
+          <i class="bi bi-exclamation-circle fs-1 text-muted d-block mb-3"></i>
+          <h4 data-i18n="goals.detail_not_found"></h4>
+          <a href="/pages/goals/index.html" class="btn btn-outline-secondary mt-3">
+            <span data-i18n="goals.detail_back"></span>
+          </a>
+        </div>
+
+        <!-- ── Main detail content ─────────────────────────────────────────── -->
+        <div id="detailContent" class="d-none">
+
+          <!-- Hero section -->
+          <div class="goal-detail-hero mb-4" id="detailHero">
+            <div class="goal-detail-hero-main">
+
+              <!-- Large progress ring -->
+              <div class="goal-ring-wrap goal-ring-wrap-lg flex-shrink-0" id="heroRingWrap">
+                <svg class="goal-ring" viewBox="0 0 200 200" aria-hidden="true">
+                  <circle class="goal-ring-bg" cx="100" cy="100" r="80"/>
+                  <circle class="goal-ring-fill" cx="100" cy="100" r="80" id="heroRingFill"/>
+                </svg>
+                <div class="goal-ring-center">
+                  <div class="goal-ring-pct" id="heroPct">0%</div>
+                  <div class="goal-ring-label" data-i18n="goals.progress_completion"></div>
+                </div>
+              </div>
+
+              <!-- Goal info -->
+              <div class="goal-detail-info">
+                <div class="goal-detail-type-row">
+                  <div class="goal-type-icon" id="heroTypeIcon" style="width:36px;height:36px;font-size:1rem"></div>
+                  <span id="heroTypeName" class="text-muted small fw-semibold"></span>
+                  <span id="heroStatus" class="goal-status-badge"></span>
+                  <span id="heroPriority" class="goal-pri-badge"></span>
+                </div>
+                <h1 class="goal-detail-name" id="heroGoalName"></h1>
+                <p id="heroDesc" class="text-muted mb-3"></p>
+                <div class="d-flex align-items-center gap-2 flex-wrap" id="heroDateRow">
+                  <i class="bi bi-calendar3 text-muted"></i>
+                  <span id="heroDateText" class="text-muted small fw-semibold"></span>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-flex gap-2 flex-wrap mt-3" id="heroActions">
+                  <button id="detailContributeBtn" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    <span data-i18n="goals.contribute_btn"></span>
+                  </button>
+                  <button id="detailWithdrawBtn" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-dash-circle me-1"></i>
+                    <span data-i18n="goals.withdraw_btn"></span>
+                  </button>
+                  <button id="detailAdjustBtn" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-sliders me-1"></i>
+                    <span data-i18n="goals.adjust_btn"></span>
+                  </button>
+                  <button id="detailPauseResumeBtn" class="btn btn-outline-secondary btn-sm"></button>
+                  <button id="detailEditBtn" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-pencil me-1"></i>
+                    <span data-i18n="goals.edit_btn"></span>
+                  </button>
+                  <button id="detailDeleteBtn" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash me-1"></i>
+                    <span data-i18n="goals.delete_btn"></span>
+                  </button>
+                </div>
+              </div>
+
+            </div><!-- /goal-detail-hero-main -->
+          </div><!-- /goal-detail-hero -->
+
+          <!-- ── Progress stats ──────────────────────────────────────────── -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-bar-chart-fill text-primary"></i>
+                <span data-i18n="goals.progress_completion"></span>
+              </h5>
+              <div class="goal-stats-grid" id="detailStatsGrid"></div>
+            </div>
+          </div>
+
+          <!-- ── Milestone track ─────────────────────────────────────────── -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-trophy-fill text-warning"></i>
+                <span>المراحل</span>
+              </h5>
+              <div class="milestone-track-wrap" id="milestoneTrack"></div>
+            </div>
+          </div>
+
+          <!-- ── Contribution history ────────────────────────────────────── -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history text-info"></i>
+                <span data-i18n="goals.contrib_history_title"></span>
+              </h5>
+              <div id="contribLoading" class="text-center py-3">
+                <div class="spinner-border spinner-border-sm text-muted"></div>
+              </div>
+              <div id="contribTimeline" class="contrib-timeline d-none"></div>
+              <div id="contribEmpty" class="text-muted text-center py-3 d-none"
+                   data-i18n="goals.contrib_empty"></div>
+              <div id="contribLoadMoreWrap" class="text-center mt-3 d-none">
+                <button id="contribLoadMoreBtn" class="btn btn-outline-secondary btn-sm">
+                  <span data-i18n="goals.contrib_load_more"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Linked recurring ────────────────────────────────────────── -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                  <i class="bi bi-arrow-repeat text-primary"></i>
+                  <span data-i18n="goals.linked_recurring_title"></span>
+                </h5>
+                <button id="linkRecurringBtn" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-plus-circle me-1"></i>
+                  <span data-i18n="goals.link_recurring_btn"></span>
+                </button>
+              </div>
+              <div id="linkedRecurringList"></div>
+            </div>
+          </div>
+
+        </div><!-- /detailContent -->
+      </div><!-- /container-fluid -->
+    </main>
+
+    <footer id="mm-footer" class="mm-footer"></footer>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       CONTRIBUTE MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="contributeModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.modal_contribute_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_amount"></label>
+            <input id="ctbAmount" type="number" min="0.001" step="0.001" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_date"></label>
+            <input id="ctbDate" type="date" class="form-control">
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_notes"></label>
+            <textarea id="ctbNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="ctbSubmitBtn" class="btn btn-primary" data-i18n="goals.modal_confirm"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       WITHDRAW MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="withdrawModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.modal_withdraw_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_amount"></label>
+            <input id="wthAmount" type="number" min="0.001" step="0.001" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_date"></label>
+            <input id="wthDate" type="date" class="form-control">
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_notes"></label>
+            <textarea id="wthNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="wthSubmitBtn" class="btn btn-danger" data-i18n="goals.modal_confirm"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       ADJUST MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="adjustModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.modal_adjust_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-1">
+            <small class="text-muted" data-i18n="goals.modal_current_amount"></small>
+            <span id="adjCurrentVal" class="fw-bold ms-1"></span>
+          </div>
+          <div class="mb-3 mt-2">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_new_amount"></label>
+            <input id="adjNewAmount" type="number" min="0" step="0.001" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_date"></label>
+            <input id="adjDate" type="date" class="form-control">
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold" data-i18n="goals.modal_notes"></label>
+            <textarea id="adjNotes" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="adjSubmitBtn" class="btn btn-warning text-dark" data-i18n="goals.modal_confirm"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       EDIT MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="editGoalModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.edit_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="goals.field_name"></label>
+              <input id="editName" type="text" class="form-control" autocomplete="off">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="goals.field_description"></label>
+              <textarea id="editDesc" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="goals.field_target_amount"></label>
+              <input id="editTargetAmount" type="number" min="0.001" step="0.001" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="goals.field_target_date"></label>
+              <input id="editTargetDate" type="date" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="goals.field_priority"></label>
+              <select id="editPriority" class="form-select">
+                <option value="4" data-i18n="goals.priority_critical"></option>
+                <option value="3" data-i18n="goals.priority_high"></option>
+                <option value="2" data-i18n="goals.priority_medium"></option>
+                <option value="1" data-i18n="goals.priority_low"></option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="editSaveBtn" class="btn btn-primary" data-i18n="goals.edit_save"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       DELETE CONFIRM MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="deleteGoalModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-danger" data-i18n="goals.delete_confirm_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <p data-i18n="goals.delete_confirm_desc"></p>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+          <button type="button" id="deleteConfirmBtn" class="btn btn-danger" data-i18n="goals.delete_confirm_btn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       LINK RECURRING MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="linkRecurringModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="goals.link_recurring_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <p class="text-muted small mb-3" data-i18n="goals.link_recurring_hint"></p>
+          <div id="linkRecurringLoading" class="text-center py-3">
+            <div class="spinner-border spinner-border-sm text-muted"></div>
+          </div>
+          <div id="linkRecurringList" class="d-none"></div>
+          <div id="linkRecurringEmpty" class="text-muted text-center py-3 d-none"
+               data-i18n="goals.link_recurring_empty"></div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       GOAL COMPLETED CELEBRATION MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="goalCompletedModal" class="modal fade goal-completed-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 overflow-hidden">
+        <div class="celebration-header">
+          <div class="celebration-trophy">🏆</div>
+          <h3 class="text-white fw-bold mb-0" data-i18n="goals.completed_title"></h3>
+        </div>
+        <div class="modal-body text-center py-4 px-4">
+          <p id="completedGoalDesc" class="text-muted mb-4"></p>
+          <button type="button" class="btn btn-primary btn-lg px-5" data-bs-dismiss="modal"
+                  data-i18n="goals.completed_btn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/goal-detail.js"></script>
+</body>
+</html>

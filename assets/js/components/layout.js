@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { key: 'dashboard',             path: Config.ROUTES.DASHBOARD,             icon: 'speedometer2',         i18nKey: 'nav.dashboard' },
   { key: 'transactions',          path: Config.ROUTES.TRANSACTIONS,          icon: 'receipt',              i18nKey: 'nav.transactions' },
   { key: 'recurring',             path: Config.ROUTES.RECURRING,             icon: 'arrow-repeat',         i18nKey: 'nav.recurring' },
+  { key: 'goals',                 path: Config.ROUTES.GOALS,                 icon: 'piggy-bank',            i18nKey: 'nav.goals' },
   { key: 'financial_intelligence',path: Config.ROUTES.FINANCIAL_INTELLIGENCE,icon: 'lightbulb',            i18nKey: 'nav.financial_intelligence' },
   { key: 'reports',               path: Config.ROUTES.REPORTS,               icon: 'file-earmark-bar-graph', i18nKey: 'nav.reports' },
   { key: 'profile',               path: Config.ROUTES.PROFILE,               icon: 'person-badge',         i18nKey: 'nav.profile' },

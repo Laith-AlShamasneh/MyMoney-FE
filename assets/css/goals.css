@@ -1,0 +1,823 @@
+/* ==========================================================================
+   goals.css — MyMoney
+   Goal-specific: progress rings, milestone track, wizard, timeline, celebration.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Goal type colour tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --goal-emergency: #22c55e;
+  --goal-car:       #3b82f6;
+  --goal-home:      #6366f1;
+  --goal-vacation:  #06b6d4;
+  --goal-education: #f59e0b;
+  --goal-investment:#10b981;
+  --goal-debt:      #ef4444;
+  --goal-custom:    #8b5cf6;
+}
+
+/* --------------------------------------------------------------------------
+   2. Goal card
+   -------------------------------------------------------------------------- */
+.goal-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  overflow: hidden;
+  transition: transform var(--mm-duration-base) var(--mm-ease),
+              box-shadow var(--mm-duration-base) var(--mm-ease);
+  cursor: default;
+  position: relative;
+}
+
+.goal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mm-shadow-lg);
+}
+
+.goal-card-paused {
+  opacity: 0.72;
+}
+
+.goal-card-completed .goal-ring-fill {
+  stroke: var(--mm-success) !important;
+}
+
+.goal-card-type-stripe {
+  height: 4px;
+  background: var(--goal-color, var(--mm-primary));
+}
+
+.goal-card-body {
+  padding: 1.2rem;
+}
+
+/* Header row */
+.goal-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.goal-type-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.goal-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: var(--mm-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.goal-card-desc {
+  font-size: 0.8rem;
+  margin: 0 0 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status + priority badges */
+.goal-status-badge {
+  display: inline-block;
+  padding: 0.18em 0.65em;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.goal-status-active    { background: #dcfce7; color: #166534; }
+.goal-status-paused    { background: #fef9c3; color: #854d0e; }
+.goal-status-completed { background: #dbeafe; color: #1e40af; }
+.goal-status-archived  { background: var(--mm-surface-soft); color: var(--mm-text-muted); }
+
+html[data-theme="dark"] .goal-status-active    { background: #14532d; color: #86efac; }
+html[data-theme="dark"] .goal-status-paused    { background: #422006; color: #fde68a; }
+html[data-theme="dark"] .goal-status-completed { background: #1e3a5f; color: #93c5fd; }
+
+/* --------------------------------------------------------------------------
+   3. Progress ring (SVG circle)
+   -------------------------------------------------------------------------- */
+.goal-ring-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0.5rem auto 1rem;
+}
+
+.goal-ring {
+  width: 110px;
+  height: 110px;
+  transform: rotate(-90deg);
+  display: block;
+}
+
+.goal-ring-bg {
+  fill: none;
+  stroke: var(--mm-border);
+  stroke-width: 8;
+}
+
+.goal-ring-fill {
+  fill: none;
+  stroke: var(--goal-color, var(--mm-primary));
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 238.76;
+  stroke-dashoffset: 238.76;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.goal-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.goal-ring-pct {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--mm-text);
+  line-height: 1;
+}
+
+.goal-ring-label {
+  font-size: 0.65rem;
+  color: var(--mm-text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Large ring (detail page) */
+.goal-ring-wrap-lg {
+  width: 190px;
+  height: 190px;
+}
+
+.goal-ring-wrap-lg .goal-ring {
+  width: 190px;
+  height: 190px;
+}
+
+.goal-ring-wrap-lg .goal-ring-bg,
+.goal-ring-wrap-lg .goal-ring-fill {
+  stroke-width: 10;
+  r: 80;
+}
+
+.goal-ring-wrap-lg .goal-ring-fill {
+  stroke-dasharray: 502.65;
+  stroke-dashoffset: 502.65;
+}
+
+.goal-ring-wrap-lg .goal-ring-pct {
+  font-size: 2.4rem;
+}
+
+.goal-ring-wrap-lg .goal-ring-label {
+  font-size: 0.78rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. Amounts row
+   -------------------------------------------------------------------------- */
+.goal-amounts-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.85rem;
+}
+
+.goal-amount-val {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--mm-text);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.goal-amount-lbl {
+  font-size: 0.7rem;
+  color: var(--mm-text-muted);
+  margin-top: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Milestone pips (inline, on card)
+   -------------------------------------------------------------------------- */
+.goal-pips {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+  justify-content: center;
+}
+
+.goal-pip {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--mm-border);
+  transition: background var(--mm-duration-base);
+  max-width: 44px;
+}
+
+.goal-pip.reached {
+  background: var(--goal-color, var(--mm-primary));
+}
+
+/* --------------------------------------------------------------------------
+   6. Card footer
+   -------------------------------------------------------------------------- */
+.goal-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--mm-border);
+}
+
+.goal-target-date-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--mm-text-muted);
+}
+
+.goal-date-overdue { color: var(--mm-danger); }
+.goal-date-soon    { color: var(--mm-warning); }
+.goal-date-completed { color: var(--mm-success); }
+
+.goal-menu-btn {
+  color: var(--mm-text-muted);
+  border: none;
+  background: none;
+  padding: 0.2rem;
+  line-height: 1;
+}
+.goal-menu-btn:hover { color: var(--mm-text); }
+
+/* --------------------------------------------------------------------------
+   7. Goal KPI strip (overrides default mm-kpi for goal-specific styling)
+   -------------------------------------------------------------------------- */
+.goal-kpi-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  transition: box-shadow var(--mm-duration-base);
+}
+
+.goal-kpi-card:hover { box-shadow: var(--mm-shadow-sm); }
+
+.goal-kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.goal-kpi-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--mm-text);
+  line-height: 1;
+}
+
+.goal-kpi-lbl {
+  font-size: 0.75rem;
+  color: var(--mm-text-muted);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Wizard modal
+   -------------------------------------------------------------------------- */
+.wizard-steps-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 1.8rem;
+  padding: 0 0.5rem;
+}
+
+.wizard-step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1;
+  position: relative;
+}
+
+.wizard-step-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  inset-inline-end: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--mm-border);
+  z-index: 0;
+  transition: background var(--mm-duration-base);
+}
+
+.wizard-step-node.done:not(:last-child)::after {
+  background: var(--mm-primary);
+}
+
+.wizard-step-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--mm-surface-soft);
+  border: 2px solid var(--mm-border);
+  color: var(--mm-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  transition: background var(--mm-duration-base), border-color var(--mm-duration-base), color var(--mm-duration-base);
+}
+
+.wizard-step-node.active .wizard-step-dot {
+  background: var(--mm-primary);
+  border-color: var(--mm-primary);
+  color: #fff;
+}
+
+.wizard-step-node.done .wizard-step-dot {
+  background: var(--mm-success);
+  border-color: var(--mm-success);
+  color: #fff;
+}
+
+.wizard-step-lbl {
+  font-size: 0.65rem;
+  color: var(--mm-text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60px;
+}
+
+.wizard-step-node.active .wizard-step-lbl { color: var(--mm-primary); font-weight: 700; }
+.wizard-step-node.done .wizard-step-lbl   { color: var(--mm-success); }
+
+/* Wizard goal type grid */
+.wizard-type-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .wizard-type-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.wizard-type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.85rem 0.4rem;
+  border: 2px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  background: var(--mm-surface);
+  cursor: pointer;
+  transition: border-color var(--mm-duration-base), background var(--mm-duration-fast), transform var(--mm-duration-fast);
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.wizard-type-card:hover {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary-light);
+  transform: translateY(-2px);
+}
+
+.wizard-type-card.selected {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary-light);
+  box-shadow: 0 0 0 3px rgba(var(--mm-primary-rgb, 59,130,246), 0.18);
+}
+
+.wizard-type-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: transform var(--mm-duration-fast);
+}
+
+.wizard-type-card.selected .wizard-type-card-icon {
+  transform: scale(1.1);
+}
+
+.wizard-type-card-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--mm-text);
+  line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   9. Milestone track (detail page)
+   -------------------------------------------------------------------------- */
+.milestone-track-wrap {
+  position: relative;
+  padding: 0.5rem 0 2.2rem;
+  margin: 1rem 0;
+}
+
+.milestone-track-rail {
+  height: 6px;
+  background: var(--mm-border);
+  border-radius: 3px;
+  position: relative;
+  overflow: visible;
+}
+
+.milestone-track-progress {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--goal-color, var(--mm-primary));
+  transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.milestone-markers {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 100%;
+  height: 6px;
+}
+
+.milestone-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+html[dir="rtl"] .milestone-marker {
+  transform: translate(50%, -50%);
+}
+
+.milestone-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--mm-border);
+  background: var(--mm-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--mm-text-muted);
+  transition: background var(--mm-duration-base), border-color var(--mm-duration-base);
+  z-index: 2;
+  position: relative;
+}
+
+.milestone-dot.reached {
+  border-color: var(--goal-color, var(--mm-primary));
+  background: var(--goal-color, var(--mm-primary));
+  color: #fff;
+}
+
+.milestone-label {
+  position: absolute;
+  top: 24px;
+  white-space: nowrap;
+  font-size: 0.68rem;
+  color: var(--mm-text-muted);
+  font-weight: 500;
+  text-align: center;
+}
+
+.milestone-marker.reached .milestone-label {
+  color: var(--goal-color, var(--mm-primary));
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   10. Contribution timeline
+   -------------------------------------------------------------------------- */
+.contrib-timeline {
+  position: relative;
+  padding-inline-start: 1.6rem;
+}
+
+.contrib-timeline::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--mm-border);
+}
+
+.contrib-item {
+  position: relative;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  transition: box-shadow var(--mm-duration-fast);
+}
+
+.contrib-item:hover { box-shadow: var(--mm-shadow-xs); }
+
+.contrib-item::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mm-border);
+  border: 2px solid var(--mm-surface);
+  z-index: 1;
+}
+
+.contrib-item.contrib-credit::before { background: var(--mm-success); }
+.contrib-item.contrib-debit::before  { background: var(--mm-danger); }
+.contrib-item.contrib-auto::before   { background: var(--mm-primary); }
+.contrib-item.contrib-adjust::before { background: var(--mm-warning); }
+
+.contrib-amount-credit { color: var(--mm-success); font-weight: 700; }
+.contrib-amount-debit  { color: var(--mm-danger);  font-weight: 700; }
+
+.contrib-type-badge {
+  display: inline-block;
+  padding: 0.12em 0.5em;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.contrib-badge-credit  { background: #dcfce7; color: #166534; }
+.contrib-badge-debit   { background: #fee2e2; color: #991b1b; }
+.contrib-badge-adjust  { background: #fef9c3; color: #854d0e; }
+.contrib-badge-auto    { background: #dbeafe; color: #1e40af; }
+
+html[data-theme="dark"] .contrib-badge-credit  { background: #14532d; color: #86efac; }
+html[data-theme="dark"] .contrib-badge-debit   { background: #450a0a; color: #fca5a5; }
+html[data-theme="dark"] .contrib-badge-adjust  { background: #422006; color: #fde68a; }
+html[data-theme="dark"] .contrib-badge-auto    { background: #1e3a5f; color: #93c5fd; }
+
+/* --------------------------------------------------------------------------
+   11. Goal detail hero
+   -------------------------------------------------------------------------- */
+.goal-detail-hero {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.goal-detail-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.goal-detail-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-detail-name {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0.35rem 0 0.5rem;
+  color: var(--mm-text);
+}
+
+.goal-detail-type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Priority badge */
+.goal-pri-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2em 0.65em;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.goal-pri-low      { background: #f1f5f9; color: #475569; }
+.goal-pri-medium   { background: #dbeafe; color: #1e40af; }
+.goal-pri-high     { background: #fef3c7; color: #92400e; }
+.goal-pri-critical { background: #fee2e2; color: #991b1b; }
+
+html[data-theme="dark"] .goal-pri-low      { background: #1e293b; color: #94a3b8; }
+html[data-theme="dark"] .goal-pri-medium   { background: #1e3a5f; color: #93c5fd; }
+html[data-theme="dark"] .goal-pri-high     { background: #451a03; color: #fbbf24; }
+html[data-theme="dark"] .goal-pri-critical { background: #450a0a; color: #fca5a5; }
+
+/* --------------------------------------------------------------------------
+   12. Goal completion celebration
+   -------------------------------------------------------------------------- */
+.goal-completed-modal .modal-content {
+  border-radius: var(--mm-radius-lg);
+  overflow: hidden;
+  border: none;
+}
+
+.celebration-header {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  padding: 2.5rem 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.celebration-trophy {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  animation: trophy-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes trophy-bounce {
+  from { transform: scale(0) rotate(-15deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+
+/* Confetti dots */
+.celebration-header::before,
+.celebration-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-size: 18px 18px;
+  animation: confetti-float 3s linear infinite;
+  pointer-events: none;
+}
+
+.celebration-header::after {
+  background-size: 12px 12px;
+  animation-delay: -1.5s;
+  opacity: 0.5;
+}
+
+@keyframes confetti-float {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-18px); }
+}
+
+/* --------------------------------------------------------------------------
+   13. Goal progress stats grid (detail page)
+   -------------------------------------------------------------------------- */
+.goal-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+}
+
+.goal-stat-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  padding: 0.9rem 1rem;
+  text-align: center;
+}
+
+.goal-stat-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--mm-text);
+  margin-bottom: 2px;
+}
+
+.goal-stat-lbl {
+  font-size: 0.72rem;
+  color: var(--mm-text-muted);
+  font-weight: 500;
+}
+
+.goal-stat-on-track  .goal-stat-val { color: var(--mm-success); }
+.goal-stat-behind    .goal-stat-val { color: var(--mm-danger); }
+
+/* --------------------------------------------------------------------------
+   14. Empty state (first goal)
+   -------------------------------------------------------------------------- */
+.goal-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem;
+}
+
+.goal-empty-icon {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--mm-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--mm-primary);
+}
+
+/* --------------------------------------------------------------------------
+   15. Filter bar
+   -------------------------------------------------------------------------- */
+.goals-filter-bar {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.goals-filter-bar select,
+.goals-filter-bar input[type="search"] {
+  min-width: 130px;
+  max-width: 200px;
+}
+
+/* --------------------------------------------------------------------------
+   16. Skeleton
+   -------------------------------------------------------------------------- */
+.goal-card-skeleton {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.2rem;
+  height: 320px;
+}
+
+.skel {
+  background: var(--mm-border);
+  border-radius: 4px;
+  animation: skel-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skel-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}

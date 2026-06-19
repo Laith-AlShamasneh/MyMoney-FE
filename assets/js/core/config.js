@@ -7,7 +7,7 @@ export const Config = Object.freeze({
   /** Backend API base URL. Override via window.MM_API_BASE_URL for environment switching. */
   API_BASE_URL: (typeof window !== 'undefined' && window.MM_API_BASE_URL)
     ? window.MM_API_BASE_URL
-    : 'http://localhost:5001',
+    : 'https://localhost:44320',
 
   /** Application name used in page titles and UI. */
   APP_NAME: 'My Money',
@@ -45,6 +45,8 @@ export const Config = Object.freeze({
     NOTIFICATIONS:          '/pages/dashboard/notifications.html',
     FINANCIAL_INTELLIGENCE: '/pages/financial-intelligence/index.html',
     RECURRING:              '/pages/recurring/index.html',
+    GOALS:                  '/pages/goals/index.html',
+    GOAL_DETAIL:            '/pages/goals/detail.html',
     ERROR_404:              '/pages/errors/404.html',
     ERROR_500:              '/pages/errors/500.html',
   }),
@@ -120,6 +122,22 @@ export const Config = Object.freeze({
       DELETE:    '/api/recurring-transactions/delete',
       PAUSE:     '/api/recurring-transactions/pause',
       RESUME:    '/api/recurring-transactions/resume',
+    }),
+    GOALS: Object.freeze({
+      DASHBOARD:        '/api/goals/dashboard',
+      LIST:             '/api/goals/list',
+      GET:              '/api/goals/get',
+      CREATE:           '/api/goals/create',
+      UPDATE:           '/api/goals/update',
+      DELETE:           '/api/goals/delete',
+      PAUSE:            '/api/goals/pause',
+      RESUME:           '/api/goals/resume',
+      CONTRIBUTE:       '/api/goals/contribute',
+      WITHDRAW:         '/api/goals/withdraw',
+      ADJUST:           '/api/goals/adjust',
+      CONTRIBUTIONS:    '/api/goals/contributions',
+      LINK_RECURRING:   '/api/goals/link-recurring',
+      UNLINK_RECURRING: '/api/goals/unlink-recurring',
     }),
     SUBSCRIPTION: Object.freeze({
       LIST:      '/api/subscriptions/list',
