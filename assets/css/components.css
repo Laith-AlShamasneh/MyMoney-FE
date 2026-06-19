@@ -2880,3 +2880,239 @@ html[data-theme="dark"] .fil-trend-stable { background: var(--mm-border-soft); }
 
 /* ── Skeleton size for FIL strip ─── */
 .skeleton-fil { height: 9rem; }
+
+/* ==========================================================================
+   Recurring & Subscriptions page — .rec-* components
+   ========================================================================== */
+
+/* ── Subscription card ─────────────────────────────────────────────────── */
+.rec-sub-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.1rem 1.2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  height: 100%;
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease),
+              transform var(--mm-duration-base) var(--mm-ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.rec-sub-card::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 3px;
+  background: var(--mm-border);
+  border-radius: var(--mm-radius-lg) var(--mm-radius-lg) 0 0;
+}
+
+.rec-sub-card.rec-sub-active::before   { background: var(--mm-success); }
+.rec-sub-card.rec-sub-paused::before   { background: var(--mm-warning); }
+.rec-sub-card.rec-sub-cancelled::before { background: var(--mm-muted); opacity: 0.4; }
+
+.rec-sub-card:hover {
+  box-shadow: var(--mm-shadow);
+  transform: translateY(-2px);
+}
+
+html[data-theme="dark"] .rec-sub-card {
+  background: var(--mm-surface-raised);
+}
+
+/* ── Provider avatar ─────────────────────────────────────────────────────── */
+.rec-sub-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--mm-radius-md);
+  background: var(--mm-primary-light);
+  color: var(--mm-primary-dark);
+  font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+html[data-theme="dark"] .rec-sub-avatar {
+  color: #bfdbfe;
+}
+
+/* ── Urgency badges ─────────────────────────────────────────────────────── */
+.rec-urgency {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--mm-radius-full);
+  white-space: nowrap;
+}
+
+.rec-urgency-today    { background: var(--mm-danger-light);   color: var(--mm-danger); }
+.rec-urgency-soon     { background: var(--mm-warning-light);  color: var(--mm-warning); }
+.rec-urgency-week     { background: var(--mm-info-light);     color: var(--mm-info); }
+.rec-urgency-upcoming { background: var(--mm-surface-soft);   color: var(--mm-muted); border: 1px solid var(--mm-border); }
+.rec-urgency-overdue  { background: var(--mm-danger-light);   color: var(--mm-danger); }
+
+/* ── Upcoming payment timeline ──────────────────────────────────────────── */
+.rec-upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--mm-radius-md);
+  background: var(--mm-surface-soft);
+  border: 1px solid var(--mm-border-soft);
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+
+.rec-upcoming-item:hover {
+  background: var(--mm-primary-light);
+  border-color: rgba(37, 99, 235, 0.15);
+}
+
+html[data-theme="dark"] .rec-upcoming-item {
+  background: var(--mm-surface-raised);
+  border-color: var(--mm-border);
+}
+
+html[data-theme="dark"] .rec-upcoming-item:hover {
+  background: rgba(96, 165, 250, 0.08);
+}
+
+.rec-upcoming-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--mm-radius);
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.rec-upcoming-icon-payment { background: var(--mm-primary-light);  color: var(--mm-primary-dark); }
+.rec-upcoming-icon-renewal { background: var(--mm-success-light);  color: var(--mm-success); }
+.rec-upcoming-icon-overdue { background: var(--mm-danger-light);   color: var(--mm-danger); }
+
+html[data-theme="dark"] .rec-upcoming-icon-payment { color: #bfdbfe; }
+html[data-theme="dark"] .rec-upcoming-icon-renewal { color: #5eead4; }
+
+/* ── Next occurrences preview ────────────────────────────────────────────── */
+.rec-occurrences-preview {
+  background: var(--mm-surface-soft);
+  border: 1px solid var(--mm-border-soft);
+  border-radius: var(--mm-radius);
+  padding: 0.75rem 0.9rem;
+}
+
+html[data-theme="dark"] .rec-occurrences-preview {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rec-occ-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--mm-primary-light);
+  color: var(--mm-primary-dark);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+html[data-theme="dark"] .rec-occ-num { color: #bfdbfe; }
+
+/* ── Frequency-conditional fields ────────────────────────────────────────── */
+.rec-freq-row {
+  display: none;
+}
+
+.rec-freq-row.visible {
+  display: flex;
+}
+
+/* ── Row action buttons ─────────────────────────────────────────────────── */
+.rec-row-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--mm-radius-sm);
+  border: 1px solid var(--mm-border);
+  background: transparent;
+  color: var(--mm-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background var(--mm-duration-fast) var(--mm-ease),
+              color var(--mm-duration-fast) var(--mm-ease),
+              border-color var(--mm-duration-fast) var(--mm-ease);
+  flex-shrink: 0;
+}
+
+.rec-row-action:hover { background: var(--mm-surface-soft); color: var(--mm-text); }
+.rec-row-action.rec-action-edit:hover { background: var(--mm-primary-light); color: var(--mm-primary-dark); border-color: var(--mm-primary); }
+.rec-row-action.rec-action-pause:hover { background: var(--mm-warning-light); color: var(--mm-warning); border-color: var(--mm-warning); }
+.rec-row-action.rec-action-resume:hover { background: var(--mm-success-light); color: var(--mm-success); border-color: var(--mm-success); }
+.rec-row-action.rec-action-delete:hover { background: var(--mm-danger-light); color: var(--mm-danger); border-color: var(--mm-danger); }
+
+html[data-theme="dark"] .rec-row-action { background: var(--mm-surface-raised); border-color: var(--mm-border); }
+html[data-theme="dark"] .rec-row-action:hover { background: rgba(255,255,255,0.07); }
+
+/* ── Subscription section divider label ────────────────────────────────── */
+.rec-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--mm-muted);
+  padding-block: 0.5rem 0.25rem;
+  margin-block-start: 0.5rem;
+}
+
+/* ── Info badge on subscription card ─────────────────────────────────────── */
+.rec-info-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: var(--mm-muted);
+  white-space: nowrap;
+}
+
+/* ── Fixed-note info box ────────────────────────────────────────────────── */
+.rec-fixed-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: var(--mm-info-light);
+  border: 1px solid rgba(8, 145, 178, 0.2);
+  border-radius: var(--mm-radius);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--mm-info);
+}
+
+html[data-theme="dark"] .rec-fixed-note {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 575.98px) {
+  .rec-sub-card { padding: 0.9rem 1rem 0.85rem; }
+  .rec-upcoming-item { gap: 0.65rem; padding: 0.7rem 0.75rem; }
+}

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — المتكررة والاشتراكات">
+  <title data-i18n-page-title="recurring.page_title">المتكررة والاشتراكات | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- ── Page heading ────────────────────────────────────────────── -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-arrow-repeat" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="recurring.eyebrow">الأتمتة المالية</p>
+                <h1 class="h3 mb-1" data-i18n="recurring.heading">المتكررة والاشتراكات</h1>
+                <p class="text-muted mb-0" data-i18n="recurring.subheading">إدارة معاملاتك المتكررة واشتراكاتك في مكان واحد.</p>
+              </div>
+            </div>
+            <div class="page-heading-actions d-flex gap-2">
+              <button id="btnAddRecurring" class="btn btn-primary d-none">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                <span data-i18n="recurring.add_recurring_btn">إضافة متكررة</span>
+              </button>
+              <button id="btnAddSubscription" class="btn btn-primary d-none">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                <span data-i18n="recurring.add_subscription_btn">إضافة اشتراك</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── KPI skeletons ───────────────────────────────────────────── -->
+          <div id="kpiSkeletons" class="row g-3 mb-4">
+            <div class="col-6 col-lg-4 col-xl-2"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-lg-4 col-xl-2"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-lg-4 col-xl-2"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-lg-4 col-xl-2"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-lg-4 col-xl-2"><div class="skeleton skeleton-kpi"></div></div>
+            <div class="col-6 col-lg-4 col-xl-2"><div class="skeleton skeleton-kpi"></div></div>
+          </div>
+
+          <!-- ── KPI cards ───────────────────────────────────────────────── -->
+          <div id="kpiStrip" class="row g-3 mb-4 d-none animate-stagger">
+            <div class="col-6 col-lg-4 col-xl-2">
+              <div class="kpi-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="kpi-icon" style="background:var(--mm-primary-light);color:var(--mm-primary-dark);">
+                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="recurring.kpi_active_rec">معاملات متكررة نشطة</span>
+                </div>
+                <div class="kpi-value" id="kpiActiveRec">—</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-4 col-xl-2">
+              <div class="kpi-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="kpi-icon" style="background:var(--mm-info-light);color:var(--mm-info);">
+                    <i class="bi bi-credit-card" aria-hidden="true"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="recurring.kpi_active_sub">اشتراكات نشطة</span>
+                </div>
+                <div class="kpi-value" id="kpiActiveSub">—</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-4 col-xl-2">
+              <div class="kpi-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="kpi-icon" style="background:var(--mm-success-light);color:var(--mm-success);">
+                    <i class="bi bi-arrow-down-circle" aria-hidden="true"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="recurring.kpi_monthly_income">الدخل الشهري المتكرر</span>
+                </div>
+                <div class="kpi-value tx-amount-income" id="kpiMonthlyIncome">—</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-4 col-xl-2">
+              <div class="kpi-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="kpi-icon" style="background:var(--mm-danger-light);color:var(--mm-danger);">
+                    <i class="bi bi-arrow-up-circle" aria-hidden="true"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="recurring.kpi_monthly_expenses">المصروفات الشهرية المتكررة</span>
+                </div>
+                <div class="kpi-value tx-amount-expense" id="kpiMonthlyExpenses">—</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-4 col-xl-2">
+              <div class="kpi-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="kpi-icon" style="background:var(--mm-warning-light);color:var(--mm-warning);">
+                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="recurring.kpi_net_flow">صافي التدفق الشهري</span>
+                </div>
+                <div class="kpi-value" id="kpiNetFlow">—</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-4 col-xl-2">
+              <div class="kpi-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="kpi-icon" style="background:var(--mm-surface-soft);color:var(--mm-muted);">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                  </div>
+                  <span class="kpi-label" data-i18n="recurring.kpi_upcoming">مدفوعات قادمة</span>
+                </div>
+                <div class="kpi-value" id="kpiUpcoming">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Tabs navigation ────────────────────────────────────────── -->
+          <div class="panel mb-0 pb-0" style="border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:none;">
+            <div class="fil-tabs" role="tablist">
+              <button class="fil-tab-btn active" role="tab" aria-selected="true"
+                      data-tab="recurring" id="tabBtnRecurring">
+                <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>
+                <span data-i18n="recurring.tab_recurring">المعاملات المتكررة</span>
+              </button>
+              <button class="fil-tab-btn" role="tab" aria-selected="false"
+                      data-tab="subscriptions" id="tabBtnSubscriptions">
+                <i class="bi bi-credit-card me-1" aria-hidden="true"></i>
+                <span data-i18n="recurring.tab_subscriptions">الاشتراكات</span>
+              </button>
+              <button class="fil-tab-btn" role="tab" aria-selected="false"
+                      data-tab="upcoming" id="tabBtnUpcoming">
+                <i class="bi bi-calendar-check me-1" aria-hidden="true"></i>
+                <span data-i18n="recurring.tab_upcoming">المدفوعات القادمة</span>
+                <span class="fil-tab-count d-none" id="upcomingCountBadge"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════════════════════════
+               TAB 1: RECURRING TRANSACTIONS
+               ════════════════════════════════════════════════════════════ -->
+          <div id="tabPanelRecurring" class="panel animate-fade-up"
+               style="border-top-left-radius:0;border-top-right-radius:0;" role="tabpanel">
+
+            <!-- Filter bar -->
+            <div class="row g-2 mb-3 align-items-end">
+              <div class="col-12 col-sm-auto flex-grow-1">
+                <label class="form-label small" data-i18n="recurring.col_name">الاسم</label>
+                <input type="search" class="form-control form-control-sm"
+                       id="recFilterSearch"
+                       data-i18n-placeholder="recurring.filter_search_placeholder">
+              </div>
+              <div class="col-6 col-sm-auto">
+                <label class="form-label small" data-i18n="recurring.col_status">الحالة</label>
+                <select class="form-select form-select-sm" id="recFilterStatus" style="min-width:130px;">
+                  <option value="" data-i18n="recurring.filter_status_all">جميع الحالات</option>
+                  <option value="1" data-i18n="recurring.status_active">نشط</option>
+                  <option value="2" data-i18n="recurring.status_paused">موقوف</option>
+                  <option value="3" data-i18n="recurring.status_cancelled">ملغى</option>
+                </select>
+              </div>
+              <div class="col-6 col-sm-auto">
+                <label class="form-label small" data-i18n="recurring.col_type">النوع</label>
+                <select class="form-select form-select-sm" id="recFilterType" style="min-width:130px;">
+                  <option value="" data-i18n="recurring.filter_type_all">جميع الأنواع</option>
+                  <option value="1" data-i18n="recurring.type_income">دخل</option>
+                  <option value="2" data-i18n="recurring.type_expense">مصروف</option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <label class="form-label small">&nbsp;</label>
+                <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+                        id="recFilterClear">
+                  <i class="bi bi-x-circle" aria-hidden="true"></i>
+                  <span data-i18n="recurring.filter_clear">مسح</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Table skeleton -->
+            <div id="recTableSkeleton">
+              <div class="skeleton skeleton-table"></div>
+            </div>
+
+            <!-- Table panel -->
+            <div id="recTablePanel" class="d-none">
+              <!-- Empty state -->
+              <div id="recEmpty" class="d-none">
+                <div class="empty-state py-4">
+                  <span class="empty-state-icon" style="background:var(--mm-primary-light);">
+                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                  </span>
+                  <h2 class="empty-state-title" data-i18n="recurring.rec_empty_title">لا توجد معاملات متكررة</h2>
+                  <p class="empty-state-desc" data-i18n="recurring.rec_empty_desc">أضف دخلك أو مصروفك المتكرر لأتمتة تتبعك المالي.</p>
+                  <button class="btn btn-primary btn-sm mt-1" id="recEmptyAddBtn">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                    <span data-i18n="recurring.add_recurring_btn">إضافة متكررة</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Table wrap -->
+              <div id="recTableWrap">
+                <div class="table-responsive">
+                  <table class="table tx-table align-middle" aria-label="recurring transactions">
+                    <thead>
+                      <tr>
+                        <th data-i18n="recurring.col_name">الاسم</th>
+                        <th data-i18n="recurring.col_type">النوع</th>
+                        <th data-i18n="recurring.col_category">الفئة</th>
+                        <th data-i18n="recurring.col_frequency">التكرار</th>
+                        <th class="text-end" data-i18n="recurring.col_amount">المبلغ</th>
+                        <th data-i18n="recurring.col_next_date">التاريخ القادم</th>
+                        <th data-i18n="recurring.col_status">الحالة</th>
+                        <th class="text-center" data-i18n="recurring.col_actions">إجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recTbody"></tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div id="recPaginationWrap" class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 d-none">
+                  <span class="text-muted small" id="recPaginationInfo"></span>
+                  <nav aria-label="pagination">
+                    <ul class="pagination pagination-sm mb-0" id="recPaginationList"></ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════════════════════════
+               TAB 2: SUBSCRIPTIONS
+               ════════════════════════════════════════════════════════════ -->
+          <div id="tabPanelSubscriptions" class="panel animate-fade-up d-none"
+               style="border-top-left-radius:0;border-top-right-radius:0;" role="tabpanel">
+
+            <!-- Filter bar -->
+            <div class="row g-2 mb-3 align-items-end">
+              <div class="col-6 col-sm-auto">
+                <label class="form-label small" data-i18n="recurring.col_status">الحالة</label>
+                <select class="form-select form-select-sm" id="subFilterStatus" style="min-width:145px;">
+                  <option value="" data-i18n="recurring.filter_status_all">جميع الحالات</option>
+                  <option value="1" data-i18n="recurring.status_active">نشط</option>
+                  <option value="2" data-i18n="recurring.status_paused">موقوف</option>
+                  <option value="3" data-i18n="recurring.status_cancelled">ملغى</option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <label class="form-label small">&nbsp;</label>
+                <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+                        id="subFilterClear">
+                  <i class="bi bi-x-circle" aria-hidden="true"></i>
+                  <span data-i18n="recurring.filter_clear">مسح</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Skeleton -->
+            <div id="subSkeleton">
+              <div class="row g-3">
+                <div class="col-12 col-md-6 col-xl-4"><div class="skeleton" style="height:11rem;border-radius:0.75rem;"></div></div>
+                <div class="col-12 col-md-6 col-xl-4"><div class="skeleton" style="height:11rem;border-radius:0.75rem;"></div></div>
+                <div class="col-12 col-md-6 col-xl-4"><div class="skeleton" style="height:11rem;border-radius:0.75rem;"></div></div>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div id="subContent" class="d-none">
+              <!-- Empty state -->
+              <div id="subEmpty" class="d-none">
+                <div class="empty-state py-4">
+                  <span class="empty-state-icon" style="background:var(--mm-info-light);color:var(--mm-info);">
+                    <i class="bi bi-credit-card" aria-hidden="true"></i>
+                  </span>
+                  <h2 class="empty-state-title" data-i18n="recurring.sub_empty_title">لا توجد اشتراكات</h2>
+                  <p class="empty-state-desc" data-i18n="recurring.sub_empty_desc">أضف اشتراكاتك لمتابعة مدفوعاتك الشهرية والسنوية.</p>
+                  <button class="btn btn-primary btn-sm mt-1" id="subEmptyAddBtn">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                    <span data-i18n="recurring.add_subscription_btn">إضافة اشتراك</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cards grid -->
+              <div id="subGrid" class="row g-3"></div>
+
+              <!-- Pagination -->
+              <div id="subPaginationWrap" class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-3 d-none">
+                <span class="text-muted small" id="subPaginationInfo"></span>
+                <nav aria-label="subscriptions pagination">
+                  <ul class="pagination pagination-sm mb-0" id="subPaginationList"></ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════════════════════════
+               TAB 3: UPCOMING PAYMENTS
+               ════════════════════════════════════════════════════════════ -->
+          <div id="tabPanelUpcoming" class="panel animate-fade-up d-none"
+               style="border-top-left-radius:0;border-top-right-radius:0;" role="tabpanel">
+
+            <!-- Skeleton -->
+            <div id="upcomingSkeleton">
+              <div class="skeleton skeleton-table"></div>
+            </div>
+
+            <!-- Content -->
+            <div id="upcomingContent" class="d-none">
+              <!-- Empty state -->
+              <div id="upcomingEmpty" class="d-none">
+                <div class="empty-state py-4">
+                  <span class="empty-state-icon" style="background:var(--mm-success-light);color:var(--mm-success);">
+                    <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                  </span>
+                  <h2 class="empty-state-title" data-i18n="recurring.upcoming_empty_title">لا توجد مدفوعات قادمة</h2>
+                  <p class="empty-state-desc" data-i18n="recurring.upcoming_empty_desc">لا توجد مدفوعات أو تجديدات خلال الأيام القادمة.</p>
+                </div>
+              </div>
+
+              <!-- Upcoming list -->
+              <div id="upcomingList" class="d-none d-flex flex-column gap-2"></div>
+            </div>
+          </div>
+
+        </div><!-- /container -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       MODAL: Add / Edit Recurring Transaction
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="recModal" tabindex="-1" aria-labelledby="recModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-6 fw-semibold" id="recModalLabel" data-i18n="recurring.modal_rec_add_title">إضافة معاملة متكررة</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="" data-i18n-aria-label="recurring.cancel_btn"></button>
+        </div>
+        <div class="modal-body">
+          <form id="recForm" class="needs-validation" novalidate>
+
+            <!-- Read-only info box shown in edit mode -->
+            <div id="recFixedNote" class="rec-fixed-note mb-3 d-none">
+              <i class="bi bi-info-circle-fill flex-shrink-0" aria-hidden="true"></i>
+              <span data-i18n="recurring.frequency_fixed_note">لا يمكن تغيير نوع المعاملة أو التكرار أو تاريخ البدء بعد الإنشاء.</span>
+            </div>
+
+            <!-- Row 1: Type (create only) -->
+            <div id="recTypeRow" class="mb-3">
+              <label class="form-label small fw-semibold" data-i18n="recurring.field_type">النوع</label>
+              <div class="d-flex gap-3 flex-wrap">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="recType" id="recTypeIncome" value="1">
+                  <label class="form-check-label" for="recTypeIncome" data-i18n="recurring.type_income">دخل</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="recType" id="recTypeExpense" value="2" checked>
+                  <label class="form-check-label" for="recTypeExpense" data-i18n="recurring.type_expense">مصروف</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Name + Category -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="recName" data-i18n="recurring.field_name">الاسم</label>
+                <input type="text" class="form-control" id="recName" maxlength="150" required
+                       data-i18n-placeholder="recurring.field_name_placeholder">
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="recCategory" data-i18n="recurring.field_category">الفئة</label>
+                <select class="form-select" id="recCategory" required>
+                  <option value="" data-i18n="recurring.field_category_ph">اختر فئة</option>
+                </select>
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+            </div>
+
+            <!-- Row 3: Amount + Description -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="recAmount" data-i18n="recurring.field_amount">المبلغ</label>
+                <input type="number" class="form-control" id="recAmount"
+                       min="0.001" step="0.001" required
+                       data-i18n-placeholder="recurring.field_amount_ph">
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="recDescription" data-i18n="recurring.field_description">الوصف</label>
+                <input type="text" class="form-control" id="recDescription" maxlength="500"
+                       data-i18n-placeholder="recurring.field_description_ph">
+              </div>
+            </div>
+
+            <!-- Row 4: Frequency (create only) -->
+            <div id="recFrequencyRow" class="mb-3">
+              <label class="form-label small fw-semibold" for="recFrequencyId" data-i18n="recurring.field_frequency">التكرار</label>
+              <select class="form-select" id="recFrequencyId" required>
+                <option value="" data-i18n="recurring.field_frequency_ph">اختر التكرار</option>
+                <option value="1" data-i18n="recurring.freq_daily">يومي</option>
+                <option value="2" data-i18n="recurring.freq_weekly">أسبوعي</option>
+                <option value="3" data-i18n="recurring.freq_monthly">شهري</option>
+                <option value="4" data-i18n="recurring.freq_quarterly">ربع سنوي</option>
+                <option value="5" data-i18n="recurring.freq_yearly">سنوي</option>
+                <option value="6" data-i18n="recurring.freq_custom">مخصص</option>
+              </select>
+              <div class="invalid-feedback" data-i18n="common.required_field"></div>
+            </div>
+
+            <!-- Frequency conditional: Day of Week (shown for Weekly) -->
+            <div id="recDayOfWeekRow" class="rec-freq-row mb-3 gap-3 align-items-end">
+              <div class="flex-grow-1">
+                <label class="form-label small fw-semibold" for="recDayOfWeek" data-i18n="recurring.field_day_of_week">يوم الأسبوع</label>
+                <select class="form-select" id="recDayOfWeek">
+                  <option value="0" data-i18n="recurring.dow_0">الأحد</option>
+                  <option value="1" data-i18n="recurring.dow_1">الاثنين</option>
+                  <option value="2" data-i18n="recurring.dow_2">الثلاثاء</option>
+                  <option value="3" data-i18n="recurring.dow_3">الأربعاء</option>
+                  <option value="4" data-i18n="recurring.dow_4">الخميس</option>
+                  <option value="5" data-i18n="recurring.dow_5">الجمعة</option>
+                  <option value="6" data-i18n="recurring.dow_6">السبت</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Frequency conditional: Day of Month (shown for Monthly/Quarterly/Yearly) -->
+            <div id="recDayOfMonthRow" class="rec-freq-row mb-3 gap-3 align-items-end">
+              <div class="flex-grow-1">
+                <label class="form-label small fw-semibold" for="recDayOfMonth" data-i18n="recurring.field_day_of_month">يوم الشهر</label>
+                <input type="number" class="form-control" id="recDayOfMonth"
+                       min="1" max="31" data-i18n-placeholder="recurring.field_day_ph">
+              </div>
+            </div>
+
+            <!-- Frequency conditional: Custom Interval -->
+            <div id="recCustomRow" class="rec-freq-row mb-3 gap-3 align-items-end">
+              <div style="flex-basis:80px;flex-shrink:0;">
+                <label class="form-label small fw-semibold" for="recFrequencyInterval" data-i18n="recurring.field_interval_every">كل</label>
+                <input type="number" class="form-control" id="recFrequencyInterval"
+                       min="1" max="365" value="1" data-i18n-placeholder="recurring.field_interval_ph">
+              </div>
+              <div class="flex-grow-1">
+                <label class="form-label small fw-semibold" data-i18n="recurring.field_interval">&nbsp;</label>
+                <select class="form-select" id="recFrequencyUnit">
+                  <option value="1" data-i18n="recurring.field_unit_day">يوم</option>
+                  <option value="2" data-i18n="recurring.field_unit_week">أسبوع</option>
+                  <option value="3" selected data-i18n="recurring.field_unit_month">شهر</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 5: Start Date + End Date (start create-only) -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6" id="recStartDateCol">
+                <label class="form-label small fw-semibold" for="recStartDate" data-i18n="recurring.field_start_date">تاريخ البدء</label>
+                <input type="date" class="form-control" id="recStartDate" required>
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="recEndDate" data-i18n="recurring.field_end_date">تاريخ الانتهاء (اختياري)</label>
+                <input type="date" class="form-control" id="recEndDate">
+              </div>
+            </div>
+
+            <!-- Row 6: Notes -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold" for="recNotes" data-i18n="recurring.field_notes">ملاحظات</label>
+              <textarea class="form-control" id="recNotes" rows="2" maxlength="1000"
+                        data-i18n-placeholder="recurring.field_notes_ph"></textarea>
+            </div>
+
+            <!-- Next occurrences preview (create mode) -->
+            <div id="recNextOccurrences" class="rec-occurrences-preview d-none">
+              <p class="small fw-semibold mb-2 d-flex align-items-center gap-1">
+                <i class="bi bi-calendar3-range text-muted" aria-hidden="true"></i>
+                <span data-i18n="recurring.next_occurrences">التكرارات الثلاث القادمة</span>
+              </p>
+              <div id="recNextOccurrencesList" class="d-flex flex-column gap-1"></div>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"
+                  data-i18n="recurring.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btnSaveRec">
+            <span id="btnSaveRecLabel" data-i18n="recurring.save_btn">حفظ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       MODAL: Add / Edit Subscription
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="subModal" tabindex="-1" aria-labelledby="subModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-6 fw-semibold" id="subModalLabel" data-i18n="recurring.modal_sub_add_title">إضافة اشتراك</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="" data-i18n-aria-label="recurring.cancel_btn"></button>
+        </div>
+        <div class="modal-body">
+          <form id="subForm" class="needs-validation" novalidate>
+
+            <!-- Row 1: Provider + Name -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subProvider" data-i18n="recurring.field_provider">مزود الخدمة</label>
+                <input type="text" class="form-control" id="subProvider" maxlength="150" required
+                       data-i18n-placeholder="recurring.field_provider_ph">
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subName" data-i18n="recurring.field_name">الاسم</label>
+                <input type="text" class="form-control" id="subName" maxlength="150" required
+                       data-i18n-placeholder="recurring.field_name_placeholder">
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+            </div>
+
+            <!-- Row 2: Category + Amount -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subCategory" data-i18n="recurring.field_category">الفئة</label>
+                <select class="form-select" id="subCategory" required>
+                  <option value="" data-i18n="recurring.field_category_ph">اختر فئة</option>
+                </select>
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subAmount" data-i18n="recurring.field_amount">المبلغ</label>
+                <input type="number" class="form-control" id="subAmount"
+                       min="0.001" step="0.001" required
+                       data-i18n-placeholder="recurring.field_amount_ph">
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+            </div>
+
+            <!-- Row 3: Frequency (create only) + Start Date (create only) -->
+            <div id="subCreateOnlyRow" class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subFrequencyId" data-i18n="recurring.field_frequency">التكرار</label>
+                <select class="form-select" id="subFrequencyId" required>
+                  <option value="" data-i18n="recurring.field_frequency_ph">اختر التكرار</option>
+                  <option value="1" data-i18n="recurring.freq_daily">يومي</option>
+                  <option value="2" data-i18n="recurring.freq_weekly">أسبوعي</option>
+                  <option value="3" data-i18n="recurring.freq_monthly">شهري</option>
+                  <option value="4" data-i18n="recurring.freq_quarterly">ربع سنوي</option>
+                  <option value="5" data-i18n="recurring.freq_yearly">سنوي</option>
+                  <option value="6" data-i18n="recurring.freq_custom">مخصص</option>
+                </select>
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subStartDate" data-i18n="recurring.field_start_date">تاريخ البدء</label>
+                <input type="date" class="form-control" id="subStartDate" required>
+                <div class="invalid-feedback" data-i18n="common.required_field"></div>
+              </div>
+            </div>
+
+            <!-- Custom frequency row for subscription (create only) -->
+            <div id="subCustomRow" class="rec-freq-row mb-3 gap-3 align-items-end">
+              <div style="flex-basis:80px;flex-shrink:0;">
+                <label class="form-label small fw-semibold" for="subFrequencyInterval" data-i18n="recurring.field_interval_every">كل</label>
+                <input type="number" class="form-control" id="subFrequencyInterval"
+                       min="1" max="365" value="1">
+              </div>
+              <div class="flex-grow-1">
+                <label class="form-label small fw-semibold">&nbsp;</label>
+                <select class="form-select" id="subFrequencyUnit">
+                  <option value="1" data-i18n="recurring.field_unit_day">يوم</option>
+                  <option value="2" data-i18n="recurring.field_unit_week">أسبوع</option>
+                  <option value="3" selected data-i18n="recurring.field_unit_month">شهر</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 4: End Date + Renewal Date -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subEndDate" data-i18n="recurring.field_end_date">تاريخ الانتهاء (اختياري)</label>
+                <input type="date" class="form-control" id="subEndDate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subRenewalDate" data-i18n="recurring.field_renewal_date">تاريخ التجديد (اختياري)</label>
+                <input type="date" class="form-control" id="subRenewalDate">
+              </div>
+            </div>
+
+            <!-- Row 5: Website + Auto Renew -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-8">
+                <label class="form-label small fw-semibold" for="subWebsite" data-i18n="recurring.field_website">الموقع الإلكتروني (اختياري)</label>
+                <input type="url" class="form-control" id="subWebsite"
+                       data-i18n-placeholder="recurring.field_website_ph">
+              </div>
+              <div class="col-md-4 d-flex align-items-end pb-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="subAutoRenew" role="switch" checked>
+                  <label class="form-check-label small fw-semibold" for="subAutoRenew"
+                         data-i18n="recurring.field_auto_renew">تجديد تلقائي</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 6: Description + Notes -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subDescription" data-i18n="recurring.field_description">الوصف</label>
+                <input type="text" class="form-control" id="subDescription" maxlength="500"
+                       data-i18n-placeholder="recurring.field_description_ph">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="subNotes" data-i18n="recurring.field_notes">ملاحظات</label>
+                <textarea class="form-control" id="subNotes" rows="2" maxlength="1000"
+                          data-i18n-placeholder="recurring.field_notes_ph"></textarea>
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"
+                  data-i18n="recurring.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btnSaveSub">
+            <span id="btnSaveSubLabel" data-i18n="recurring.save_btn">حفظ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       MODAL: Delete Confirmation
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h2 class="modal-title fs-6 fw-semibold text-danger d-flex align-items-center gap-2" id="deleteModalLabel">
+            <i class="bi bi-trash3" aria-hidden="true"></i>
+            <span data-i18n="recurring.delete_confirm_title">تأكيد الحذف</span>
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="" data-i18n-aria-label="recurring.cancel_btn"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small mb-0" id="deleteModalDesc"></p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"
+                  data-i18n="recurring.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-danger btn-sm" id="btnConfirmDelete">
+            <span id="btnConfirmDeleteLabel" data-i18n="recurring.delete_btn">حذف</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/recurring.js"></script>
+</body>
+</html>
