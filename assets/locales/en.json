@@ -55,7 +55,8 @@
     "add_user": "Add User",
     "recurring":  "Recurring",
     "goals":      "Goals",
-    "cash_flow":  "Cash Flow"
+    "cash_flow":  "Cash Flow",
+    "budgets":    "Budgets"
   },
 
   "auth": {
@@ -1141,6 +1142,171 @@
     "no_data_cta_rec":"Setup Recurring",
 
     "nav_label": "Cash Flow"
+  },
+
+  "budgets": {
+    "page_title":  "Budgets",
+    "eyebrow":     "Budget Control",
+    "heading":     "My Budgets",
+    "subheading":  "Set spending limits and stay in control of every category.",
+
+    "kpi_active":         "Active Budgets",
+    "kpi_total_budgeted": "Total Budgeted",
+    "kpi_total_spent":    "Total Spent",
+    "kpi_utilization":    "Avg Utilization",
+    "kpi_over_budget":    "Over Budget",
+    "kpi_healthy":        "Healthy",
+
+    "type_fixed":      "Fixed",
+    "type_percentage": "% of Income",
+    "type_annual":     "Annual",
+    "type_flexible":   "Flexible",
+
+    "period_monthly":   "Monthly",
+    "period_quarterly": "Quarterly",
+    "period_yearly":    "Yearly",
+
+    "status_active":   "Active",
+    "status_paused":   "Paused",
+    "status_archived": "Archived",
+
+    "health_poor":      "Poor",
+    "health_fair":      "Fair",
+    "health_good":      "Good",
+    "health_excellent": "Excellent",
+
+    "risk_low":    "On Track",
+    "risk_medium": "Watch",
+    "risk_high":   "At Risk",
+
+    "period_status_active":   "Active",
+    "period_status_exceeded": "Over Budget",
+    "period_status_closed":   "Closed",
+
+    "add_btn":         "New Budget",
+    "create_title":    "Create Budget",
+    "edit_title":      "Edit Budget",
+    "wizard_step_type":    "Type",
+    "wizard_step_details": "Details",
+    "wizard_step_limits":  "Limits",
+    "wizard_next":         "Next",
+    "wizard_back":         "Back",
+    "wizard_create":       "Create Budget",
+    "wizard_creating":     "Creating...",
+    "wizard_choose_type":  "Choose the budget type that best fits your goal",
+
+    "type_fixed_desc":      "A fixed spending limit per period.",
+    "type_percentage_desc": "A percentage of your monthly income.",
+    "type_annual_desc":     "A yearly budget spread across 12 months.",
+    "type_flexible_desc":   "Adjusts based on your spending patterns.",
+
+    "field_name":             "Budget Name",
+    "field_name_ph":          "e.g. Food & Dining",
+    "field_category":         "Category",
+    "field_category_ph":      "Select a category (optional)",
+    "field_budget_type":      "Budget Type",
+    "field_period_type":      "Period",
+    "field_amount":           "Amount",
+    "field_amount_ph":        "0.000",
+    "field_start_date":       "Start Date",
+    "field_end_date":         "End Date",
+    "field_end_date_hint":    "Leave blank for an ongoing budget.",
+    "field_auto_renew":       "Auto-renew periods",
+    "field_auto_renew_hint":  "Automatically start a new period when the current one ends.",
+    "field_notes":            "Notes",
+    "field_notes_ph":         "Any notes... (optional)",
+
+    "save_btn":    "Save",
+    "saving":      "Saving...",
+    "cancel_btn":  "Cancel",
+    "pause_btn":   "Pause",
+    "resume_btn":  "Resume",
+    "edit_btn":    "Edit",
+    "delete_btn":  "Delete",
+    "view_btn":    "View Details",
+
+    "delete_confirm_title": "Delete Budget",
+    "delete_confirm_desc":  "Delete this budget and all its period history? This cannot be undone.",
+    "delete_confirm_btn":   "Delete",
+    "deleting":             "Deleting...",
+
+    "created_success": "Budget created successfully.",
+    "updated_success": "Budget updated.",
+    "deleted_success": "Budget deleted.",
+    "paused_success":  "Budget paused.",
+    "resumed_success": "Budget resumed.",
+    "error":           "Something went wrong. Please try again.",
+
+    "empty_title":         "No budgets yet",
+    "empty_desc":          "Create your first budget to take control of your spending.",
+    "empty_cta":           "Create First Budget",
+    "empty_filtered_title":"No results",
+    "empty_filtered_desc": "Try adjusting your filters.",
+
+    "filter_all_status":  "All Statuses",
+    "filter_search_ph":   "Search budgets...",
+
+    "card_budgeted":    "Budgeted",
+    "card_spent":       "Spent",
+    "card_remaining":   "Remaining",
+    "card_projected":   "Projected End",
+    "card_daily_left":  "Daily Left",
+    "card_health":      "Health",
+    "card_period":      "Period",
+    "card_auto_renew":  "Auto-renew",
+    "card_no_period":   "No active period",
+
+    "chart_budgeted":          "Budgeted",
+    "chart_spent":             "Spent",
+    "chart_trend_title":       "Budget vs. Actual",
+    "chart_trend_subtitle":    "Monthly spending vs. budget",
+    "chart_category_title":    "Spending by Category",
+    "chart_category_subtitle": "Current period allocation",
+    "chart_no_data":           "No data to display.",
+
+    "detail_page_title":    "Budget Details",
+    "detail_back":          "Back to Budgets",
+    "detail_loading":       "Loading...",
+    "detail_not_found":     "Budget not found.",
+    "detail_current_period":"Current Period",
+    "detail_health_score":  "Health Score",
+    "detail_forecast_risk": "Forecast Risk",
+    "detail_projected":     "Projected End",
+    "detail_daily_budget":  "Daily Budget",
+    "detail_over_budget":   "Over Budget",
+    "detail_period_range":  "{start} – {end}",
+
+    "periods_title":   "Period History",
+    "periods_loading": "Loading history...",
+    "periods_empty":   "No period history yet.",
+
+    "col_period":      "Period",
+    "col_budgeted":    "Budgeted",
+    "col_spent":       "Spent",
+    "col_remaining":   "Remaining",
+    "col_utilization": "Utilization",
+    "col_health":      "Health",
+    "col_status":      "Status",
+
+    "auto_renew_on":  "Auto-renew on",
+    "auto_renew_off": "Manual",
+    "no_end_date":    "No end date",
+
+    "loading": "Loading budgets...",
+
+    "pagination_prev": "Previous",
+    "pagination_next": "Next",
+    "pagination_of":   "of",
+    "pagination_rows": "rows",
+
+    "analytics_title":    "Analytics",
+    "analytics_subtitle": "Performance across all budgets",
+    "analytics_months_label": "Months",
+    "analytics_empty":    "Not enough data yet.",
+    "col_name":           "Budget",
+    "col_avg_monthly":    "Avg Monthly Spend",
+    "col_over_months":    "Over Budget Months",
+    "col_trend":          "Trend"
   },
 
   "onboarding": {

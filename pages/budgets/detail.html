@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — تفاصيل الميزانية">
+  <title data-i18n-page-title="budgets.detail_page_title">تفاصيل الميزانية | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/budgets.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Back link -->
+          <div class="mb-4">
+            <a href="/pages/budgets/index.html"
+               class="d-inline-flex align-items-center gap-2 text-muted text-decoration-none fw-semibold">
+              <i class="bi bi-arrow-right" id="backArrowIcon" aria-hidden="true"></i>
+              <span data-i18n="budgets.detail_back"></span>
+            </a>
+          </div>
+
+          <!-- Skeleton -->
+          <div id="detailSkeleton">
+            <div class="row g-3 mb-4">
+              <div class="col-12">
+                <div class="skel" style="height:120px;border-radius:16px"></div>
+              </div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-6 col-md-3"><div class="skel" style="height:85px;border-radius:10px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:85px;border-radius:10px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:85px;border-radius:10px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:85px;border-radius:10px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:85px;border-radius:10px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:85px;border-radius:10px"></div></div>
+            </div>
+            <div class="row g-3">
+              <div class="col-12"><div class="skel" style="height:280px;border-radius:16px"></div></div>
+            </div>
+          </div>
+
+          <!-- Not found -->
+          <div id="detailNotFound" class="d-none text-center py-5">
+            <i class="bi bi-exclamation-circle fs-1 text-muted d-block mb-3" aria-hidden="true"></i>
+            <h4 data-i18n="budgets.detail_not_found"></h4>
+            <a href="/pages/budgets/index.html" class="btn btn-outline-secondary mt-3">
+              <span data-i18n="budgets.detail_back"></span>
+            </a>
+          </div>
+
+          <!-- ── Main detail content ─────────────────────────────────────────── -->
+          <div id="detailContent" class="d-none">
+
+            <!-- Budget header card -->
+            <div class="panel budget-detail-header mb-4">
+              <div class="d-flex align-items-start justify-content-between flex-wrap gap-4">
+
+                <!-- Left: icon + info -->
+                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                  <div class="budget-detail-icon" id="detailIcon">
+                    <i class="bi bi-wallet2" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                      <span id="detailTypeBadge" class="budget-card-type-badge"></span>
+                      <span id="detailPeriodBadge" class="budget-card-period-badge"></span>
+                      <span id="detailStatusBadge" class="budget-card-period-badge"></span>
+                    </div>
+                    <h1 class="budget-detail-name" id="detailName"></h1>
+                    <p id="detailCategory" class="text-muted small mb-0"></p>
+                  </div>
+                </div>
+
+                <!-- Right: health ring + actions -->
+                <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                  <div class="budget-health-ring-lg" id="detailHealthRing">
+                    <span class="budget-health-score-lg" id="detailHealthScore">—</span>
+                    <span class="budget-health-label" data-i18n="budgets.detail_health_score"></span>
+                  </div>
+                  <div class="d-flex flex-column gap-2">
+                    <button id="detailEditBtn" class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-pencil me-1" aria-hidden="true"></i>
+                      <span data-i18n="budgets.edit_btn"></span>
+                    </button>
+                    <button id="detailPauseResumeBtn" class="btn btn-sm btn-outline-secondary"></button>
+                    <button id="detailDeleteBtn" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                      <span data-i18n="budgets.delete_btn"></span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Current period KPI strip -->
+            <div id="detailPeriodKpis" class="row g-3 mb-4"></div>
+
+            <!-- No active period notice -->
+            <div id="detailNoPeriod" class="d-none">
+              <div class="panel text-center py-4 mb-4">
+                <i class="bi bi-calendar-x fs-2 text-muted d-block mb-2" aria-hidden="true"></i>
+                <p class="text-muted mb-0" data-i18n="budgets.card_no_period"></p>
+              </div>
+            </div>
+
+            <!-- Health trend chart -->
+            <div class="panel mb-4" id="detailChartPanel">
+              <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
+                <div>
+                  <h2 class="h6 fw-semibold mb-0" data-i18n="budgets.chart_trend_title"></h2>
+                  <p class="text-muted small mb-0" data-i18n="budgets.chart_trend_subtitle"></p>
+                </div>
+              </div>
+              <div class="budget-chart-wrap">
+                <canvas id="detailTrendChart" dir="ltr" aria-label="Budget trend chart" role="img"></canvas>
+              </div>
+            </div>
+
+            <!-- Period history table -->
+            <div class="panel mb-4">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <h2 class="h6 fw-semibold mb-0" data-i18n="budgets.periods_title"></h2>
+              </div>
+
+              <div id="periodsLoading" class="text-center py-3">
+                <div class="spinner-border spinner-border-sm text-muted"></div>
+                <p class="text-muted small mt-2 mb-0" data-i18n="budgets.periods_loading"></p>
+              </div>
+
+              <div id="periodsTableWrap" class="d-none">
+                <div class="table-responsive">
+                  <table class="table table-sm mb-0 budget-periods-table">
+                    <thead>
+                      <tr>
+                        <th data-i18n="budgets.col_period"></th>
+                        <th class="text-end" data-i18n="budgets.col_budgeted"></th>
+                        <th class="text-end" data-i18n="budgets.col_spent"></th>
+                        <th class="text-end" data-i18n="budgets.col_remaining"></th>
+                        <th data-i18n="budgets.col_utilization"></th>
+                        <th class="text-center" data-i18n="budgets.col_health"></th>
+                        <th class="text-center" data-i18n="budgets.col_status"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="periodsTbody"></tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav id="periodsPagination" class="d-flex justify-content-between align-items-center mt-3 d-none"
+                     aria-label="periods pagination">
+                  <span id="periodsPaginationInfo" class="text-muted small"></span>
+                  <div class="d-flex gap-2">
+                    <button id="periodsPrevBtn" class="btn btn-outline-secondary btn-sm"
+                            data-i18n="budgets.pagination_prev"></button>
+                    <button id="periodsNextBtn" class="btn btn-outline-secondary btn-sm"
+                            data-i18n="budgets.pagination_next"></button>
+                  </div>
+                </nav>
+              </div>
+
+              <div id="periodsEmpty" class="text-center py-4 d-none">
+                <i class="bi bi-clock-history fs-2 text-muted d-block mb-2" aria-hidden="true"></i>
+                <p class="text-muted mb-0" data-i18n="budgets.periods_empty"></p>
+              </div>
+            </div>
+
+          </div><!-- /detailContent -->
+
+        </div><!-- /container-fluid -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div><!-- /admin-main -->
+  </div><!-- /admin-shell -->
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       EDIT BUDGET MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="editBudgetModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="budgets.edit_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_name"></label>
+              <input id="editBudgetName" type="text" class="form-control" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_period_type"></label>
+              <select id="editBudgetPeriodType" class="form-select">
+                <option value="1" data-i18n="budgets.period_monthly"></option>
+                <option value="2" data-i18n="budgets.period_quarterly"></option>
+                <option value="3" data-i18n="budgets.period_yearly"></option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_amount"></label>
+              <input id="editBudgetAmount" type="number" min="0.001" step="0.001" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_end_date"></label>
+              <input id="editBudgetEndDate" type="date" class="form-control">
+              <div class="form-text" data-i18n="budgets.field_end_date_hint"></div>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="editBudgetAutoRenew">
+                <label class="form-check-label" for="editBudgetAutoRenew"
+                       data-i18n="budgets.field_auto_renew"></label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_notes"></label>
+              <textarea id="editBudgetNotes" class="form-control" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                  data-i18n="budgets.cancel_btn"></button>
+          <button type="button" id="editBudgetSaveBtn" class="btn btn-primary">
+            <span data-i18n="budgets.save_btn"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       DELETE CONFIRM MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="deleteBudgetModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-danger" data-i18n="budgets.delete_confirm_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <p data-i18n="budgets.delete_confirm_desc"></p>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                  data-i18n="budgets.cancel_btn"></button>
+          <button type="button" id="deleteBudgetConfirmBtn" class="btn btn-danger">
+            <span data-i18n="budgets.delete_confirm_btn"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="/assets/js/pages/budget-detail.js"></script>
+</body>
+</html>

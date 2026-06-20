@@ -1,0 +1,1121 @@
+/* ============================================================
+   budgets.css — MyMoney Budget Feature
+   ============================================================ */
+
+/* ── Budget card ────────────────────────────────────────── */
+
+.budget-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.budget-card:hover {
+  box-shadow: var(--mm-shadow-md);
+  transform: translateY(-1px);
+}
+
+.budget-card::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 3px;
+  border-radius: var(--mm-radius-lg) var(--mm-radius-lg) 0 0;
+  background: var(--mm-border);
+}
+
+.budget-card.health-excellent::before { background: var(--mm-success); }
+.budget-card.health-good::before      { background: var(--mm-info); }
+.budget-card.health-fair::before      { background: var(--mm-warning); }
+.budget-card.health-poor::before      { background: var(--mm-danger); }
+
+/* ── Card header ────────────────────────────────────────── */
+
+.budget-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.budget-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--mm-radius);
+  background: var(--mm-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  color: var(--mm-brand-primary);
+}
+
+html[data-theme="dark"] .budget-icon {
+  background: rgba(255,255,255,0.07);
+}
+
+.budget-header-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.budget-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--mm-text);
+  margin: 0 0 0.375rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.budget-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.budget-type-badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+  font-weight: 600;
+  background: rgba(37,99,235,0.12);
+  color: var(--mm-brand-primary);
+  letter-spacing: 0.02em;
+}
+
+.budget-period-badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+  font-weight: 500;
+  background: var(--mm-surface-alt);
+  color: var(--mm-text-muted);
+}
+
+.budget-status-badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+  font-weight: 600;
+}
+
+.budget-status-active   { background: rgba(25,135,84,0.12); color: var(--mm-success); }
+.budget-status-paused   { background: rgba(255,193,7,0.15); color: #a67a00; }
+.budget-status-archived { background: var(--mm-surface-alt); color: var(--mm-text-muted); }
+
+html[data-theme="dark"] .budget-status-paused { color: var(--mm-warning); }
+
+/* ── Health ring ────────────────────────────────────────── */
+
+.budget-health-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid var(--mm-border);
+  gap: 0;
+}
+
+.budget-health-ring.health-excellent { border-color: var(--mm-success); }
+.budget-health-ring.health-good      { border-color: var(--mm-info); }
+.budget-health-ring.health-fair      { border-color: var(--mm-warning); }
+.budget-health-ring.health-poor      { border-color: var(--mm-danger); }
+
+.budget-health-score {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.budget-health-ring.health-excellent .budget-health-score { color: var(--mm-success); }
+.budget-health-ring.health-good      .budget-health-score { color: var(--mm-info); }
+.budget-health-ring.health-fair      .budget-health-score { color: var(--mm-warning); }
+.budget-health-ring.health-poor      .budget-health-score { color: var(--mm-danger); }
+
+.budget-health-label {
+  font-size: 0.55rem;
+  color: var(--mm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Progress bar ───────────────────────────────────────── */
+
+.budget-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.budget-progress-bar {
+  height: 8px;
+  background: var(--mm-surface-alt);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.budget-progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.4s ease;
+  background: var(--mm-success);
+}
+
+.budget-progress-fill.pct-warning  { background: var(--mm-warning); }
+.budget-progress-fill.pct-danger   { background: #f97316; }
+.budget-progress-fill.pct-critical { background: var(--mm-danger); }
+.budget-progress-fill.pct-over     {
+  background: var(--mm-danger);
+  width: 100% !important;
+}
+
+.budget-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+}
+
+.budget-utilization-pct {
+  font-weight: 700;
+  color: var(--mm-text);
+}
+
+.budget-over-label {
+  color: var(--mm-danger);
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+/* ── Stats row ──────────────────────────────────────────── */
+
+.budget-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--mm-surface-alt);
+  border-radius: var(--mm-radius);
+}
+
+html[data-theme="dark"] .budget-stats {
+  background: rgba(255,255,255,0.04);
+}
+
+.budget-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.budget-stat-label {
+  font-size: 0.65rem;
+  color: var(--mm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.budget-stat-value {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--mm-text);
+  white-space: nowrap;
+}
+
+/* ── Risk row ───────────────────────────────────────────── */
+
+.budget-risk-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 20px;
+}
+
+.budget-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+}
+
+.budget-risk-badge.risk-low    { background: rgba(25,135,84,0.12); color: var(--mm-success); }
+.budget-risk-badge.risk-medium { background: rgba(255,193,7,0.15); color: #a67a00; }
+.budget-risk-badge.risk-high   { background: rgba(220,53,69,0.12); color: var(--mm-danger); }
+
+html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning); }
+
+.budget-daily-left {
+  font-size: 0.72rem;
+  color: var(--mm-text-muted);
+}
+
+.budget-daily-left strong {
+  color: var(--mm-text);
+  font-weight: 600;
+}
+
+/* ── Card footer ────────────────────────────────────────── */
+
+.budget-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-block-start: 0.5rem;
+  border-block-start: 1px solid var(--mm-border);
+}
+
+.budget-period-dates {
+  font-size: 0.72rem;
+  color: var(--mm-text-muted);
+}
+
+.budget-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.budget-action-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: var(--mm-radius-sm);
+  color: var(--mm-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-size: 0.875rem;
+  padding: 0;
+}
+
+.budget-action-btn:hover {
+  background: var(--mm-surface-alt);
+  color: var(--mm-text);
+}
+
+.budget-action-btn.btn-danger-ghost:hover {
+  background: rgba(220,53,69,0.1);
+  color: var(--mm-danger);
+}
+
+.budget-action-btn.btn-warning-ghost:hover {
+  background: rgba(255,193,7,0.12);
+  color: var(--mm-warning);
+}
+
+/* ── No period state ────────────────────────────────────── */
+
+.budget-no-period {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--mm-surface-alt);
+  border-radius: var(--mm-radius);
+  font-size: 0.78rem;
+  color: var(--mm-text-muted);
+}
+
+/* ── Dashboard KPI cards (budget-specific) ──────────────── */
+
+.budget-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .budget-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 992px) {
+  .budget-kpi-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.budget-kpi-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.budget-kpi-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mm-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.budget-kpi-icon.icon-primary  { background: rgba(37,99,235,0.1);  color: var(--mm-brand-primary); }
+.budget-kpi-icon.icon-success  { background: rgba(25,135,84,0.1);  color: var(--mm-success); }
+.budget-kpi-icon.icon-warning  { background: rgba(255,193,7,0.12); color: #a67a00; }
+.budget-kpi-icon.icon-danger   { background: rgba(220,53,69,0.1);  color: var(--mm-danger); }
+
+html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning); }
+
+.budget-kpi-label {
+  font-size: 0.72rem;
+  color: var(--mm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.budget-kpi-value {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--mm-text);
+  line-height: 1.2;
+}
+
+.budget-kpi-hint {
+  font-size: 0.72rem;
+  color: var(--mm-text-muted);
+  min-height: 16px;
+}
+
+/* ── Section / filter bar ───────────────────────────────── */
+
+.budget-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.budget-filter-bar .form-select,
+.budget-filter-bar .form-control {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.budget-filter-bar .form-control {
+  min-width: 180px;
+}
+
+/* ── Charts section ─────────────────────────────────────── */
+
+.budget-charts-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 992px) {
+  .budget-charts-row {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.budget-chart-panel {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.25rem;
+}
+
+.budget-chart-panel-header {
+  margin-bottom: 1rem;
+}
+
+.budget-chart-panel-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--mm-text);
+  margin: 0 0 0.125rem;
+}
+
+.budget-chart-panel-subtitle {
+  font-size: 0.75rem;
+  color: var(--mm-text-muted);
+}
+
+.budget-chart-wrap {
+  position: relative;
+  height: 220px;
+}
+
+/* ── Empty states ───────────────────────────────────────── */
+
+.budget-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.budget-empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--mm-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--mm-text-muted);
+  margin-inline: auto;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Skeleton ───────────────────────────────────────────── */
+
+.budget-card-skeleton {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  min-height: 240px;
+}
+
+.budget-card-skeleton .skel {
+  border-radius: var(--mm-radius-sm);
+}
+
+/* ── Wizard ─────────────────────────────────────────────── */
+
+.budget-wizard-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 576px) {
+  .budget-wizard-type-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.budget-type-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem;
+  border: 2px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  background: transparent;
+  color: var(--mm-text);
+}
+
+.budget-type-option:hover {
+  border-color: var(--mm-brand-primary);
+  background: rgba(37,99,235,0.04);
+}
+
+.budget-type-option.selected {
+  border-color: var(--mm-brand-primary);
+  background: rgba(37,99,235,0.07);
+  color: var(--mm-brand-primary);
+}
+
+.budget-type-option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--mm-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.budget-type-option.selected .budget-type-option-icon {
+  background: rgba(37,99,235,0.12);
+  color: var(--mm-brand-primary);
+}
+
+.budget-type-option-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.budget-type-option-desc {
+  font-size: 0.68rem;
+  color: var(--mm-text-muted);
+  line-height: 1.4;
+}
+
+.budget-type-option.selected .budget-type-option-desc {
+  color: rgba(37,99,235,0.7);
+}
+
+/* Step progress */
+
+.budget-wizard-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 1.75rem;
+}
+
+.budget-wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  flex: 1;
+  position: relative;
+}
+
+.budget-wizard-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 14px;
+  inset-inline-start: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--mm-border);
+}
+
+.budget-wizard-step.completed::after,
+.budget-wizard-step.active::after {
+  background: var(--mm-brand-primary);
+}
+
+.budget-wizard-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--mm-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--mm-surface);
+  color: var(--mm-text-muted);
+  z-index: 1;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.budget-wizard-step.active .budget-wizard-dot {
+  border-color: var(--mm-brand-primary);
+  color: var(--mm-brand-primary);
+}
+
+.budget-wizard-step.completed .budget-wizard-dot {
+  border-color: var(--mm-brand-primary);
+  background: var(--mm-brand-primary);
+  color: #fff;
+}
+
+.budget-wizard-step-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--mm-text-muted);
+  text-align: center;
+}
+
+.budget-wizard-step.active .budget-wizard-step-label,
+.budget-wizard-step.completed .budget-wizard-step-label {
+  color: var(--mm-brand-primary);
+}
+
+/* ── Detail page ────────────────────────────────────────── */
+
+.budget-detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.budget-detail-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--mm-radius-lg);
+  background: rgba(37,99,235,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--mm-brand-primary);
+  flex-shrink: 0;
+}
+
+html[data-theme="dark"] .budget-detail-icon {
+  background: rgba(96,165,250,0.15);
+}
+
+.budget-detail-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.budget-detail-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--mm-text);
+}
+
+.budget-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.budget-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Detail KPI strip ───────────────────────────────────── */
+
+.budget-detail-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .budget-detail-kpi-strip { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 992px) {
+  .budget-detail-kpi-strip { grid-template-columns: repeat(6, 1fr); }
+}
+
+.budget-detail-kpi {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.budget-detail-kpi-label {
+  font-size: 0.68rem;
+  color: var(--mm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.budget-detail-kpi-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--mm-text);
+  line-height: 1.2;
+}
+
+.budget-detail-kpi-hint {
+  font-size: 0.68rem;
+  color: var(--mm-text-muted);
+}
+
+/* ── Period history table ───────────────────────────────── */
+
+.budget-periods-table {
+  width: 100%;
+  font-size: 0.8125rem;
+}
+
+.budget-periods-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mm-text-muted);
+  font-weight: 600;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--mm-border);
+  white-space: nowrap;
+}
+
+.budget-periods-table td {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--mm-border);
+  color: var(--mm-text);
+  vertical-align: middle;
+}
+
+.budget-periods-table tbody tr:hover {
+  background: var(--mm-surface-alt);
+}
+
+.budget-period-util-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.budget-period-util-track {
+  width: 60px;
+  height: 6px;
+  background: var(--mm-surface-alt);
+  border-radius: 100px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.budget-period-util-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: var(--mm-success);
+}
+
+.budget-period-util-fill.pct-warning  { background: var(--mm-warning); }
+.budget-period-util-fill.pct-danger   { background: #f97316; }
+.budget-period-util-fill.pct-critical,
+.budget-period-util-fill.pct-over     { background: var(--mm-danger); }
+
+.health-band-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+}
+
+.health-band-badge.excellent { background: rgba(25,135,84,0.12); color: var(--mm-success); }
+.health-band-badge.good      { background: rgba(13,110,253,0.1);  color: var(--mm-info); }
+.health-band-badge.fair      { background: rgba(255,193,7,0.15);  color: #a67a00; }
+.health-band-badge.poor      { background: rgba(220,53,69,0.1);   color: var(--mm-danger); }
+
+html[data-theme="dark"] .health-band-badge.fair { color: var(--mm-warning); }
+
+.period-status-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+}
+
+.period-status-active   { background: rgba(25,135,84,0.12); color: var(--mm-success); }
+.period-status-exceeded { background: rgba(220,53,69,0.1);  color: var(--mm-danger); }
+.period-status-closed   { background: var(--mm-surface-alt); color: var(--mm-text-muted); }
+
+/* ── Trend chart on detail ──────────────────────────────── */
+
+.budget-detail-chart-wrap {
+  position: relative;
+  height: 200px;
+}
+
+/* ── Analytics table ────────────────────────────────────── */
+
+.budget-analytics-trend-up   { color: var(--mm-danger); }
+.budget-analytics-trend-down { color: var(--mm-success); }
+.budget-analytics-trend-flat { color: var(--mm-text-muted); }
+
+/* ── RTL adjustments ────────────────────────────────────── */
+
+[dir="rtl"] .budget-wizard-step:not(:last-child)::after {
+  inset-inline-start: auto;
+  inset-inline-end: 50%;
+}
+
+/* ── Donut chart wrap ───────────────────────────────────── */
+
+.budget-donut-wrap {
+  position: relative;
+  height: 220px;
+}
+
+/* ── Card inner structure ───────────────────────────────── */
+
+.budget-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.budget-card-type-badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+  font-weight: 600;
+  background: rgba(37,99,235,0.12);
+  color: var(--mm-brand-primary);
+}
+
+.budget-card-period-badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 100px;
+  font-weight: 500;
+  background: var(--mm-surface-alt);
+  color: var(--mm-text-muted);
+}
+
+.budget-card-period-badge.badge-paused {
+  background: rgba(255,193,7,0.15);
+  color: #a67a00;
+}
+
+.budget-card-period-badge.badge-archived {
+  background: var(--mm-surface-alt);
+  color: var(--mm-text-muted);
+  opacity: 0.7;
+}
+
+html[data-theme="dark"] .budget-card-period-badge.badge-paused { color: var(--mm-warning); }
+
+.budget-menu-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: var(--mm-radius-sm);
+  color: var(--mm-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.budget-menu-btn:hover {
+  background: var(--mm-surface-alt);
+  color: var(--mm-text);
+}
+
+.budget-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.budget-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--mm-radius);
+  background: rgba(37,99,235,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  color: var(--mm-brand-primary);
+}
+
+html[data-theme="dark"] .budget-card-icon {
+  background: rgba(96,165,250,0.15);
+}
+
+.budget-card-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--mm-text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.budget-card-category {
+  font-size: 0.75rem;
+  color: var(--mm-text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Paused / archived card states */
+
+.budget-card-paused {
+  opacity: 0.75;
+}
+
+.budget-card-paused::before {
+  background: var(--mm-warning) !important;
+}
+
+.budget-card-archived {
+  opacity: 0.6;
+}
+
+/* ── Stat aliases ───────────────────────────────────────── */
+
+.budget-stat-val   { font-size: 0.8125rem; font-weight: 700; color: var(--mm-text); white-space: nowrap; }
+.budget-stat-lbl   { font-size: 0.65rem; color: var(--mm-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ── KPI card aliases ───────────────────────────────────── */
+
+.budget-kpi-val    { font-size: 1.375rem; font-weight: 700; color: var(--mm-text); line-height: 1.2; }
+.budget-kpi-lbl    { font-size: 0.72rem; color: var(--mm-text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+
+/* ── Wizard label alias ─────────────────────────────────── */
+
+.budget-wizard-lbl {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--mm-text-muted);
+  text-align: center;
+}
+
+.budget-wizard-step.active .budget-wizard-lbl,
+.budget-wizard-step.done   .budget-wizard-lbl {
+  color: var(--mm-brand-primary);
+}
+
+/* ── Search filter input ────────────────────────────────── */
+
+.budget-search-icon {
+  position: absolute;
+  inset-inline-start: 0.625rem;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: var(--mm-text-muted);
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+.budget-search-input {
+  padding-inline-start: 2rem;
+  min-width: 200px;
+}
+
+/* ── Detail page additions ──────────────────────────────── */
+
+.budget-detail-name {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0.25rem 0 0;
+  color: var(--mm-text);
+}
+
+.budget-health-ring-lg {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--mm-border);
+  gap: 2px;
+}
+
+.budget-health-ring-lg.health-excellent { border-color: var(--mm-success); }
+.budget-health-ring-lg.health-good      { border-color: var(--mm-info); }
+.budget-health-ring-lg.health-fair      { border-color: var(--mm-warning); }
+.budget-health-ring-lg.health-poor      { border-color: var(--mm-danger); }
+
+.budget-health-score-lg {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.budget-health-ring-lg.health-excellent .budget-health-score-lg { color: var(--mm-success); }
+.budget-health-ring-lg.health-good      .budget-health-score-lg { color: var(--mm-info); }
+.budget-health-ring-lg.health-fair      .budget-health-score-lg { color: var(--mm-warning); }
+.budget-health-ring-lg.health-poor      .budget-health-score-lg { color: var(--mm-danger); }
+
+.budget-detail-icon.health-excellent { background: rgba(25,135,84,0.1);   color: var(--mm-success); }
+.budget-detail-icon.health-good      { background: rgba(13,110,253,0.1);  color: var(--mm-info); }
+.budget-detail-icon.health-fair      { background: rgba(255,193,7,0.12);  color: #a67a00; }
+.budget-detail-icon.health-poor      { background: rgba(220,53,69,0.1);   color: var(--mm-danger); }
+
+html[data-theme="dark"] .budget-detail-icon.health-fair { color: var(--mm-warning); }
+
+/* ── Budget type option inner elements ──────────────────── */
+
+.budget-type-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--mm-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: background 0.15s;
+}
+
+.budget-type-option.selected .budget-type-icon {
+  background: rgba(37,99,235,0.12);
+  color: var(--mm-brand-primary);
+}
+
+.budget-type-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.budget-type-desc {
+  font-size: 0.68rem;
+  color: var(--mm-text-muted);
+  line-height: 1.4;
+}
+
+.budget-type-option.selected .budget-type-desc {
+  color: rgba(37,99,235,0.7);
+}
+
+/* ── Wizard done state (alias for completed) ─────────────── */
+
+.budget-wizard-step.done::after {
+  background: var(--mm-brand-primary);
+}
+
+.budget-wizard-step.done .budget-wizard-dot {
+  border-color: var(--mm-brand-primary);
+  background: var(--mm-brand-primary);
+  color: #fff;
+}
+
+.budget-wizard-step.done .budget-wizard-lbl {
+  color: var(--mm-brand-primary);
+}

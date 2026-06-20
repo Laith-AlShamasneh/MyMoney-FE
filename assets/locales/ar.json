@@ -55,7 +55,8 @@
     "add_user": "إضافة مستخدم",
     "recurring":  "المتكررة",
     "goals":      "أهدافي",
-    "cash_flow":  "التدفق النقدي"
+    "cash_flow":  "التدفق النقدي",
+    "budgets":    "الميزانيات"
   },
 
   "auth": {
@@ -1138,6 +1139,171 @@
     "no_data_cta_rec":"إعداد متكرر",
 
     "nav_label": "التدفق النقدي"
+  },
+
+  "budgets": {
+    "page_title":  "الميزانيات",
+    "eyebrow":     "إدارة الميزانية",
+    "heading":     "ميزانياتي",
+    "subheading":  "حدد حدوداً للإنفاق وابقَ مسيطراً على كل فئة.",
+
+    "kpi_active":         "الميزانيات النشطة",
+    "kpi_total_budgeted": "إجمالي الميزانية",
+    "kpi_total_spent":    "إجمالي المصروف",
+    "kpi_utilization":    "متوسط الاستخدام",
+    "kpi_over_budget":    "تجاوز الميزانية",
+    "kpi_healthy":        "صحية",
+
+    "type_fixed":      "ثابتة",
+    "type_percentage": "% من الدخل",
+    "type_annual":     "سنوية",
+    "type_flexible":   "مرنة",
+
+    "period_monthly":   "شهرية",
+    "period_quarterly": "ربع سنوية",
+    "period_yearly":    "سنوية",
+
+    "status_active":   "نشطة",
+    "status_paused":   "موقوفة",
+    "status_archived": "مؤرشفة",
+
+    "health_poor":      "ضعيفة",
+    "health_fair":      "مقبولة",
+    "health_good":      "جيدة",
+    "health_excellent": "ممتازة",
+
+    "risk_low":    "في المسار",
+    "risk_medium": "مراقبة",
+    "risk_high":   "في خطر",
+
+    "period_status_active":   "نشطة",
+    "period_status_exceeded": "تجاوزت الميزانية",
+    "period_status_closed":   "مغلقة",
+
+    "add_btn":         "ميزانية جديدة",
+    "create_title":    "إنشاء ميزانية",
+    "edit_title":      "تعديل الميزانية",
+    "wizard_step_type":    "النوع",
+    "wizard_step_details": "التفاصيل",
+    "wizard_step_limits":  "الحدود",
+    "wizard_next":         "التالي",
+    "wizard_back":         "رجوع",
+    "wizard_create":       "إنشاء الميزانية",
+    "wizard_creating":     "جارٍ الإنشاء...",
+    "wizard_choose_type":  "اختر نوع الميزانية الأنسب لهدفك",
+
+    "type_fixed_desc":      "حد إنفاق ثابت لكل فترة.",
+    "type_percentage_desc": "نسبة مئوية من دخلك الشهري.",
+    "type_annual_desc":     "ميزانية سنوية موزعة على 12 شهراً.",
+    "type_flexible_desc":   "تتكيف بناءً على أنماط إنفاقك.",
+
+    "field_name":             "اسم الميزانية",
+    "field_name_ph":          "مثال: الطعام والمطاعم",
+    "field_category":         "الفئة",
+    "field_category_ph":      "اختر فئة (اختياري)",
+    "field_budget_type":      "نوع الميزانية",
+    "field_period_type":      "الفترة",
+    "field_amount":           "المبلغ",
+    "field_amount_ph":        "0.000",
+    "field_start_date":       "تاريخ البدء",
+    "field_end_date":         "تاريخ الانتهاء",
+    "field_end_date_hint":    "اتركه فارغاً للميزانية المفتوحة.",
+    "field_auto_renew":       "تجديد تلقائي للفترات",
+    "field_auto_renew_hint":  "بدء فترة جديدة تلقائياً عند انتهاء الحالية.",
+    "field_notes":            "ملاحظات",
+    "field_notes_ph":         "أي ملاحظات... (اختياري)",
+
+    "save_btn":    "حفظ",
+    "saving":      "جارٍ الحفظ...",
+    "cancel_btn":  "إلغاء",
+    "pause_btn":   "إيقاف مؤقت",
+    "resume_btn":  "استئناف",
+    "edit_btn":    "تعديل",
+    "delete_btn":  "حذف",
+    "view_btn":    "عرض التفاصيل",
+
+    "delete_confirm_title": "حذف الميزانية",
+    "delete_confirm_desc":  "حذف هذه الميزانية وكل سجل فتراتها؟ لا يمكن التراجع عن هذا الإجراء.",
+    "delete_confirm_btn":   "حذف",
+    "deleting":             "جارٍ الحذف...",
+
+    "created_success": "تم إنشاء الميزانية بنجاح.",
+    "updated_success": "تم تحديث الميزانية.",
+    "deleted_success": "تم حذف الميزانية.",
+    "paused_success":  "تم إيقاف الميزانية مؤقتاً.",
+    "resumed_success": "تم استئناف الميزانية.",
+    "error":           "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+
+    "empty_title":         "لا توجد ميزانيات بعد",
+    "empty_desc":          "أنشئ ميزانيتك الأولى للسيطرة على إنفاقك.",
+    "empty_cta":           "إنشاء أول ميزانية",
+    "empty_filtered_title":"لا توجد نتائج",
+    "empty_filtered_desc": "حاول تعديل الفلاتر.",
+
+    "filter_all_status":  "جميع الحالات",
+    "filter_search_ph":   "ابحث في الميزانيات...",
+
+    "card_budgeted":    "الميزانية",
+    "card_spent":       "المصروف",
+    "card_remaining":   "المتبقي",
+    "card_projected":   "المتوقع في النهاية",
+    "card_daily_left":  "المتبقي يومياً",
+    "card_health":      "الصحة",
+    "card_period":      "الفترة",
+    "card_auto_renew":  "تجديد تلقائي",
+    "card_no_period":   "لا توجد فترة نشطة",
+
+    "chart_budgeted":          "الميزانية",
+    "chart_spent":             "المصروف",
+    "chart_trend_title":       "الميزانية مقابل الفعلي",
+    "chart_trend_subtitle":    "الإنفاق الشهري مقابل الميزانية",
+    "chart_category_title":    "الإنفاق حسب الفئة",
+    "chart_category_subtitle": "توزيع الفترة الحالية",
+    "chart_no_data":           "لا توجد بيانات للعرض.",
+
+    "detail_page_title":    "تفاصيل الميزانية",
+    "detail_back":          "العودة للميزانيات",
+    "detail_loading":       "جارٍ التحميل...",
+    "detail_not_found":     "الميزانية غير موجودة.",
+    "detail_current_period":"الفترة الحالية",
+    "detail_health_score":  "درجة الصحة",
+    "detail_forecast_risk": "مخاطر التوقعات",
+    "detail_projected":     "المتوقع في النهاية",
+    "detail_daily_budget":  "الميزانية اليومية",
+    "detail_over_budget":   "تجاوز الميزانية",
+    "detail_period_range":  "{start} – {end}",
+
+    "periods_title":   "سجل الفترات",
+    "periods_loading": "جارٍ تحميل السجل...",
+    "periods_empty":   "لا يوجد سجل فترات بعد.",
+
+    "col_period":      "الفترة",
+    "col_budgeted":    "الميزانية",
+    "col_spent":       "المصروف",
+    "col_remaining":   "المتبقي",
+    "col_utilization": "الاستخدام",
+    "col_health":      "الصحة",
+    "col_status":      "الحالة",
+
+    "auto_renew_on":  "تجديد تلقائي",
+    "auto_renew_off": "يدوي",
+    "no_end_date":    "بدون تاريخ انتهاء",
+
+    "loading": "جارٍ تحميل الميزانيات...",
+
+    "pagination_prev": "السابق",
+    "pagination_next": "التالي",
+    "pagination_of":   "من",
+    "pagination_rows": "صفوف",
+
+    "analytics_title":    "التحليلات",
+    "analytics_subtitle": "الأداء عبر جميع الميزانيات",
+    "analytics_months_label": "أشهر",
+    "analytics_empty":    "البيانات غير كافية بعد.",
+    "col_name":           "الميزانية",
+    "col_avg_monthly":    "متوسط الإنفاق الشهري",
+    "col_over_months":    "أشهر تجاوز الميزانية",
+    "col_trend":          "الاتجاه"
   },
 
   "onboarding": {

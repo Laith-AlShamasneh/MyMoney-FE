@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — الميزانيات">
+  <title data-i18n-page-title="budgets.page_title">الميزانيات | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/budgets.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- ── Skeleton ──────────────────────────────────────────────────── -->
+          <div id="budgetsSkeleton">
+            <div class="mm-page-header mb-4">
+              <div>
+                <div class="skel mb-2" style="width:80px;height:12px"></div>
+                <div class="skel mb-2" style="width:220px;height:28px"></div>
+                <div class="skel"      style="width:300px;height:14px"></div>
+              </div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-6 col-md-3"><div class="skel" style="height:90px;border-radius:12px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:90px;border-radius:12px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:90px;border-radius:12px"></div></div>
+              <div class="col-6 col-md-3"><div class="skel" style="height:90px;border-radius:12px"></div></div>
+            </div>
+            <div class="row g-4">
+              <div class="col-12 col-md-6 col-xl-4"><div class="skel" style="height:220px;border-radius:16px"></div></div>
+              <div class="col-12 col-md-6 col-xl-4"><div class="skel" style="height:220px;border-radius:16px"></div></div>
+              <div class="col-12 col-md-6 col-xl-4"><div class="skel" style="height:220px;border-radius:16px"></div></div>
+            </div>
+          </div>
+
+          <!-- ── No data / first-time empty ──────────────────────────────── -->
+          <div id="budgetsNoData" class="d-none">
+            <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between">
+              <div>
+                <p class="eyebrow" data-i18n="budgets.eyebrow"></p>
+                <h1 class="mm-page-title" data-i18n="budgets.heading"></h1>
+                <p class="text-muted" data-i18n="budgets.subheading"></p>
+              </div>
+            </div>
+            <div class="budget-empty-state text-center py-5">
+              <div class="budget-empty-icon mb-4">
+                <i class="bi bi-wallet2" aria-hidden="true"></i>
+              </div>
+              <h3 class="fw-bold mb-2" data-i18n="budgets.empty_title"></h3>
+              <p class="text-muted mb-4" data-i18n="budgets.empty_desc"></p>
+              <button id="addBudgetBtnEmpty" class="btn btn-primary btn-lg px-5">
+                <i class="bi bi-plus-circle me-2"></i>
+                <span data-i18n="budgets.empty_cta"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Main content ─────────────────────────────────────────────── -->
+          <div id="budgetsContent" class="d-none">
+
+            <!-- Page header -->
+            <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div>
+                <p class="eyebrow" data-i18n="budgets.eyebrow"></p>
+                <h1 class="mm-page-title" data-i18n="budgets.heading"></h1>
+                <p class="text-muted mb-0" data-i18n="budgets.subheading"></p>
+              </div>
+              <button id="addBudgetBtn" class="btn btn-primary align-self-start">
+                <i class="bi bi-plus-circle me-2"></i>
+                <span data-i18n="budgets.add_btn"></span>
+              </button>
+            </div>
+
+            <!-- KPI strip -->
+            <div class="budget-kpi-grid mb-4" id="budgetsKpiStrip"></div>
+
+            <!-- Charts row -->
+            <div class="budget-charts-row mb-4">
+              <!-- Bar chart: Budget vs Actual -->
+              <div class="panel budget-chart-panel">
+                <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
+                  <div>
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="budgets.chart_trend_title"></h2>
+                    <p class="text-muted small mb-0" data-i18n="budgets.chart_trend_subtitle"></p>
+                  </div>
+                </div>
+                <div class="budget-chart-wrap">
+                  <canvas id="budgetBarChart" dir="ltr" aria-label="Budget vs actual bar chart" role="img"></canvas>
+                </div>
+                <p id="budgetBarEmpty" class="text-center text-muted small mt-3 d-none" data-i18n="budgets.chart_no_data"></p>
+              </div>
+              <!-- Donut chart: Category spending -->
+              <div class="panel budget-chart-panel">
+                <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
+                  <div>
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="budgets.chart_category_title"></h2>
+                    <p class="text-muted small mb-0" data-i18n="budgets.chart_category_subtitle"></p>
+                  </div>
+                </div>
+                <div class="budget-donut-wrap">
+                  <canvas id="budgetDonutChart" dir="ltr" aria-label="Category spending donut chart" role="img"></canvas>
+                </div>
+                <p id="budgetDonutEmpty" class="text-center text-muted small mt-3 d-none" data-i18n="budgets.chart_no_data"></p>
+              </div>
+            </div>
+
+            <!-- Filter bar -->
+            <div class="budget-filter-bar mb-4">
+              <select id="filterStatus" class="form-select form-select-sm">
+                <option value="" data-i18n="budgets.filter_all_status"></option>
+                <option value="1" data-i18n="budgets.status_active"></option>
+                <option value="2" data-i18n="budgets.status_paused"></option>
+                <option value="3" data-i18n="budgets.status_archived"></option>
+              </select>
+              <div class="position-relative">
+                <i class="bi bi-search budget-search-icon" aria-hidden="true"></i>
+                <input id="filterSearch" type="search" class="form-control form-control-sm budget-search-input"
+                       data-i18n-placeholder="budgets.filter_search_ph">
+              </div>
+            </div>
+
+            <!-- Budget cards grid -->
+            <div id="budgetsGrid" class="row g-4"></div>
+
+            <!-- Filtered empty -->
+            <div id="budgetsFilteredEmpty" class="d-none">
+              <div class="text-center py-5">
+                <i class="bi bi-funnel fs-1 text-muted mb-3 d-block"></i>
+                <h5 data-i18n="budgets.empty_filtered_title"></h5>
+                <p class="text-muted" data-i18n="budgets.empty_filtered_desc"></p>
+              </div>
+            </div>
+
+          </div><!-- /budgetsContent -->
+
+        </div><!-- /container-fluid -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div><!-- /admin-main -->
+  </div><!-- /admin-shell -->
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       WIZARD MODAL — Multi-step budget creation
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="budgetWizardModal" class="modal fade" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="budgets.create_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-3 pb-4 px-4">
+
+          <!-- Step progress bar -->
+          <div class="budget-wizard-steps mb-4">
+            <div class="budget-wizard-step active" id="bwNode1">
+              <div class="budget-wizard-dot" id="bwDot1">1</div>
+              <div class="budget-wizard-lbl" data-i18n="budgets.wizard_step_type"></div>
+            </div>
+            <div class="budget-wizard-step" id="bwNode2">
+              <div class="budget-wizard-dot" id="bwDot2">2</div>
+              <div class="budget-wizard-lbl" data-i18n="budgets.wizard_step_details"></div>
+            </div>
+            <div class="budget-wizard-step" id="bwNode3">
+              <div class="budget-wizard-dot" id="bwDot3">3</div>
+              <div class="budget-wizard-lbl" data-i18n="budgets.wizard_step_limits"></div>
+            </div>
+          </div>
+
+          <!-- Step 1: Budget type selection -->
+          <div id="bwStep1">
+            <p class="text-muted mb-3" data-i18n="budgets.wizard_choose_type"></p>
+            <div class="row g-3" id="bwTypeGrid">
+              <div class="col-6 col-lg-3">
+                <div class="budget-type-option" data-type="1" role="button" tabindex="0">
+                  <div class="budget-type-icon"><i class="bi bi-lock" aria-hidden="true"></i></div>
+                  <div class="budget-type-name" data-i18n="budgets.type_fixed"></div>
+                  <div class="budget-type-desc small text-muted" data-i18n="budgets.type_fixed_desc"></div>
+                </div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="budget-type-option" data-type="2" role="button" tabindex="0">
+                  <div class="budget-type-icon"><i class="bi bi-percent" aria-hidden="true"></i></div>
+                  <div class="budget-type-name" data-i18n="budgets.type_percentage"></div>
+                  <div class="budget-type-desc small text-muted" data-i18n="budgets.type_percentage_desc"></div>
+                </div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="budget-type-option" data-type="3" role="button" tabindex="0">
+                  <div class="budget-type-icon"><i class="bi bi-calendar3" aria-hidden="true"></i></div>
+                  <div class="budget-type-name" data-i18n="budgets.type_annual"></div>
+                  <div class="budget-type-desc small text-muted" data-i18n="budgets.type_annual_desc"></div>
+                </div>
+              </div>
+              <div class="col-6 col-lg-3">
+                <div class="budget-type-option" data-type="4" role="button" tabindex="0">
+                  <div class="budget-type-icon"><i class="bi bi-sliders" aria-hidden="true"></i></div>
+                  <div class="budget-type-name" data-i18n="budgets.type_flexible"></div>
+                  <div class="budget-type-desc small text-muted" data-i18n="budgets.type_flexible_desc"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Name, category, period -->
+          <div id="bwStep2" class="d-none">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_name"></label>
+                <input id="bwName" type="text" class="form-control" autocomplete="off">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_category"></label>
+                <select id="bwCategory" class="form-select">
+                  <option value="" data-i18n="budgets.field_category_ph"></option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_period_type"></label>
+                <select id="bwPeriodType" class="form-select">
+                  <option value="1" data-i18n="budgets.period_monthly"></option>
+                  <option value="2" data-i18n="budgets.period_quarterly"></option>
+                  <option value="3" data-i18n="budgets.period_yearly"></option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_start_date"></label>
+                <input id="bwStartDate" type="date" class="form-control">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_end_date"></label>
+                <input id="bwEndDate" type="date" class="form-control">
+                <div class="form-text" data-i18n="budgets.field_end_date_hint"></div>
+              </div>
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="bwAutoRenew" checked>
+                  <label class="form-check-label" for="bwAutoRenew" data-i18n="budgets.field_auto_renew"></label>
+                </div>
+                <div class="form-text" data-i18n="budgets.field_auto_renew_hint"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Amount & notes -->
+          <div id="bwStep3" class="d-none">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_amount"></label>
+                <input id="bwAmount" type="number" min="0.001" step="0.001" class="form-control">
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold" data-i18n="budgets.field_notes"></label>
+                <textarea id="bwNotes" class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4 d-flex justify-content-between">
+          <button id="bwBackBtn" class="btn btn-outline-secondary d-none" data-i18n="budgets.wizard_back"></button>
+          <div class="ms-auto d-flex gap-2">
+            <button id="bwNextBtn" class="btn btn-primary" disabled data-i18n="budgets.wizard_next"></button>
+            <button id="bwCreateBtn" class="btn btn-primary d-none">
+              <i class="bi bi-check-circle me-2"></i>
+              <span data-i18n="budgets.wizard_create"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       EDIT BUDGET MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="editBudgetModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" data-i18n="budgets.edit_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_name"></label>
+              <input id="editBudgetName" type="text" class="form-control" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_category"></label>
+              <select id="editBudgetCategory" class="form-select">
+                <option value="" data-i18n="budgets.field_category_ph"></option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_period_type"></label>
+              <select id="editBudgetPeriodType" class="form-select">
+                <option value="1" data-i18n="budgets.period_monthly"></option>
+                <option value="2" data-i18n="budgets.period_quarterly"></option>
+                <option value="3" data-i18n="budgets.period_yearly"></option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_amount"></label>
+              <input id="editBudgetAmount" type="number" min="0.001" step="0.001" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_end_date"></label>
+              <input id="editBudgetEndDate" type="date" class="form-control">
+              <div class="form-text" data-i18n="budgets.field_end_date_hint"></div>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="editBudgetAutoRenew">
+                <label class="form-check-label" for="editBudgetAutoRenew" data-i18n="budgets.field_auto_renew"></label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" data-i18n="budgets.field_notes"></label>
+              <textarea id="editBudgetNotes" class="form-control" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="budgets.cancel_btn"></button>
+          <button type="button" id="editBudgetSaveBtn" class="btn btn-primary">
+            <span data-i18n="budgets.save_btn"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       DELETE CONFIRM MODAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="deleteBudgetModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-danger" data-i18n="budgets.delete_confirm_title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4">
+          <p data-i18n="budgets.delete_confirm_desc"></p>
+        </div>
+        <div class="modal-footer border-0 px-4">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="budgets.cancel_btn"></button>
+          <button type="button" id="deleteBudgetConfirmBtn" class="btn btn-danger">
+            <span data-i18n="budgets.delete_confirm_btn"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="/assets/js/pages/budgets.js"></script>
+</body>
+</html>

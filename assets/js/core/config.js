@@ -48,6 +48,8 @@ export const Config = Object.freeze({
     GOALS:                  '/pages/goals/index.html',
     CASH_FLOW:              '/pages/cash-flow/index.html',
     GOAL_DETAIL:            '/pages/goals/detail.html',
+    BUDGETS:                '/pages/budgets/index.html',
+    BUDGET_DETAIL:          '/pages/budgets/detail.html',
     ERROR_404:              '/pages/errors/404.html',
     ERROR_500:              '/pages/errors/500.html',
   }),
@@ -150,6 +152,18 @@ export const Config = Object.freeze({
     CASH_FLOW: Object.freeze({
       FORECAST:  '/api/cash-flow/forecast',
       DASHBOARD: '/api/cash-flow/dashboard',
+    }),
+    BUDGETS: Object.freeze({
+      DASHBOARD: '/api/budgets/dashboard',
+      LIST:      '/api/budgets/list',
+      GET:       '/api/budgets/get',
+      CREATE:    '/api/budgets/create',
+      UPDATE:    '/api/budgets/update',
+      DELETE:    '/api/budgets/delete',
+      PAUSE:     '/api/budgets/pause',
+      RESUME:    '/api/budgets/resume',
+      PERIODS:   '/api/budgets/periods',
+      ANALYTICS: '/api/budgets/analytics',
     }),
     NOTIFICATIONS: Object.freeze({
       LIST:               '/api/notifications/list',
