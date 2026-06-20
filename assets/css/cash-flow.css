@@ -1,0 +1,380 @@
+/**
+ * cash-flow.css — MyMoney
+ * Styles specific to the Cash Flow Forecasting page.
+ */
+
+/* ── Horizon period selector ───────────────────────────────────────────────── */
+.cf-horizon-group {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.cf-horizon-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-full);
+  background: transparent;
+  color: var(--mm-muted);
+  cursor: pointer;
+  transition: background var(--mm-duration-fast), color var(--mm-duration-fast), border-color var(--mm-duration-fast);
+}
+
+.cf-horizon-btn:hover {
+  border-color: var(--mm-primary);
+  color: var(--mm-primary);
+}
+
+.cf-horizon-btn.active {
+  background: var(--mm-primary);
+  border-color: var(--mm-primary);
+  color: #fff;
+}
+
+/* ── Confidence badges ─────────────────────────────────────────────────────── */
+.cf-conf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--mm-radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cf-conf-high {
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--mm-success);
+}
+.cf-conf-medium {
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--mm-warning);
+}
+.cf-conf-low {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--mm-danger);
+}
+
+html[data-theme="dark"] .cf-conf-high   { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+html[data-theme="dark"] .cf-conf-medium { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+html[data-theme="dark"] .cf-conf-low    { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+
+/* ── Risk severity indicators ──────────────────────────────────────────────── */
+.cf-risk-item {
+  padding: 0.75rem 1rem;
+  border-radius: var(--mm-radius-md);
+  border: 1px solid var(--mm-border);
+  background: var(--mm-surface);
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  transition: box-shadow var(--mm-duration-fast);
+}
+
+.cf-risk-item + .cf-risk-item {
+  margin-top: 0.5rem;
+}
+
+.cf-risk-item:hover {
+  box-shadow: var(--mm-shadow-sm);
+}
+
+/* Left accent stripe via border-inline-start */
+.cf-risk-sev-1 { border-inline-start: 3px solid var(--mm-info); }
+.cf-risk-sev-2 { border-inline-start: 3px solid var(--mm-warning); }
+.cf-risk-sev-3 { border-inline-start: 3px solid var(--mm-danger); }
+.cf-risk-sev-4 { border-inline-start: 3px solid #7c3aed; }
+
+.cf-risk-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--mm-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+.cf-risk-sev-1 .cf-risk-icon { background: rgba(8, 145, 178, 0.12);  color: var(--mm-info); }
+.cf-risk-sev-2 .cf-risk-icon { background: rgba(217, 119, 6, 0.12);  color: var(--mm-warning); }
+.cf-risk-sev-3 .cf-risk-icon { background: rgba(220, 38, 38, 0.12);  color: var(--mm-danger); }
+.cf-risk-sev-4 .cf-risk-icon { background: rgba(124, 58, 237, 0.12); color: #7c3aed; }
+
+html[data-theme="dark"] .cf-risk-sev-1 .cf-risk-icon { background: rgba(34, 211, 238, 0.12); color: #22d3ee; }
+html[data-theme="dark"] .cf-risk-sev-2 .cf-risk-icon { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+html[data-theme="dark"] .cf-risk-sev-3 .cf-risk-icon { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+html[data-theme="dark"] .cf-risk-sev-4 .cf-risk-icon { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+.cf-risk-sev-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--mm-radius-full);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.cf-risk-sev-1 .cf-risk-sev-badge { background: rgba(8, 145, 178, 0.12);  color: var(--mm-info); }
+.cf-risk-sev-2 .cf-risk-sev-badge { background: rgba(217, 119, 6, 0.12);  color: var(--mm-warning); }
+.cf-risk-sev-3 .cf-risk-sev-badge { background: rgba(220, 38, 38, 0.12);  color: var(--mm-danger); }
+.cf-risk-sev-4 .cf-risk-sev-badge { background: rgba(124, 58, 237, 0.12); color: #7c3aed; }
+
+html[data-theme="dark"] .cf-risk-sev-1 .cf-risk-sev-badge { background: rgba(34, 211, 238, 0.12); color: #22d3ee; }
+html[data-theme="dark"] .cf-risk-sev-2 .cf-risk-sev-badge { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+html[data-theme="dark"] .cf-risk-sev-3 .cf-risk-sev-badge { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+html[data-theme="dark"] .cf-risk-sev-4 .cf-risk-sev-badge { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+/* ── Goal projection cards ─────────────────────────────────────────────────── */
+.cf-goal-card {
+  padding: 1rem;
+  border-radius: var(--mm-radius-md);
+  border: 1px solid var(--mm-border);
+  background: var(--mm-surface);
+  transition: box-shadow var(--mm-duration-fast);
+}
+
+.cf-goal-card:hover {
+  box-shadow: var(--mm-shadow-sm);
+}
+
+.cf-goal-card.cf-goal-at-risk {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.03);
+}
+
+html[data-theme="dark"] .cf-goal-card.cf-goal-at-risk {
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.05);
+}
+
+.cf-goal-card.cf-goal-on-track {
+  border-color: rgba(15, 118, 110, 0.35);
+}
+
+html[data-theme="dark"] .cf-goal-card.cf-goal-on-track {
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.cf-goal-progress-bar {
+  height: 5px;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-border);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.cf-goal-progress-fill {
+  height: 100%;
+  border-radius: var(--mm-radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cf-goal-on-track  .cf-goal-progress-fill { background: var(--mm-success); }
+.cf-goal-at-risk   .cf-goal-progress-fill { background: var(--mm-danger); }
+
+.cf-goal-pace-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.cf-goal-pace-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 5rem;
+}
+
+.cf-goal-pace-label {
+  font-size: 0.65rem;
+  color: var(--mm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.cf-goal-pace-val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--mm-text);
+}
+
+/* ── Monthly breakdown table enhancements ──────────────────────────────────── */
+.cf-month-table th {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--mm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  padding: 0.6rem 0.75rem;
+}
+
+.cf-month-table td {
+  font-size: 0.83rem;
+  padding: 0.55rem 0.75rem;
+  vertical-align: middle;
+}
+
+.cf-month-table tr.cf-current-month td {
+  background: rgba(37, 99, 235, 0.05);
+  font-weight: 600;
+}
+
+html[data-theme="dark"] .cf-month-table tr.cf-current-month td {
+  background: rgba(96, 165, 250, 0.07);
+}
+
+.cf-month-conf-bar {
+  display: inline-block;
+  width: 3.5rem;
+  height: 4px;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-border);
+  vertical-align: middle;
+  position: relative;
+  overflow: hidden;
+}
+
+.cf-month-conf-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-primary);
+}
+
+/* ── Recurring summary strip ───────────────────────────────────────────────── */
+.cf-recurring-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 575px) {
+  .cf-recurring-strip { grid-template-columns: 1fr; }
+}
+
+.cf-recurring-item {
+  padding: 0.75rem 1rem;
+  border-radius: var(--mm-radius-md);
+  border: 1px solid var(--mm-border);
+  background: var(--mm-surface);
+}
+
+/* ── Chart container ───────────────────────────────────────────────────────── */
+.cf-chart-wrap {
+  position: relative;
+  height: 280px;
+}
+
+@media (min-width: 768px) {
+  .cf-chart-wrap { height: 320px; }
+}
+
+/* ── Empty state / no data ─────────────────────────────────────────────────── */
+.cf-no-data {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.cf-no-data-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--mm-radius-full);
+  background: rgba(37, 99, 235, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--mm-primary);
+  margin-bottom: 1rem;
+}
+
+/* ── Scenario simulation controls ─────────────────────────────────────────── */
+.cf-sim-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--mm-border);
+  flex-wrap: wrap;
+}
+
+.cf-sim-row:last-child {
+  border-bottom: none;
+}
+
+.cf-sim-label {
+  flex: 1;
+  min-width: 8rem;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--mm-text);
+}
+
+.cf-sim-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cf-sim-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--mm-radius-sm);
+  border: 1px solid var(--mm-border);
+  background: transparent;
+  color: var(--mm-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: background var(--mm-duration-fast), border-color var(--mm-duration-fast);
+}
+
+.cf-sim-btn:hover {
+  background: var(--mm-surface-alt, var(--mm-border));
+  border-color: var(--mm-primary);
+}
+
+.cf-sim-val {
+  min-width: 4.5rem;
+  text-align: center;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--mm-text);
+}
+
+.cf-sim-result {
+  font-size: 0.78rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--mm-radius-sm);
+  background: rgba(37, 99, 235, 0.07);
+  color: var(--mm-primary);
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+html[data-theme="dark"] .cf-sim-result {
+  background: rgba(96, 165, 250, 0.1);
+  color: #60a5fa;
+}
+
+/* ── Generated-at meta ─────────────────────────────────────────────────────── */
+.cf-meta {
+  font-size: 0.72rem;
+  color: var(--mm-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}

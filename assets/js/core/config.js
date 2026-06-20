@@ -46,6 +46,7 @@ export const Config = Object.freeze({
     FINANCIAL_INTELLIGENCE: '/pages/financial-intelligence/index.html',
     RECURRING:              '/pages/recurring/index.html',
     GOALS:                  '/pages/goals/index.html',
+    CASH_FLOW:              '/pages/cash-flow/index.html',
     GOAL_DETAIL:            '/pages/goals/detail.html',
     ERROR_404:              '/pages/errors/404.html',
     ERROR_500:              '/pages/errors/500.html',
@@ -145,6 +146,10 @@ export const Config = Object.freeze({
       CONTRIBUTIONS:    '/api/goals/contributions',
       LINK_RECURRING:   '/api/goals/link-recurring',
       UNLINK_RECURRING: '/api/goals/unlink-recurring',
+    }),
+    CASH_FLOW: Object.freeze({
+      FORECAST:  '/api/cash-flow/forecast',
+      DASHBOARD: '/api/cash-flow/dashboard',
     }),
     NOTIFICATIONS: Object.freeze({
       LIST:               '/api/notifications/list',

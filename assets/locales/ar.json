@@ -53,8 +53,9 @@
     "logout": "تسجيل الخروج",
     "users": "المستخدمون",
     "add_user": "إضافة مستخدم",
-    "recurring": "المتكررة",
-    "goals":     "أهدافي"
+    "recurring":  "المتكررة",
+    "goals":      "أهدافي",
+    "cash_flow":  "التدفق النقدي"
   },
 
   "auth": {
@@ -1045,6 +1046,98 @@
     "pagination_next": "التالي",
     "pagination_of":   "من",
     "pagination_rows": "صف"
+  },
+
+  "cash_flow": {
+    "page_title":  "توقعات التدفق النقدي",
+    "eyebrow":     "التخطيط المالي",
+    "heading":     "توقعات التدفق النقدي",
+    "subheading":  "اطّلع على مستقبلك المالي — توقعات تمتد حتى 12 شهراً قادماً.",
+
+    "kpi_projected_balance": "الرصيد المتوقع",
+    "kpi_monthly_net":       "صافي التدفق الشهري",
+    "kpi_confidence":        "دقة التوقع",
+    "kpi_risks":             "مخاطر نشطة",
+    "kpi_goal_outlook":      "توقعات الأهداف",
+
+    "confidence_high":   "عالية",
+    "confidence_medium": "متوسطة",
+    "confidence_low":    "منخفضة",
+
+    "risk_none":     "لا مخاطر",
+    "risk_low":      "منخفضة",
+    "risk_medium":   "متوسطة",
+    "risk_high":     "عالية",
+    "risk_critical": "حرجة",
+
+    "horizon_3m":  "3 أشهر",
+    "horizon_6m":  "6 أشهر",
+    "horizon_12m": "12 شهراً",
+
+    "chart_title":   "مخطط التوقعات",
+    "chart_subtitle":"الرصيد المتراكم المتوقع خلال الفترة القادمة",
+    "chart_balance": "الرصيد المتراكم",
+    "chart_income":  "الدخل المتوقع",
+    "chart_expense": "المصاريف المتوقعة",
+
+    "monthly_title":      "التفاصيل الشهرية",
+    "monthly_month":      "الشهر",
+    "monthly_income":     "الدخل",
+    "monthly_expense":    "المصاريف",
+    "monthly_net":        "الصافي",
+    "monthly_balance":    "الرصيد",
+    "monthly_confidence": "الدقة",
+
+    "risks_title":      "تحليل المخاطر",
+    "risks_subtitle":   "المخاطر المالية المكتشفة ضمن أفق التوقع",
+    "risks_empty":      "لا توجد مخاطر",
+    "risks_empty_desc": "توقعاتك المالية تبدو سليمة خلال الفترة المحددة.",
+
+    "risk_type_1": "رصيد سالب",
+    "risk_type_2": "نقص سيولة",
+    "risk_type_3": "هدف في خطر",
+    "risk_type_4": "تجديد اشتراك",
+    "risk_type_5": "تذبذب عالٍ في المصاريف",
+
+    "sev_1": "منخفضة",
+    "sev_2": "متوسطة",
+    "sev_3": "عالية",
+    "sev_4": "حرجة",
+
+    "goals_title":         "توقعات الأهداف المالية",
+    "goals_subtitle":      "تواريخ الإتمام المتوقعة بناءً على وتيرتك المالية الحالية",
+    "goals_empty":         "لا توجد أهداف نشطة",
+    "goals_empty_desc":    "أنشئ أهدافاً مالية لعرض تواريخ الإتمام المتوقعة هنا.",
+    "goal_on_track":       "على المسار",
+    "goal_at_risk":        "في خطر",
+    "goal_target":         "المستهدف",
+    "goal_saved":          "المدخّر",
+    "goal_completion":     "الإتمام المتوقع",
+    "goal_monthly_needed": "مطلوب شهرياً",
+    "goal_monthly_pace":   "وتيرتك الحالية",
+    "goal_no_completion":  "لا تقدير متاح",
+
+    "recurring_title":           "التدفقات المتكررة",
+    "recurring_subtitle":        "الالتزامات الشهرية الثابتة المُدرجة في هذه التوقعات",
+    "recurring_monthly_income":  "الدخل الشهري المتكرر",
+    "recurring_monthly_expense": "المصاريف الشهرية المتكررة",
+
+    "sim_title":        "محاكاة السيناريوهات",
+    "sim_subtitle":     "عدّل الافتراضات لترى تأثيرها على توقعاتك",
+    "sim_income_adj":   "تعديل الدخل",
+    "sim_expense_adj":  "تعديل المصاريف",
+    "sim_result_label": "الرصيد الختامي المحاكى",
+    "sim_reset":        "إعادة تعيين",
+
+    "generated_at":   "آخر تحديث",
+    "history_months": "بناءً على {months} أشهر من البيانات",
+
+    "no_data_title":  "التوقعات غير متاحة بعد",
+    "no_data_desc":   "نحتاج إلى بيانات مالية كافية لإنشاء توقعاتك. أضف معاملات أو سجّل مصاريف متكررة للبدء.",
+    "no_data_cta_tx": "إضافة معاملة",
+    "no_data_cta_rec":"إعداد متكرر",
+
+    "nav_label": "التدفق النقدي"
   },
 
   "onboarding": {

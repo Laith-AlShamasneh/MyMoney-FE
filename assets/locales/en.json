@@ -53,8 +53,9 @@
     "logout": "Sign out",
     "users": "Users",
     "add_user": "Add User",
-    "recurring": "Recurring",
-    "goals":     "Goals"
+    "recurring":  "Recurring",
+    "goals":      "Goals",
+    "cash_flow":  "Cash Flow"
   },
 
   "auth": {
@@ -1048,6 +1049,98 @@
     "pagination_next": "Next",
     "pagination_of":   "of",
     "pagination_rows": "rows"
+  },
+
+  "cash_flow": {
+    "page_title":  "Cash Flow Forecast",
+    "eyebrow":     "Financial Forecasting",
+    "heading":     "Cash Flow Forecast",
+    "subheading":  "See where your finances are headed — projected up to 12 months ahead.",
+
+    "kpi_projected_balance": "Projected Balance",
+    "kpi_monthly_net":       "Monthly Net Flow",
+    "kpi_confidence":        "Forecast Confidence",
+    "kpi_risks":             "Active Risks",
+    "kpi_goal_outlook":      "Goal Outlook",
+
+    "confidence_high":   "High",
+    "confidence_medium": "Medium",
+    "confidence_low":    "Low",
+
+    "risk_none":     "None",
+    "risk_low":      "Low",
+    "risk_medium":   "Medium",
+    "risk_high":     "High",
+    "risk_critical": "Critical",
+
+    "horizon_3m":  "3M",
+    "horizon_6m":  "6M",
+    "horizon_12m": "12M",
+
+    "chart_title":   "Forecast Timeline",
+    "chart_subtitle":"Projected running balance over time",
+    "chart_balance": "Running Balance",
+    "chart_income":  "Projected Income",
+    "chart_expense": "Projected Expense",
+
+    "monthly_title":      "Monthly Breakdown",
+    "monthly_month":      "Month",
+    "monthly_income":     "Income",
+    "monthly_expense":    "Expense",
+    "monthly_net":        "Net",
+    "monthly_balance":    "Balance",
+    "monthly_confidence": "Confidence",
+
+    "risks_title":      "Risk Analysis",
+    "risks_subtitle":   "Identified financial risks in your forecast horizon",
+    "risks_empty":      "No risks detected",
+    "risks_empty_desc": "Your financial forecast looks healthy for the projected period.",
+
+    "risk_type_1": "Negative Balance",
+    "risk_type_2": "Cash Shortage",
+    "risk_type_3": "Goal at Risk",
+    "risk_type_4": "Subscription Renewal",
+    "risk_type_5": "High Expense Variance",
+
+    "sev_1": "Low",
+    "sev_2": "Medium",
+    "sev_3": "High",
+    "sev_4": "Critical",
+
+    "goals_title":        "Goal Projections",
+    "goals_subtitle":     "Estimated completion dates based on your current financial pace",
+    "goals_empty":        "No active goals",
+    "goals_empty_desc":   "Create financial goals to see projected completion dates here.",
+    "goal_on_track":      "On Track",
+    "goal_at_risk":       "At Risk",
+    "goal_target":        "Target",
+    "goal_saved":         "Saved",
+    "goal_completion":    "Est. Completion",
+    "goal_monthly_needed":"Needed / Month",
+    "goal_monthly_pace":  "Your Pace",
+    "goal_no_completion": "No estimate",
+
+    "recurring_title":            "Recurring Cash Flows",
+    "recurring_subtitle":         "Fixed monthly obligations included in this forecast",
+    "recurring_monthly_income":   "Monthly Recurring Income",
+    "recurring_monthly_expense":  "Monthly Recurring Expenses",
+
+    "sim_title":         "What-If Simulation",
+    "sim_subtitle":      "Adjust assumptions to see how changes affect your forecast",
+    "sim_income_adj":    "Income Adjustment",
+    "sim_expense_adj":   "Expense Adjustment",
+    "sim_result_label":  "Simulated End Balance",
+    "sim_reset":         "Reset",
+
+    "generated_at":    "Last updated",
+    "history_months":  "Based on {months} months of data",
+
+    "no_data_title":  "Forecast not ready yet",
+    "no_data_desc":   "We need more financial data to generate your forecast. Add transactions or set up recurring items to get started.",
+    "no_data_cta_tx": "Add Transactions",
+    "no_data_cta_rec":"Setup Recurring",
+
+    "nav_label": "Cash Flow"
   },
 
   "onboarding": {

@@ -9,6 +9,7 @@ import { guardPage }                     from '../core/auth.js';
 import { initOnboarding }                from '../components/onboarding.js';
 import { DashboardService }              from '../services/dashboard-service.js';
 import { FinancialIntelligenceService }  from '../services/financial-intelligence-service.js';
+import { CashFlowService }               from '../services/cash-flow-service.js';
 import { ApiError }                      from '../core/api.js';
 import { showError }                     from '../components/toast.js';
 import {
@@ -38,6 +39,8 @@ const kpiCountChange    = document.getElementById('kpiCountChange');
 
 const filSkeletons      = document.getElementById('filSkeletons');
 const filStrip          = document.getElementById('filStrip');
+const cfStripSkeletons  = document.getElementById('cfStripSkeletons');
+const cfStrip           = document.getElementById('cfStrip');
 
 const breakdownEmpty    = document.getElementById('breakdownEmpty');
 const breakdownChart    = document.getElementById('breakdownChart');
@@ -472,13 +475,94 @@ function _renderFilStrip(data) {
 }
 
 /* --------------------------------------------------------------------------
+   Cash Flow forecast strip (dashboard widget)
+   -------------------------------------------------------------------------- */
+function _confBandCls(band) {
+  return band === 3 ? 'cf-conf-high' : band === 2 ? 'cf-conf-medium' : 'cf-conf-low';
+}
+function _confBandKey(band) {
+  return band === 3 ? 'high' : band === 2 ? 'medium' : 'low';
+}
+
+function _renderCfStrip(data) {
+  if (!cfStrip || !data) return;
+
+  const isAr        = _lang() === 'ar';
+  const endBalance  = data.forecastedEndBalance ?? 0;
+  const netFlow     = (data.recurringIncomeMonthly ?? 0) - (data.recurringExpenseMonthly ?? 0);
+  const band        = data.confidenceBand ?? 1;
+  const topRisks    = (data.topRisks ?? []).slice(0, 2);
+  const hasRisks    = topRisks.length > 0;
+  const maxSev      = hasRisks ? Math.max(...topRisks.map(r => r.severity ?? 1)) : 0;
+  const riskColor   = maxSev >= 3 ? 'var(--mm-danger)' : maxSev >= 2 ? 'var(--mm-warning)' : 'var(--mm-info)';
+
+  const balanceHtml = `
+    <div class="d-flex align-items-center gap-3">
+      <div class="kpi-icon" style="background:rgba(37,99,235,.1);color:var(--mm-primary);flex-shrink:0;">
+        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+      </div>
+      <div>
+        <p class="text-muted mb-1" style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.04em;">${t('cash_flow.kpi_projected_balance')}</p>
+        <div class="fw-bold" style="font-size:1.05rem;color:${endBalance < 0 ? 'var(--mm-danger)' : 'var(--mm-success)'};">${_fmtAmount(endBalance)}</div>
+        <span class="cf-conf-badge ${_confBandCls(band)}" style="margin-top:.25rem;display:inline-flex;">
+          ${t(`cash_flow.confidence_${_confBandKey(band)}`)}
+        </span>
+      </div>
+    </div>`;
+
+  const netHtml = `
+    <div class="d-flex align-items-center gap-3">
+      <div class="kpi-icon" style="background:${netFlow >= 0 ? 'rgba(15,118,110,.1)' : 'rgba(220,38,38,.1)'};color:${netFlow >= 0 ? 'var(--mm-success)' : 'var(--mm-danger)'};flex-shrink:0;">
+        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+      </div>
+      <div>
+        <p class="text-muted mb-1" style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.04em;">${t('cash_flow.kpi_monthly_net')}</p>
+        <div class="fw-bold" style="font-size:1.05rem;color:${netFlow < 0 ? 'var(--mm-danger)' : 'var(--mm-success)'};">
+          ${(netFlow < 0 ? '−' : '+') + _fmtAmount(Math.abs(netFlow))}
+        </div>
+      </div>
+    </div>`;
+
+  const risksHtml = hasRisks ? `
+    <div>
+      <p class="text-muted mb-2" style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.04em;">${t('cash_flow.risks_title')}</p>
+      ${topRisks.map(r => `
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <i class="bi bi-exclamation-circle" style="color:${riskColor};font-size:0.8rem;" aria-hidden="true"></i>
+          <span style="font-size:0.78rem;color:var(--mm-text);">${_esc(r.title ?? t(`cash_flow.risk_type_${r.riskType}`))}</span>
+        </div>`).join('')}
+    </div>` : `
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-shield-check text-success fs-5" aria-hidden="true"></i>
+      <span class="text-muted small">${t('cash_flow.risks_empty')}</span>
+    </div>`;
+
+  cfStrip.innerHTML = `
+    <div class="panel p-0 overflow-hidden">
+      <div class="fil-strip">
+        <div class="fil-strip-section">${balanceHtml}</div>
+        <div class="fil-strip-section">${netHtml}</div>
+        <div class="fil-strip-section">${risksHtml}</div>
+      </div>
+      <div class="fil-strip-footer">
+        <a href="/pages/cash-flow/index.html" class="btn btn-sm btn-outline-secondary" style="font-size:0.78rem;padding:.2rem .7rem;">
+          ${t('cash_flow.nav_label')} <i class="bi bi-arrow-${isAr ? 'left' : 'right'}-short" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>`;
+
+  cfStrip.classList.remove('d-none');
+}
+
+/* --------------------------------------------------------------------------
    Skeleton state helpers
    -------------------------------------------------------------------------- */
 function _showSkeletons() {
-  kpiSkeletons.classList.remove('d-none');    kpiCards.classList.add('d-none');
-  chartsSkeletons.classList.remove('d-none'); chartsRow.classList.add('d-none');
-  bottomSkeletons.classList.remove('d-none'); bottomRow.classList.add('d-none');
-  filSkeletons.classList.remove('d-none');    filStrip.classList.add('d-none');
+  kpiSkeletons.classList.remove('d-none');       kpiCards.classList.add('d-none');
+  chartsSkeletons.classList.remove('d-none');    chartsRow.classList.add('d-none');
+  bottomSkeletons.classList.remove('d-none');    bottomRow.classList.add('d-none');
+  filSkeletons.classList.remove('d-none');       filStrip.classList.add('d-none');
+  cfStripSkeletons?.classList.remove('d-none');  cfStrip?.classList.add('d-none');
   emptyState.classList.add('d-none');
 }
 
@@ -487,6 +571,7 @@ function _hideSkeletons() {
   chartsSkeletons.classList.add('d-none');
   bottomSkeletons.classList.add('d-none');
   filSkeletons.classList.add('d-none');
+  cfStripSkeletons?.classList.add('d-none');
 }
 
 /* --------------------------------------------------------------------------
@@ -495,15 +580,20 @@ function _hideSkeletons() {
 async function loadDashboard() {
   _showSkeletons();
 
-  const [dashResult, filResult] = await Promise.allSettled([
+  const [dashResult, filResult, cfResult] = await Promise.allSettled([
     DashboardService.getSummary(),
     FinancialIntelligenceService.getDashboard(),
+    CashFlowService.getDashboard(),
   ]);
 
   _hideSkeletons();
 
   if (filResult.status === 'fulfilled' && filResult.value) {
     _renderFilStrip(filResult.value);
+  }
+
+  if (cfResult.status === 'fulfilled' && cfResult.value?.forecastId) {
+    _renderCfStrip(cfResult.value);
   }
 
   if (dashResult.status === 'rejected') {

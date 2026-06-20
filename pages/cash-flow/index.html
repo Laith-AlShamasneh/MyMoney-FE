@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — توقعات التدفق النقدي">
+  <title data-i18n-page-title="cash_flow.page_title">توقعات التدفق النقدي | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/cash-flow.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="cash_flow.eyebrow">التخطيط المالي</p>
+                <h1 class="h3 mb-1" data-i18n="cash_flow.heading">توقعات التدفق النقدي</h1>
+                <p class="text-muted mb-0" data-i18n="cash_flow.subheading">اطّلع على مستقبلك المالي — توقعات تمتد حتى 12 شهراً قادماً.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Page loading skeleton ─────────────────────────────────────── -->
+          <div id="cfSkeleton">
+            <div class="row g-3 mb-4">
+              <div class="col-6 col-lg"><div class="skeleton" style="height:6rem;"></div></div>
+              <div class="col-6 col-lg"><div class="skeleton" style="height:6rem;"></div></div>
+              <div class="col-6 col-lg"><div class="skeleton" style="height:6rem;"></div></div>
+              <div class="col-6 col-lg d-none d-sm-block"><div class="skeleton" style="height:6rem;"></div></div>
+              <div class="col-lg d-none d-lg-block"><div class="skeleton" style="height:6rem;"></div></div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-12"><div class="skeleton skeleton-chart"></div></div>
+            </div>
+            <div class="row g-3">
+              <div class="col-lg-7"><div class="skeleton skeleton-table"></div></div>
+              <div class="col-lg-5"><div class="skeleton skeleton-table"></div></div>
+            </div>
+          </div>
+
+          <!-- ── No data state ────────────────────────────────────────────── -->
+          <div id="cfNoData" class="d-none animate-fade-up">
+            <div class="panel">
+              <div class="cf-no-data">
+                <div class="cf-no-data-icon">
+                  <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                </div>
+                <h2 class="h5 fw-semibold mb-2" data-i18n="cash_flow.no_data_title">التوقعات غير متاحة بعد</h2>
+                <p class="text-muted mb-3" style="max-width:420px;margin:0 auto;" data-i18n="cash_flow.no_data_desc">
+                  نحتاج إلى بيانات مالية كافية لإنشاء توقعاتك.
+                </p>
+                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                  <a href="/pages/transactions/index.html" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                    <span data-i18n="cash_flow.no_data_cta_tx">إضافة معاملة</span>
+                  </a>
+                  <a href="/pages/recurring/index.html" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                    <span data-i18n="cash_flow.no_data_cta_rec">إعداد متكرر</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Main content ─────────────────────────────────────────────── -->
+          <div id="cfContent" class="d-none">
+
+            <!-- Meta row: generated-at + history -->
+            <div class="cf-meta mb-3" id="cfMeta" aria-live="polite"></div>
+
+            <!-- ── Hero KPI cards ─────────────────────────────────────────── -->
+            <div class="row g-3 mb-4 animate-stagger" id="cfKpiRow">
+              <!-- Projected Balance -->
+              <div class="col-6 col-lg">
+                <div class="kpi-card h-100">
+                  <span class="kpi-icon" style="background:rgba(37,99,235,0.1);color:var(--mm-primary);">
+                    <i class="bi bi-wallet2" aria-hidden="true"></i>
+                  </span>
+                  <span class="kpi-label" data-i18n="cash_flow.kpi_projected_balance">الرصيد المتوقع</span>
+                  <span class="kpi-value" id="cfKpiBalance">—</span>
+                  <span class="kpi-change" id="cfKpiBalanceHint"></span>
+                </div>
+              </div>
+              <!-- Monthly Net -->
+              <div class="col-6 col-lg">
+                <div class="kpi-card h-100">
+                  <span class="kpi-icon" style="background:rgba(15,118,110,0.1);color:var(--mm-success);">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                  </span>
+                  <span class="kpi-label" data-i18n="cash_flow.kpi_monthly_net">صافي التدفق الشهري</span>
+                  <span class="kpi-value" id="cfKpiNet">—</span>
+                  <span class="kpi-change" id="cfKpiNetHint"></span>
+                </div>
+              </div>
+              <!-- Confidence -->
+              <div class="col-6 col-lg">
+                <div class="kpi-card h-100">
+                  <span class="kpi-icon" style="background:rgba(8,145,178,0.1);color:var(--mm-info);">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                  </span>
+                  <span class="kpi-label" data-i18n="cash_flow.kpi_confidence">دقة التوقع</span>
+                  <span class="kpi-value" id="cfKpiConf">—</span>
+                  <span class="kpi-change" id="cfKpiConfBadge"></span>
+                </div>
+              </div>
+              <!-- Risks -->
+              <div class="col-6 col-lg">
+                <div class="kpi-card h-100">
+                  <span class="kpi-icon" style="background:rgba(220,38,38,0.1);color:var(--mm-danger);">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                  </span>
+                  <span class="kpi-label" data-i18n="cash_flow.kpi_risks">مخاطر نشطة</span>
+                  <span class="kpi-value" id="cfKpiRisks">—</span>
+                  <span class="kpi-change" id="cfKpiRiskLevel"></span>
+                </div>
+              </div>
+              <!-- Goal Outlook -->
+              <div class="col-6 col-lg">
+                <div class="kpi-card h-100">
+                  <span class="kpi-icon" style="background:rgba(124,58,237,0.1);color:#7c3aed;">
+                    <i class="bi bi-trophy" aria-hidden="true"></i>
+                  </span>
+                  <span class="kpi-label" data-i18n="cash_flow.kpi_goal_outlook">توقعات الأهداف</span>
+                  <span class="kpi-value" id="cfKpiGoals">—</span>
+                  <span class="kpi-change" id="cfKpiGoalsHint"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Forecast Timeline Chart ────────────────────────────────── -->
+            <div class="panel mb-4 animate-fade-up">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div>
+                  <h2 class="h6 fw-semibold mb-0" data-i18n="cash_flow.chart_title">مخطط التوقعات</h2>
+                  <p class="text-muted small mb-0" data-i18n="cash_flow.chart_subtitle">الرصيد المتراكم المتوقع خلال الفترة القادمة</p>
+                </div>
+                <div class="cf-horizon-group" role="group" aria-label="Forecast horizon">
+                  <button class="cf-horizon-btn" data-horizon="3"  data-i18n="cash_flow.horizon_3m">3 أشهر</button>
+                  <button class="cf-horizon-btn" data-horizon="6"  data-i18n="cash_flow.horizon_6m">6 أشهر</button>
+                  <button class="cf-horizon-btn active" data-horizon="12" data-i18n="cash_flow.horizon_12m">12 شهراً</button>
+                </div>
+              </div>
+              <div class="cf-chart-wrap">
+                <canvas id="cfTimelineChart" dir="ltr" aria-label="Forecast timeline chart" role="img"></canvas>
+              </div>
+            </div>
+
+            <!-- ── Monthly breakdown + Risk analysis ─────────────────────── -->
+            <div class="row g-3 mb-4">
+
+              <!-- Monthly breakdown table -->
+              <div class="col-lg-7 animate-fade-up">
+                <div class="panel h-100 d-flex flex-column">
+                  <div class="mb-3">
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="cash_flow.monthly_title">التفاصيل الشهرية</h2>
+                  </div>
+                  <div class="table-responsive flex-grow-1">
+                    <table class="table table-sm mb-0 cf-month-table" id="cfMonthTable">
+                      <thead>
+                        <tr>
+                          <th data-i18n="cash_flow.monthly_month">الشهر</th>
+                          <th class="text-end" data-i18n="cash_flow.monthly_income">الدخل</th>
+                          <th class="text-end" data-i18n="cash_flow.monthly_expense">المصاريف</th>
+                          <th class="text-end" data-i18n="cash_flow.monthly_net">الصافي</th>
+                          <th class="text-end" data-i18n="cash_flow.monthly_balance">الرصيد</th>
+                          <th class="text-end" data-i18n="cash_flow.monthly_confidence">الدقة</th>
+                        </tr>
+                      </thead>
+                      <tbody id="cfMonthTbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk analysis -->
+              <div class="col-lg-5 animate-fade-up">
+                <div class="panel h-100 d-flex flex-column">
+                  <div class="mb-3">
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="cash_flow.risks_title">تحليل المخاطر</h2>
+                    <p class="text-muted small mb-0" data-i18n="cash_flow.risks_subtitle">المخاطر المكتشفة ضمن أفق التوقع</p>
+                  </div>
+                  <div id="cfRisksEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">
+                    <div class="text-center py-3">
+                      <i class="bi bi-shield-check text-success fs-2 d-block mb-2" aria-hidden="true"></i>
+                      <p class="fw-semibold mb-1" style="font-size:0.875rem;" data-i18n="cash_flow.risks_empty">لا توجد مخاطر</p>
+                      <p class="text-muted small mb-0" data-i18n="cash_flow.risks_empty_desc">توقعاتك المالية تبدو سليمة.</p>
+                    </div>
+                  </div>
+                  <div id="cfRisksList" class="d-none flex-grow-1"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ── Goal Projections ───────────────────────────────────────── -->
+            <div class="panel mb-4 animate-fade-up" id="cfGoalsSection">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div>
+                  <h2 class="h6 fw-semibold mb-0" data-i18n="cash_flow.goals_title">توقعات الأهداف المالية</h2>
+                  <p class="text-muted small mb-0" data-i18n="cash_flow.goals_subtitle">تواريخ الإتمام المتوقعة بناءً على وتيرتك الحالية</p>
+                </div>
+                <a href="/pages/goals/index.html" class="btn btn-sm btn-outline-secondary" style="font-size:0.78rem;">
+                  <span data-i18n="fil.view_all">عرض الكل</span>
+                  <i class="bi bi-arrow-left-short" aria-hidden="true" id="cfGoalsArrow"></i>
+                </a>
+              </div>
+              <div id="cfGoalsEmpty" class="d-none">
+                <div class="text-center py-3">
+                  <i class="bi bi-trophy text-muted fs-2 d-block mb-2" aria-hidden="true"></i>
+                  <p class="fw-semibold mb-1" style="font-size:0.875rem;" data-i18n="cash_flow.goals_empty">لا توجد أهداف نشطة</p>
+                  <p class="text-muted small mb-0" data-i18n="cash_flow.goals_empty_desc">أنشئ أهدافاً مالية لعرض توقعاتها هنا.</p>
+                </div>
+              </div>
+              <div class="row g-3" id="cfGoalsGrid"></div>
+            </div>
+
+            <!-- ── Bottom row: Recurring summary + What-If Simulation ──────── -->
+            <div class="row g-3 mb-4">
+
+              <!-- Recurring cash flows -->
+              <div class="col-lg-5 animate-fade-up">
+                <div class="panel h-100">
+                  <div class="mb-3">
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="cash_flow.recurring_title">التدفقات المتكررة</h2>
+                    <p class="text-muted small mb-0" data-i18n="cash_flow.recurring_subtitle">الالتزامات الشهرية الثابتة المُدرجة في هذه التوقعات</p>
+                  </div>
+                  <div class="cf-recurring-strip" id="cfRecurringStrip"></div>
+                </div>
+              </div>
+
+              <!-- What-If simulation -->
+              <div class="col-lg-7 animate-fade-up">
+                <div class="panel h-100">
+                  <div class="mb-3">
+                    <h2 class="h6 fw-semibold mb-0" data-i18n="cash_flow.sim_title">محاكاة السيناريوهات</h2>
+                    <p class="text-muted small mb-0" data-i18n="cash_flow.sim_subtitle">عدّل الافتراضات لترى تأثيرها على توقعاتك</p>
+                  </div>
+                  <!-- Income adjustment -->
+                  <div class="cf-sim-row">
+                    <span class="cf-sim-label" data-i18n="cash_flow.sim_income_adj">تعديل الدخل</span>
+                    <div class="cf-sim-controls">
+                      <button class="cf-sim-btn" data-sim-dec="income" aria-label="Decrease income">
+                        <i class="bi bi-dash" aria-hidden="true"></i>
+                      </button>
+                      <span class="cf-sim-val" id="simIncomeVal">0%</span>
+                      <button class="cf-sim-btn" data-sim-inc="income" aria-label="Increase income">
+                        <i class="bi bi-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Expense adjustment -->
+                  <div class="cf-sim-row">
+                    <span class="cf-sim-label" data-i18n="cash_flow.sim_expense_adj">تعديل المصاريف</span>
+                    <div class="cf-sim-controls">
+                      <button class="cf-sim-btn" data-sim-dec="expense" aria-label="Decrease expense">
+                        <i class="bi bi-dash" aria-hidden="true"></i>
+                      </button>
+                      <span class="cf-sim-val" id="simExpenseVal">0%</span>
+                      <button class="cf-sim-btn" data-sim-inc="expense" aria-label="Increase expense">
+                        <i class="bi bi-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Result -->
+                  <div class="cf-sim-result mt-2" id="cfSimResult" aria-live="polite"></div>
+                  <!-- Reset -->
+                  <button class="btn btn-sm btn-outline-secondary mt-2" id="cfSimReset" style="font-size:0.78rem;">
+                    <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
+                    <span data-i18n="cash_flow.sim_reset">إعادة تعيين</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div><!-- /cfContent -->
+
+        </div>
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="/assets/js/pages/cash-flow.js"></script>
+</body>
+</html>
