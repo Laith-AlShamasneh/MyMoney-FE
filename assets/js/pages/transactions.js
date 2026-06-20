@@ -83,7 +83,9 @@ function _presetDates(key) {
   return null; // 'all' or 'custom' — no auto dates
 }
 
-function _isoDate(d) { return d.toISOString().split('T')[0]; }
+function _isoDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 function _pad(n)     { return String(n).padStart(2, '0'); }
 
 /* ==========================================================================

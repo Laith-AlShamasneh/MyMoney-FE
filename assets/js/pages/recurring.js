@@ -69,7 +69,9 @@ function _esc(str) {
   return d.innerHTML;
 }
 
-function _isoDate(d) { return d.toISOString().split('T')[0]; }
+function _isoDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 
 /* ── Category helpers ──────────────────────────────────────────────────────── */
 function _catName(cat) {

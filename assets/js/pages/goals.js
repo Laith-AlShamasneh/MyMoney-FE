@@ -71,7 +71,10 @@ function _fmtDate(dateStr) {
   }).format(d);
 }
 
-function _today() { return new Date().toISOString().split('T')[0]; }
+function _today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 
 /* ── Goal helpers ───────────────────────────────────────────────────────────── */
 function _goalColor(typeId)    { return GOAL_COLORS[typeId] || 'var(--mm-primary)'; }
