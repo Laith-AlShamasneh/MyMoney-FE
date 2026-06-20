@@ -126,7 +126,7 @@ function _healthBandCls(bandId) {
 }
 
 function _periodStatusCls(statusId) {
-  return ['', 'active', 'exceeded', 'closed'][statusId] || 'active';
+  return ['', 'period-status-active', 'period-status-exceeded', 'period-status-closed'][statusId] || 'period-status-active';
 }
 
 function _riskBandCls(riskId) {

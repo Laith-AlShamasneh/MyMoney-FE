@@ -461,7 +461,7 @@ function _renderDonutChart(budgets) {
    -------------------------------------------------------------------------- */
 async function _loadCategories() {
   try {
-    const res = await post(Config.API.CATEGORY.LIST);
+    const res = await post(Config.API.CATEGORY.LIST, { typeId: null });
     _s.categories = res ?? [];
   } catch { _s.categories = []; }
 }
@@ -541,7 +541,7 @@ function _wizSetStep(step) {
 
   if (step === 1) nextBtn.disabled = !_s.wType;
   if (step === 2) nextBtn.disabled = !$('bwName').value.trim();
-  if (step === 3) createBtn.disabled = false;
+  if (step === 3) createBtn.disabled = !(parseFloat($('bwAmount').value) > 0);
 }
 
 function _openWizard() {
