@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyMoney — التقويم المالي">
+  <title data-i18n-page-title="calendar.page_title">التقويم المالي | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/calendar.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+<body>
+  <div class="admin-shell">
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- ── Skeleton ──────────────────────────────────────────────────── -->
+          <div id="calSkeleton">
+            <div class="mm-page-header mb-4">
+              <div>
+                <div class="skel mb-2" style="width:90px;height:12px"></div>
+                <div class="skel mb-2" style="width:240px;height:28px"></div>
+                <div class="skel"      style="width:340px;height:14px"></div>
+              </div>
+            </div>
+            <div class="skel mb-3" style="height:52px;border-radius:var(--mm-radius)"></div>
+            <div class="cal-skeleton-grid">
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:20px;height:12px;margin-bottom:6px"></div></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:80%;height:10px;margin-bottom:4px"></div></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:90%;height:10px;margin-bottom:4px"></div></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:70%;height:10px;margin-bottom:4px"></div></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"><div class="skel" style="width:85%;height:10px;margin-bottom:4px"></div></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"></div>
+              <div class="cal-skeleton-cell"></div>
+            </div>
+          </div>
+
+          <!-- ── Page content ──────────────────────────────────────────────── -->
+          <div id="calContent" class="d-none">
+
+            <!-- Page Header -->
+            <div class="mm-page-header mb-3">
+              <div>
+                <p class="mm-eyebrow" data-i18n="calendar.eyebrow">جدولك الزمني المالي</p>
+                <h1 class="mm-heading" data-i18n="calendar.heading">التقويم المالي</h1>
+                <p class="mm-subheading" data-i18n="calendar.subheading">كل فاتورة وهدف وميزانية وتذكير — في مكان واحد.</p>
+              </div>
+              <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button class="btn btn-primary btn-sm" id="calCreateBtn">
+                  <i class="bi bi-plus-lg me-1"></i>
+                  <span data-i18n="calendar.btn_create">حدث جديد</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="cal-toolbar mb-2">
+              <!-- Navigation -->
+              <div class="cal-toolbar-nav">
+                <button id="calPrevBtn" class="btn btn-sm btn-outline-secondary" aria-label="">
+                  <i class="bi bi-chevron-left" id="calPrevIcon"></i>
+                </button>
+                <span id="calPeriodTitle" class="cal-period-title">—</span>
+                <button id="calNextBtn" class="btn btn-sm btn-outline-secondary" aria-label="">
+                  <i class="bi bi-chevron-right" id="calNextIcon"></i>
+                </button>
+                <button id="calTodayBtn" class="btn btn-sm btn-outline-primary ms-1" data-i18n="calendar.btn_today">اليوم</button>
+              </div>
+
+              <!-- View switcher -->
+              <div class="btn-group btn-group-sm cal-toolbar-views" role="group" aria-label="Calendar view">
+                <button type="button" class="btn btn-outline-secondary cal-view-btn active" data-view="month" data-i18n="calendar.view_month">شهري</button>
+                <button type="button" class="btn btn-outline-secondary cal-view-btn" data-view="week" data-i18n="calendar.view_week">أسبوعي</button>
+                <button type="button" class="btn btn-outline-secondary cal-view-btn" data-view="day" data-i18n="calendar.view_day">يومي</button>
+                <button type="button" class="btn btn-outline-secondary cal-view-btn" data-view="agenda" data-i18n="calendar.view_agenda">جدول</button>
+              </div>
+
+              <!-- Search -->
+              <div class="cal-toolbar-search">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search text-muted"></i></span>
+                  <input type="text" id="calSearchInput" class="form-control border-start-0 ps-0" data-i18n-placeholder="calendar.search_placeholder" placeholder="البحث في الأحداث...">
+                </div>
+              </div>
+
+              <!-- Filter toggle -->
+              <button id="calFilterToggle" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-funnel me-1"></i>
+                <span data-i18n="calendar.filter_btn">تصفية</span>
+              </button>
+            </div>
+
+            <!-- Filter bar (collapsed by default) -->
+            <div id="calFilterBar" class="cal-filter-bar d-none mb-2">
+              <select id="calFilterType" class="form-select form-select-sm" style="max-width:160px;">
+                <option value="" data-i18n="calendar.filter_type_all">جميع الأنواع</option>
+                <option value="1" data-i18n="calendar.type_reminder">تذكير</option>
+                <option value="2" data-i18n="calendar.type_income">دخل</option>
+                <option value="3" data-i18n="calendar.type_expense">مصروف</option>
+                <option value="4" data-i18n="calendar.type_goal">هدف</option>
+                <option value="5" data-i18n="calendar.type_budget">ميزانية</option>
+                <option value="6" data-i18n="calendar.type_subscription">اشتراك</option>
+                <option value="7" data-i18n="calendar.type_bill">فاتورة</option>
+                <option value="8" data-i18n="calendar.type_custom">مخصص</option>
+              </select>
+              <select id="calFilterStatus" class="form-select form-select-sm" style="max-width:160px;">
+                <option value="" data-i18n="calendar.filter_status_all">جميع الحالات</option>
+                <option value="1" data-i18n="calendar.status_pending">قيد الانتظار</option>
+                <option value="2" data-i18n="calendar.status_completed">مكتمل</option>
+                <option value="3" data-i18n="calendar.status_cancelled">ملغى</option>
+              </select>
+              <select id="calFilterPriority" class="form-select form-select-sm" style="max-width:160px;">
+                <option value="" data-i18n="calendar.filter_priority_all">جميع الأولويات</option>
+                <option value="1" data-i18n="calendar.priority_low">منخفضة</option>
+                <option value="2" data-i18n="calendar.priority_medium">متوسطة</option>
+                <option value="3" data-i18n="calendar.priority_high">عالية</option>
+                <option value="4" data-i18n="calendar.priority_critical">حرجة</option>
+              </select>
+              <button id="calFilterClearBtn" class="btn btn-sm btn-outline-secondary" data-i18n="calendar.filter_clear">مسح</button>
+            </div>
+
+            <!-- Main layout -->
+            <div class="cal-layout">
+
+              <!-- Left: Calendar views -->
+              <div>
+
+                <!-- Month view -->
+                <div id="calMonthView" class="cal-view">
+                  <div class="cal-month-wrap">
+                    <div class="cal-month-header" id="calMonthHeader">
+                      <!-- 7 day name cells injected by JS -->
+                    </div>
+                    <div class="cal-month-body" id="calMonthBody">
+                      <!-- Day cells injected by JS -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Week view -->
+                <div id="calWeekView" class="cal-view d-none">
+                  <div class="cal-week-wrap">
+                    <div class="cal-week-header" id="calWeekHeader">
+                      <div class="cal-week-header-spacer"></div>
+                      <!-- 7 day header cells injected by JS -->
+                    </div>
+                    <div class="cal-week-allday-row" id="calWeekAlldayRow">
+                      <div class="cal-week-allday-label" data-i18n="calendar.all_day">طوال اليوم</div>
+                      <!-- 7 allday cells injected by JS -->
+                    </div>
+                    <div class="cal-week-body" id="calWeekBody">
+                      <!-- time col + 7 day cols injected by JS -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Day view -->
+                <div id="calDayView" class="cal-view d-none">
+                  <div class="cal-day-wrap">
+                    <div class="cal-day-header">
+                      <h3 id="calDayTitle">—</h3>
+                    </div>
+                    <div class="cal-day-events" id="calDayEvents">
+                      <!-- Events injected by JS -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Agenda view -->
+                <div id="calAgendaView" class="cal-view d-none">
+                  <div class="cal-agenda-wrap" id="calAgendaWrap">
+                    <!-- Date groups injected by JS -->
+                  </div>
+                  <div class="d-flex justify-content-center mt-3 d-none" id="calAgendaMore">
+                    <button class="btn btn-outline-secondary btn-sm" id="calAgendaLoadMore" data-i18n="calendar.load_more">تحميل المزيد</button>
+                  </div>
+                </div>
+
+                <!-- Search results view -->
+                <div id="calSearchView" class="cal-view d-none">
+                  <div class="cal-agenda-wrap">
+                    <div class="cal-search-header" id="calSearchHeader"></div>
+                    <div id="calSearchResults">
+                      <!-- Results injected by JS -->
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /cal-main -->
+
+              <!-- Right: Upcoming panel -->
+              <div>
+                <div class="cal-upcoming-panel">
+                  <div class="cal-upcoming-header">
+                    <h6 data-i18n="calendar.upcoming_title">القادم</h6>
+                  </div>
+                  <!-- Today -->
+                  <div class="cal-upcoming-section" id="upcomingTodaySection">
+                    <div class="cal-upcoming-section-title" data-i18n="calendar.today_section">اليوم</div>
+                    <div id="upcomingTodayList"></div>
+                  </div>
+                  <!-- Bills -->
+                  <div class="cal-upcoming-section" id="upcomingBillsSection">
+                    <div class="cal-upcoming-section-title" data-i18n="calendar.bills_section">الفواتير القادمة</div>
+                    <div id="upcomingBillsList"></div>
+                  </div>
+                  <!-- Goals -->
+                  <div class="cal-upcoming-section" id="upcomingGoalsSection">
+                    <div class="cal-upcoming-section-title" data-i18n="calendar.goals_section">الأهداف القادمة</div>
+                    <div id="upcomingGoalsList"></div>
+                  </div>
+                  <!-- Recurring -->
+                  <div class="cal-upcoming-section" id="upcomingRecurringSection">
+                    <div class="cal-upcoming-section-title" data-i18n="calendar.recurring_section">المتكررة</div>
+                    <div id="upcomingRecurringList"></div>
+                  </div>
+                </div>
+              </div><!-- /cal-sidebar -->
+
+            </div><!-- /cal-layout -->
+
+          </div><!-- /calContent -->
+
+        </div>
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+
+  </div><!-- /admin-shell -->
+
+  <!-- ── Drawer overlay ──────────────────────────────────────────────────────── -->
+  <div id="calDrawerOverlay" class="cal-drawer-overlay"></div>
+
+  <!-- ── Event detail drawer ─────────────────────────────────────────────────── -->
+  <div id="calDetailDrawer" class="cal-detail-drawer" aria-modal="true" role="dialog">
+    <div class="cal-drawer-header">
+      <h6 data-i18n="calendar.detail_title">تفاصيل الحدث</h6>
+      <button class="btn-close" id="calDrawerClose" aria-label="Close"></button>
+    </div>
+    <div class="cal-drawer-body" id="calDrawerBody">
+      <!-- Injected by JS -->
+    </div>
+    <div class="cal-drawer-footer" id="calDrawerFooter">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- ── Create / Edit event modal ────────────────────────────────────────────── -->
+  <div class="modal fade" id="calEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="calModalTitle" data-i18n="calendar.modal_create_title">حدث جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="calEventForm" novalidate>
+            <input type="hidden" id="calFormEventId">
+
+            <!-- Title -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_title">العنوان</label>
+              <input type="text" id="calFormTitle" class="form-control" data-i18n-placeholder="calendar.field_title_ph" required>
+              <div class="invalid-feedback" data-i18n="common.required_field"></div>
+            </div>
+
+            <!-- Date -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_date">التاريخ</label>
+              <input type="date" id="calFormDate" class="form-control" required>
+              <div class="invalid-feedback" data-i18n="common.required_field"></div>
+            </div>
+
+            <!-- Event Type -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_type">نوع الحدث</label>
+              <select id="calFormType" class="form-select" required>
+                <option value="" data-i18n="calendar.field_type_ph">اختر النوع</option>
+                <option value="1" data-i18n="calendar.type_reminder">تذكير</option>
+                <option value="2" data-i18n="calendar.type_income">دخل</option>
+                <option value="3" data-i18n="calendar.type_expense">مصروف</option>
+                <option value="4" data-i18n="calendar.type_goal">هدف</option>
+                <option value="5" data-i18n="calendar.type_budget">ميزانية</option>
+                <option value="6" data-i18n="calendar.type_subscription">اشتراك</option>
+                <option value="7" data-i18n="calendar.type_bill">فاتورة</option>
+                <option value="8" data-i18n="calendar.type_custom">مخصص</option>
+              </select>
+              <div class="invalid-feedback" data-i18n="common.required_field"></div>
+            </div>
+
+            <!-- All Day + Times -->
+            <div class="mb-3">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="calFormAllDay" checked>
+                <label class="form-check-label" for="calFormAllDay" data-i18n="calendar.field_all_day">طوال اليوم</label>
+              </div>
+              <div id="calFormTimesRow" class="row g-2 d-none">
+                <div class="col-6">
+                  <label class="form-label small" data-i18n="calendar.field_start_time">وقت البداية</label>
+                  <input type="time" id="calFormStartTime" class="form-control form-control-sm">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small" data-i18n="calendar.field_end_time">وقت النهاية</label>
+                  <input type="time" id="calFormEndTime" class="form-control form-control-sm">
+                </div>
+              </div>
+            </div>
+
+            <!-- Priority -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_priority">الأولوية</label>
+              <select id="calFormPriority" class="form-select">
+                <option value="1" data-i18n="calendar.priority_low">منخفضة</option>
+                <option value="2" selected data-i18n="calendar.priority_medium">متوسطة</option>
+                <option value="3" data-i18n="calendar.priority_high">عالية</option>
+                <option value="4" data-i18n="calendar.priority_critical">حرجة</option>
+              </select>
+            </div>
+
+            <!-- Remind Before -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_remind">التذكير قبل (بالدقائق)</label>
+              <input type="number" id="calFormRemind" class="form-control" min="0" max="10080" data-i18n-placeholder="calendar.field_remind_ph" placeholder="مثال: 30">
+            </div>
+
+            <!-- Colour -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_color">اللون</label>
+              <input type="color" id="calFormColor" class="form-control form-control-color" value="#6366f1">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label" data-i18n="calendar.field_description">الوصف</label>
+              <textarea id="calFormDesc" class="form-control" rows="2" data-i18n-placeholder="calendar.field_description_ph"></textarea>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" data-i18n="calendar.modal_cancel">إلغاء</button>
+          <button type="button" class="btn btn-primary btn-sm" id="calModalSaveBtn" data-i18n="calendar.modal_save">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Delete confirm modal ──────────────────────────────────────────────────── -->
+  <div class="modal fade" id="calDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h6 class="modal-title fw-700" data-i18n="calendar.delete_confirm">حذف هذا الحدث؟</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-0">
+          <p class="text-muted small" data-i18n="calendar.delete_confirm_desc">لا يمكن التراجع عن هذا الإجراء.</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" data-i18n="calendar.modal_cancel">إلغاء</button>
+          <button type="button" class="btn btn-danger btn-sm" id="calDeleteConfirmBtn" data-i18n="calendar.delete_btn">حذف</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/assets/js/pages/calendar.js"></script>
+</body>
+</html>
