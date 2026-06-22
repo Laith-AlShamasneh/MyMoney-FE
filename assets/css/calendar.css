@@ -26,7 +26,7 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   padding: 0.75rem 1rem;
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-radius: var(--mm-radius);
 }
@@ -67,7 +67,7 @@
   gap: 0.5rem;
   flex-wrap: wrap;
   padding: 0.5rem 1rem;
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-top: none;
   border-radius: 0 0 var(--mm-radius) var(--mm-radius);
@@ -77,7 +77,7 @@
 /* ── Month Grid ──────────────────────────────────────────────────────────────── */
 
 .cal-month-wrap {
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-radius: var(--mm-radius);
   overflow: hidden;
@@ -202,7 +202,7 @@
 /* ── Week Grid ───────────────────────────────────────────────────────────────── */
 
 .cal-week-wrap {
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-radius: var(--mm-radius);
   overflow: hidden;
@@ -342,7 +342,7 @@
 /* ── Day View ────────────────────────────────────────────────────────────────── */
 
 .cal-day-wrap {
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-radius: var(--mm-radius);
   overflow: hidden;
@@ -426,7 +426,7 @@
 /* ── Agenda View ─────────────────────────────────────────────────────────────── */
 
 .cal-agenda-wrap {
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-radius: var(--mm-radius);
   overflow: hidden;
@@ -549,11 +549,12 @@
 .cal-drawer-overlay {
   position: fixed;
   inset: 0;
+  top: var(--mm-navbar-height);
   background: rgba(0, 0, 0, 0.35);
   z-index: 1040;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--mm-duration);
+  transition: opacity var(--mm-duration-base);
 }
 
 .cal-drawer-overlay.show {
@@ -563,15 +564,15 @@
 
 .cal-detail-drawer {
   position: fixed;
-  top: 0;
+  top: var(--mm-navbar-height);
   right: 0;
   bottom: 0;
   width: 360px;
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border-left: 1px solid var(--mm-border);
   z-index: 1050;
   transform: translateX(100%);
-  transition: transform var(--mm-duration);
+  transition: transform var(--mm-duration-base);
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
@@ -693,7 +694,7 @@
 /* ── Upcoming Panel ──────────────────────────────────────────────────────────── */
 
 .cal-upcoming-panel {
-  background: var(--mm-card-bg);
+  background: var(--mm-surface);
   border: 1px solid var(--mm-border);
   border-radius: var(--mm-radius);
   overflow: hidden;
