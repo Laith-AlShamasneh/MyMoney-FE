@@ -1196,10 +1196,8 @@ async function init() {
   _buildMonthHeader();
   _wireEvents();
 
-  if (window.bootstrap) {
-    _bsEventModal  = new bootstrap.Modal(calEventModal);
-    _bsDeleteModal = new bootstrap.Modal(calDeleteModal);
-  }
+  _bsEventModal  = new bootstrap.Modal(calEventModal);
+  _bsDeleteModal = new bootstrap.Modal(calDeleteModal);
 
   calSkeleton.classList.add('d-none');
   calContent.classList.remove('d-none');
