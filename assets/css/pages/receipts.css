@@ -704,31 +704,44 @@ html[data-theme="dark"] .status-archived { background: rgba(100,116,139,.18); co
    -------------------------------------------------------------------------- */
 .receipt-preview-drawer {
   position: fixed;
-  inset-block: 0;
-  inset-inline-end: 0;
+  top: 0;
+  bottom: 0;
+  /* Physical properties: drawer is on the right in LTR */
+  right: 0;
+  left: auto;
   width: min(520px, 100vw);
   background: var(--mm-surface);
-  border-inline-start: 1px solid var(--mm-border);
+  border-left: 1px solid var(--mm-border);
+  border-right: none;
   box-shadow: -8px 0 48px rgba(15,23,42,.14);
   z-index: 1050;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
-  transition: transform var(--mm-duration-slow) var(--mm-ease);
+  /* visibility: hidden prevents the drawer from being interactive or
+     visually present even during transform transitions in RTL */
+  visibility: hidden;
+  transform: translateX(110%);
+  transition: transform var(--mm-duration-slow) var(--mm-ease),
+              visibility 0s linear var(--mm-duration-slow);
   overflow: hidden;
 }
 
+/* RTL: drawer slides from the left */
 [dir="rtl"] .receipt-preview-drawer {
-  inset-inline-end: auto;
-  inset-inline-start: 0;
-  border-inline-start: none;
-  border-inline-end: 1px solid var(--mm-border);
-  transform: translateX(-100%);
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 1px solid var(--mm-border);
   box-shadow: 8px 0 48px rgba(15,23,42,.14);
+  transform: translateX(-110%);
 }
 
+/* Open state: works for both LTR and RTL */
 .receipt-preview-drawer.open {
-  transform: translateX(0);
+  visibility: visible;
+  transform: translateX(0) !important;
+  transition: transform var(--mm-duration-slow) var(--mm-ease),
+              visibility 0s linear 0s;
 }
 
 html[data-theme="dark"] .receipt-preview-drawer {
@@ -1033,8 +1046,11 @@ html[data-theme="dark"] .upload-file-preview {
    -------------------------------------------------------------------------- */
 .bulk-action-bar {
   position: fixed;
-  inset-block-end: 1.5rem;
-  inset-inline-start: 50%;
+  bottom: 1.5rem;
+  /* Physical centering: left:50% + translateX(-50%) works in both LTR and RTL
+     because it's anchored from the left edge of the viewport */
+  left: 50%;
+  right: auto;
   transform: translateX(-50%) translateY(20px);
   background: var(--mm-text);
   color: #fff;
@@ -1295,7 +1311,7 @@ html[data-theme="dark"] .processing-queue {
   .receipt-toolbar { gap: 0.4rem; }
   .receipt-toolbar-search { max-width: 100%; flex: 1 1 100%; order: -1; }
   .receipt-preview-drawer { width: 100vw; }
-  .bulk-action-bar { inset-inline: 0.75rem; transform: none; left: auto; right: auto; }
+  .bulk-action-bar { left: 0.75rem; right: 0.75rem; transform: translateY(20px); }
   .bulk-action-bar.show { transform: translateY(0); }
   .preview-detail-grid { grid-template-columns: 1fr; }
 }

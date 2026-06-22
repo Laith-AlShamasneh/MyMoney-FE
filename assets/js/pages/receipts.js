@@ -534,6 +534,8 @@ function _closePreview() {
   previewBackdrop.classList.remove('show');
   document.body.style.overflow = '';
   _s.previewIndex = -1;
+  // Reset spinner so it's hidden when drawer closes
+  previewLoading.style.cssText = '';
 }
 
 async function _renderPreview() {
@@ -546,8 +548,8 @@ async function _renderPreview() {
   previewNext.disabled = _s.previewIndex === _s.allReceipts.length - 1;
   previewTitle.textContent = r.merchantName || r.title || r.originalFileName;
 
-  // Viewport content
-  previewLoading.style.display = 'flex';
+  // Show spinner while loading, hide zoom controls
+  previewLoading.style.cssText = 'display:flex !important';
   previewZoomControls.style.setProperty('display', 'none', 'important');
   previewViewport.querySelectorAll('img.preview-image, iframe.preview-pdf, .preview-no-support').forEach(el => el.remove());
 
@@ -559,16 +561,16 @@ async function _renderPreview() {
     img.className = 'preview-image';
     img.alt = r.originalFileName || '';
     img.style.transform = `scale(${_s.previewZoom})`;
-    img.onload  = () => { previewLoading.style.display = 'none'; previewZoomControls.style.removeProperty('display'); };
-    img.onerror = () => { previewLoading.style.display = 'none'; _showNoPreview(); };
+    img.onload  = () => { previewLoading.style.cssText = ''; previewZoomControls.style.removeProperty('display'); };
+    img.onerror = () => { previewLoading.style.cssText = ''; _showNoPreview(); };
     img.src = r.fileUrl;
     previewViewport.insertBefore(img, previewZoomControls);
   } else if (isPdf) {
     const frame = document.createElement('iframe');
     frame.className = 'preview-pdf';
     frame.title = r.originalFileName || 'PDF';
-    frame.onload  = () => { previewLoading.style.display = 'none'; };
-    frame.onerror = () => { previewLoading.style.display = 'none'; _showNoPreview(); };
+    frame.onload  = () => { previewLoading.style.cssText = ''; };
+    frame.onerror = () => { previewLoading.style.cssText = ''; _showNoPreview(); };
     frame.src = r.fileUrl;
     previewViewport.insertBefore(frame, previewZoomControls);
   } else {
@@ -1023,11 +1025,23 @@ function _openTagPicker(target, anchorEl) {
   _renderTagPickerList();
   tagPickerSearch.value = '';
 
-  const rect = anchorEl.getBoundingClientRect();
-  tagPickerDropdown.style.display = 'block';
-  tagPickerDropdown.style.top  = `${rect.bottom + window.scrollY + 4}px`;
-  tagPickerDropdown.style.left = `${rect.left + window.scrollX}px`;
-  tagPickerDropdown.style.minWidth = `${Math.max(220, rect.width)}px`;
+  const rect   = anchorEl.getBoundingClientRect();
+  const isRtl  = document.documentElement.dir === 'rtl';
+  const minW   = Math.max(220, rect.width);
+
+  tagPickerDropdown.style.display   = 'block';
+  tagPickerDropdown.style.top       = `${rect.bottom + window.scrollY + 4}px`;
+  tagPickerDropdown.style.minWidth  = `${minW}px`;
+
+  if (isRtl) {
+    // Anchor from the right edge so it doesn't overflow the viewport in RTL
+    const rightEdge = window.innerWidth - rect.right;
+    tagPickerDropdown.style.right = `${rightEdge}px`;
+    tagPickerDropdown.style.left  = 'auto';
+  } else {
+    tagPickerDropdown.style.left  = `${rect.left + window.scrollX}px`;
+    tagPickerDropdown.style.right = 'auto';
+  }
 }
 
 function _closeTagPicker() {
