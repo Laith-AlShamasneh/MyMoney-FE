@@ -936,7 +936,7 @@ async function _doSearch(keyword) {
     if (_view === VIEW.SEARCH) _switchView(VIEW.MONTH);
     return;
   }
-  _showView(VIEW.SEARCH);
+  _switchView(VIEW.SEARCH);
   calSearchResults.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></div>';
   try {
     const result = await CalendarService.search({ keyword: keyword.trim(), pageNumber: 1, pageSize: 50 });
