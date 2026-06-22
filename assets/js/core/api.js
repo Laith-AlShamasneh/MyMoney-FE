@@ -286,6 +286,92 @@ export function deleteWithHeaders(endpoint, extraHeaders = {}, options = {}) {
 }
 
 /**
+ * POST request that returns binary content (Blob) rather than parsing JSON.
+ * Used for file downloads where the endpoint requires a POST body (e.g. receipts).
+ *
+ * @param {string} endpoint - Path relative to API_BASE_URL
+ * @param {object} body - JSON body for the POST request
+ * @param {{ signal?: AbortSignal }} [options]
+ * @returns {Promise<{ blob: Blob, filename: string, contentType: string }>}
+ */
+export async function downloadBlobPost(endpoint, body = {}, options = {}) {
+  const url = Config.API_BASE_URL + endpoint;
+
+  const buildHeaders = () => {
+    const h = {
+      Accept: 'application/octet-stream, application/json, */*',
+      'Content-Type': 'application/json',
+    };
+    try {
+      const lang = localStorage.getItem('mm.lang') || 'ar';
+      h['Accept-Language'] = lang === 'en' ? 'en' : 'ar';
+    } catch { /* ignore */ }
+    const token = _getAccessToken();
+    if (token) h['Authorization'] = `Bearer ${token}`;
+    return h;
+  };
+
+  const doFetch = (headers) =>
+    fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      signal: options.signal,
+    });
+
+  let response;
+  try {
+    response = await doFetch(buildHeaders());
+  } catch (err) {
+    if (err.name !== 'AbortError') await _showErrorToast('errors.network');
+    throw err;
+  }
+
+  /* Silent token refresh on 401 */
+  if (response.status === 401) {
+    const refreshed = await _ensureRefreshed();
+    if (refreshed) {
+      try { response = await doFetch(buildHeaders()); } catch (err) {
+        if (err.name !== 'AbortError') await _showErrorToast('errors.network');
+        throw err;
+      }
+    } else {
+      _onSessionExpired();
+      throw new ApiError('Session expired.', [], Config.RESPONSE_CODES.UNAUTHORIZED);
+    }
+  }
+
+  if (response.status === 403) {
+    window.location.href = Config.ROUTES.ERROR_404;
+    throw new ApiError('Forbidden.', [], Config.RESPONSE_CODES.FORBIDDEN);
+  }
+
+  if (response.status >= 500) {
+    await _showErrorToast('errors.server');
+    throw new ApiError('Server error.', [], Config.RESPONSE_CODES.INTERNAL_SERVER_ERROR);
+  }
+
+  /* If response is JSON, it's an error envelope */
+  const ct = response.headers.get('Content-Type') || '';
+  if (!response.ok || ct.includes('application/json')) {
+    let envelope;
+    try { envelope = await response.json(); } catch { envelope = {}; }
+    throw new ApiError(
+      envelope.message || 'Download failed.',
+      envelope.errors  || [],
+      envelope.code    || 0,
+    );
+  }
+
+  const disposition = response.headers.get('Content-Disposition') || '';
+  const match       = disposition.match(/filename[^;=\n]*=['"]?([^'";\n]+)['"]?/i);
+  const filename    = match ? decodeURIComponent(match[1].trim()) : 'receipt';
+
+  const blob = await response.blob();
+  return { blob, filename, contentType: ct };
+}
+
+/**
  * GET request that returns binary content (Blob) rather than parsing JSON.
  * Used for file downloads (e.g. Excel reports).
  *

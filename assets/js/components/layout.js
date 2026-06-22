@@ -27,6 +27,7 @@ const NAV_ITEMS = [
   { key: 'budgets',               path: Config.ROUTES.BUDGETS,               icon: 'wallet2',               i18nKey: 'nav.budgets' },
   { key: 'cash_flow',              path: Config.ROUTES.CASH_FLOW,              icon: 'graph-up-arrow',       i18nKey: 'nav.cash_flow' },
   { key: 'calendar',               path: Config.ROUTES.CALENDAR,               icon: 'calendar3',             i18nKey: 'nav.calendar' },
+  { key: 'receipts',               path: Config.ROUTES.RECEIPTS,               icon: 'file-earmark-image',   i18nKey: 'nav.receipts' },
   { key: 'financial_intelligence',path: Config.ROUTES.FINANCIAL_INTELLIGENCE,icon: 'lightbulb',            i18nKey: 'nav.financial_intelligence' },
   { key: 'reports',               path: Config.ROUTES.REPORTS,               icon: 'file-earmark-bar-graph', i18nKey: 'nav.reports' },
   { key: 'profile',               path: Config.ROUTES.PROFILE,               icon: 'person-badge',         i18nKey: 'nav.profile' },
