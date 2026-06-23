@@ -10,6 +10,7 @@ import { guardPage }                  from '../core/auth.js';
 import { ReceiptService }             from '../services/receipt-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
+import { formatAmount }               from '../core/currency.js';
 
 /* ── Constants ────────────────────────────────────────────────────────────── */
 const STATUS   = Object.freeze({ ACTIVE: 1, ARCHIVED: 2, DELETED: 3 });
@@ -679,6 +680,7 @@ function _clearUploadForm() {
   _s.uploadTagIds = [];
   uploadFileInput.value = '';
   uploadFilePreview.classList.add('d-none');
+  uploadDropZone.classList.remove('d-none');
   uploadProgress.classList.add('d-none');
   uploadProgressBar.style.width = '0%';
   btnSubmitUpload.disabled = true;
@@ -1342,16 +1344,7 @@ function _isImageType(filename) {
 
 function _formatAmount(amount, currency) {
   if (amount == null) return '—';
-  const lang = getLanguage();
-  try {
-    return new Intl.NumberFormat(lang === 'ar' ? 'ar-SA' : 'en-US', {
-      style:    'currency',
-      currency: currency || 'SAR',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  } catch {
-    return `${amount} ${currency || ''}`;
-  }
+  return formatAmount(amount, currency || null);
 }
 
 function _formatDate(isoStr) {
@@ -1386,4 +1379,8 @@ function _savePref(key, val) {
 /* ==========================================================================
    Boot
    ========================================================================== */
+document.addEventListener('mm-currency-change', () => {
+  _runSearch();
+});
+
 init();

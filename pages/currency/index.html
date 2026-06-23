@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light" class="mm-init">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="currency.page_title">Exchange Rates — MyMoney</title>
+
+  <!-- Inline theme/dir script to prevent FOUC -->
+  <script>
+    (function(){
+      var t=localStorage.getItem('mm.theme');
+      if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t);
+      var l=localStorage.getItem('mm.lang');
+      if(l==='en'){document.documentElement.setAttribute('lang','en');document.documentElement.removeAttribute('dir');}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/currency.css">
+</head>
+<body>
+
+<div class="admin-shell">
+  <div id="sidebar-root"></div>
+
+  <div class="admin-main">
+    <div id="navbar-root"></div>
+
+    <main class="dashboard-content">
+      <div class="content-header">
+        <div>
+          <h1 class="content-title" data-i18n="currency.page_title">Exchange Rates</h1>
+          <p class="content-subtitle text-muted" data-i18n="currency.page_subtitle">Manage currencies, exchange rates, and preferences.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-secondary btn-sm" id="syncRatesBtn" type="button">
+            <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>
+            <span data-i18n="currency.rates_sync">Sync Now</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Statistics skeleton -->
+      <div id="statsSkeletons" class="row g-3 mb-4">
+        <div class="col-6 col-xl-3"><div class="skeleton" style="height:84px;border-radius:12px;"></div></div>
+        <div class="col-6 col-xl-3"><div class="skeleton" style="height:84px;border-radius:12px;"></div></div>
+        <div class="col-6 col-xl-3"><div class="skeleton" style="height:84px;border-radius:12px;"></div></div>
+        <div class="col-6 col-xl-3"><div class="skeleton" style="height:84px;border-radius:12px;"></div></div>
+      </div>
+
+      <!-- Statistics cards -->
+      <div id="statsCards" class="row g-3 mb-4 d-none">
+        <div class="col-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-card-icon stat-card-icon-blue"><i class="bi bi-currency-exchange" aria-hidden="true"></i></div>
+            <div>
+              <div class="stat-card-value" id="statActivePairs">—</div>
+              <div class="stat-card-label" data-i18n="currency.statistics_active_pairs">Active Pairs</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-card-icon stat-card-icon-green"><i class="bi bi-layers" aria-hidden="true"></i></div>
+            <div>
+              <div class="stat-card-value" id="statTotalRates">—</div>
+              <div class="stat-card-label" data-i18n="currency.statistics_total_rates">Total Rates</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-card-icon stat-card-icon-info"><i class="bi bi-calendar-check" aria-hidden="true"></i></div>
+            <div>
+              <div class="stat-card-value" id="statNewestRate">—</div>
+              <div class="stat-card-label" data-i18n="currency.statistics_newest">Newest Rate</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-card-icon stat-card-icon-amber"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
+            <div>
+              <div class="stat-card-value" id="statDaysSync">—</div>
+              <div class="stat-card-label" data-i18n="currency.statistics_stale">Days Since Sync</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main two-column layout -->
+      <div class="row g-4">
+
+        <!-- Left: Currency Converter + Set Rate -->
+        <div class="col-lg-4 d-flex flex-column gap-4">
+
+          <!-- Converter -->
+          <div class="converter-panel">
+            <h2 class="h6 fw-bold mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-arrow-left-right text-primary" aria-hidden="true"></i>
+              <span data-i18n="currency.convert_title">Currency Converter</span>
+            </h2>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold small text-muted text-uppercase ls-wider" data-i18n="currency.convert_amount">Amount</label>
+              <input type="number" class="form-control form-control-lg" id="convertAmount"
+                     placeholder="0.00" min="0" step="0.01" value="100">
+            </div>
+
+            <div class="converter-row mb-3">
+              <div class="converter-field">
+                <label class="form-label fw-semibold small text-muted text-uppercase" data-i18n="currency.convert_from">From</label>
+                <select class="form-select" id="convertFrom"></select>
+              </div>
+              <button class="converter-swap-btn" type="button" id="convertSwapBtn"
+                      aria-label="Swap currencies">
+                <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+              </button>
+              <div class="converter-field">
+                <label class="form-label fw-semibold small text-muted text-uppercase" data-i18n="currency.convert_to">To</label>
+                <select class="form-select" id="convertTo"></select>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-100 mb-3" type="button" id="convertBtn">
+              <i class="bi bi-calculator me-2" aria-hidden="true"></i>
+              <span data-i18n="currency.convert_title">Convert</span>
+            </button>
+
+            <!-- Result -->
+            <div id="convertResult" class="converter-result position-relative d-none">
+              <div class="converter-result-amount" id="convertResultAmount">—</div>
+              <div class="converter-result-rate small text-muted" id="convertResultRate"></div>
+              <button class="converter-result-copy" type="button" id="convertCopyBtn"
+                      title="Copy result">
+                <i class="bi bi-copy" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Set Manual Rate -->
+          <div class="set-rate-form">
+            <h2 class="h6 fw-bold mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-pencil-square text-primary" aria-hidden="true"></i>
+              <span data-i18n="currency.set_rate_title">Set Manual Rate</span>
+            </h2>
+            <form id="setRateForm" novalidate>
+              <div class="mb-3">
+                <label class="form-label fw-semibold small" data-i18n="currency.set_rate_from">From Currency</label>
+                <select class="form-select" id="rateFromSelect" required></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold small" data-i18n="currency.set_rate_to">To Currency</label>
+                <select class="form-select" id="rateToSelect" required></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold small" data-i18n="currency.set_rate_value">Exchange Rate</label>
+                <input type="number" class="form-control" id="rateValueInput"
+                       placeholder="e.g. 3.75" min="0.000001" step="any" required>
+                <div class="form-text text-muted" id="rateHint"></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold small" data-i18n="currency.set_rate_date">Effective Date</label>
+                <input type="date" class="form-control" id="rateDateInput" required>
+              </div>
+              <button class="btn btn-primary w-100" type="submit" id="setRateBtn">
+                <i class="bi bi-check-lg me-2" aria-hidden="true"></i>
+                <span data-i18n="currency.set_rate_submit">Set Rate</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Right: Exchange Rate Cards -->
+        <div class="col-lg-8">
+
+          <!-- Filter bar -->
+          <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+            <input type="search" class="form-control form-control-sm" id="rateSearch"
+                   placeholder="Search rates..." style="max-width:220px;">
+            <select class="form-select form-select-sm" id="rateFromFilter" style="max-width:120px;">
+              <option value="">All From</option>
+            </select>
+            <button class="btn btn-sm btn-outline-secondary ms-auto" type="button" id="rateRefreshBtn">
+              <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>
+              <span data-i18n="currency.rates_refresh">Refresh</span>
+            </button>
+          </div>
+
+          <!-- Skeleton -->
+          <div id="ratesSkeletons" class="row g-3">
+            <div class="col-sm-6"><div class="skeleton" style="height:150px;border-radius:12px;"></div></div>
+            <div class="col-sm-6"><div class="skeleton" style="height:150px;border-radius:12px;"></div></div>
+            <div class="col-sm-6"><div class="skeleton" style="height:150px;border-radius:12px;"></div></div>
+            <div class="col-sm-6"><div class="skeleton" style="height:150px;border-radius:12px;"></div></div>
+          </div>
+
+          <!-- Rate cards grid -->
+          <div id="ratesGrid" class="row g-3 d-none"></div>
+
+          <!-- Empty -->
+          <div id="ratesEmpty" class="d-none text-center py-5">
+            <i class="bi bi-currency-exchange text-muted" style="font-size:2.5rem;"></i>
+            <p class="fw-semibold mt-3 mb-1" data-i18n="currency.rates_empty">No exchange rates available</p>
+            <p class="text-muted small" data-i18n="currency.rates_empty_desc">Set a manual rate or trigger a sync to get started.</p>
+          </div>
+
+          <!-- Pagination -->
+          <div id="ratesPagination" class="d-flex justify-content-center mt-4 d-none">
+            <nav aria-label="Rates pagination">
+              <ul class="pagination pagination-sm" id="ratesPaginationList"></ul>
+            </nav>
+          </div>
+
+        </div>
+      </div><!-- /row -->
+    </main>
+
+    <div id="footer-root"></div>
+  </div>
+</div>
+
+<div class="sidebar-backdrop" aria-hidden="true"></div>
+
+<script type="module" src="/assets/js/pages/currency.js"></script>
+</body>
+</html>

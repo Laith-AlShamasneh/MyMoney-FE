@@ -26,6 +26,9 @@ export const Config = Object.freeze({
     REFRESH_TOKEN_EXPIRY:  'mm.refreshTokenExpiry',
     USER:                  'mm.user',
     ONBOARDING:            'mm.onboarding',
+    DISPLAY_CURRENCY:      'mm.displayCurrency',
+    CURRENCY_LIST:         'mm.currencyList',
+    CURRENCY_LIST_TS:      'mm.currencyListTs',
   }),
 
   /** Application routes. */
@@ -52,6 +55,7 @@ export const Config = Object.freeze({
     BUDGET_DETAIL:          '/pages/budgets/detail.html',
     CALENDAR:               '/pages/calendar/index.html',
     RECEIPTS:               '/pages/receipts/index.html',
+    CURRENCY:               '/pages/currency/index.html',
     ERROR_404:              '/pages/errors/404.html',
     ERROR_500:              '/pages/errors/500.html',
   }),
@@ -196,6 +200,20 @@ export const Config = Object.freeze({
       TAGS_CREATE:        '/api/receipts/tags/create',
       TAGS_DELETE:        '/api/receipts/tags/delete',
       TAGS_SET:           '/api/receipts/tags/set',
+    }),
+    CURRENCY: Object.freeze({
+      LIST:                '/api/currency/list',
+      GET:                 '/api/currency/get',
+      PREFERENCES_GET:     '/api/currency/preferences/get',
+      PREFERENCES_UPDATE:  '/api/currency/preferences/update',
+      RATES_CURRENT:       '/api/currency/rates/current',
+      RATES_HISTORICAL:    '/api/currency/rates/historical',
+      RATES_HISTORY:       '/api/currency/rates/history',
+      RATES_SET:           '/api/currency/rates/set',
+      RATES_STATISTICS:    '/api/currency/rates/statistics',
+      RATES_SYNC:          '/api/currency/rates/sync',
+      CONVERT:             '/api/currency/convert',
+      DASHBOARD:           '/api/currency/dashboard',
     }),
     NOTIFICATIONS: Object.freeze({
       LIST:               '/api/notifications/list',

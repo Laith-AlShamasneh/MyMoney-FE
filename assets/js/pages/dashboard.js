@@ -12,6 +12,7 @@ import { FinancialIntelligenceService }  from '../services/financial-intelligenc
 import { CashFlowService }               from '../services/cash-flow-service.js';
 import { ApiError }                      from '../core/api.js';
 import { showError }                     from '../components/toast.js';
+import { formatAmount }                  from '../core/currency.js';
 import {
   incomeColors, expenseColors, chartPalette,
   chartTooltipOptions, chartLegendLabels, chartScales, chartSurfaceColor,
@@ -66,12 +67,6 @@ let _lastData = null;
    Formatting helpers
    -------------------------------------------------------------------------- */
 const _lang = () => getLanguage();
-
-function _fmtAmount(value) {
-  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(value);
-}
 
 function _fmtInt(value) {
   return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-EG' : 'en-US').format(value);
@@ -143,11 +138,11 @@ function _countChangePill(change) {
    KPI rendering
    -------------------------------------------------------------------------- */
 function _renderKpi(kpi) {
-  kpiIncomeVal.textContent   = _fmtAmount(kpi.currentIncome);
-  kpiExpensesVal.textContent = _fmtAmount(kpi.currentExpenses);
+  kpiIncomeVal.textContent   = formatAmount(kpi.currentIncome);
+  kpiExpensesVal.textContent = formatAmount(kpi.currentExpenses);
 
   const net = kpi.currentNet;
-  kpiNetVal.textContent    = (net < 0 ? '−' : '') + _fmtAmount(Math.abs(net));
+  kpiNetVal.textContent    = (net < 0 ? '−' : '') + formatAmount(Math.abs(net));
   kpiNetVal.style.color    = net < 0 ? '#dc3545' : net > 0 ? '#198754' : '';
   kpiCountVal.textContent  = _fmtInt(kpi.currentTransactionCount);
 
@@ -214,11 +209,11 @@ function _renderTrendChart(trend) {
         tooltip: {
           ...chartTooltipOptions(),
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${_fmtAmount(ctx.parsed.y)}`,
+            label: ctx => ` ${ctx.dataset.label}: ${formatAmount(ctx.parsed.y)}`,
           },
         },
       },
-      scales: chartScales({ yCallback: val => _fmtAmount(val) }),
+      scales: chartScales({ yCallback: val => formatAmount(val) }),
     },
   });
 }
@@ -266,7 +261,7 @@ function _renderBreakdown(breakdown) {
         tooltip: {
           ...chartTooltipOptions(),
           callbacks: {
-            label: ctx => ` ${_fmtAmount(ctx.parsed)} (${breakdown[ctx.dataIndex]?.percentage ?? 0}%)`,
+            label: ctx => ` ${formatAmount(ctx.parsed)} (${breakdown[ctx.dataIndex]?.percentage ?? 0}%)`,
           },
         },
       },
@@ -312,7 +307,7 @@ function _renderRecentTransactions(transactions) {
       <td>${_esc(catName)}</td>
       <td>${desc}</td>
       <td class="text-end text-nowrap">
-        <span class="tx-amount ${amtCls}">${amtSign}${_fmtAmount(tx.amount)}</span>
+        <span class="tx-amount ${amtCls}">${amtSign}${formatAmount(tx.amount)}</span>
       </td>
     </tr>`;
   }).join('');
@@ -503,7 +498,7 @@ function _renderCfStrip(data) {
       </div>
       <div>
         <p class="text-muted mb-1" style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.04em;">${t('cash_flow.kpi_projected_balance')}</p>
-        <div class="fw-bold" style="font-size:1.05rem;color:${endBalance < 0 ? 'var(--mm-danger)' : 'var(--mm-success)'};">${_fmtAmount(endBalance)}</div>
+        <div class="fw-bold" style="font-size:1.05rem;color:${endBalance < 0 ? 'var(--mm-danger)' : 'var(--mm-success)'};">${formatAmount(endBalance)}</div>
         <span class="cf-conf-badge ${_confBandCls(band)}" style="margin-top:.25rem;display:inline-flex;">
           ${t(`cash_flow.confidence_${_confBandKey(band)}`)}
         </span>
@@ -518,7 +513,7 @@ function _renderCfStrip(data) {
       <div>
         <p class="text-muted mb-1" style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.04em;">${t('cash_flow.kpi_monthly_net')}</p>
         <div class="fw-bold" style="font-size:1.05rem;color:${netFlow < 0 ? 'var(--mm-danger)' : 'var(--mm-success)'};">
-          ${(netFlow < 0 ? '−' : '+') + _fmtAmount(Math.abs(netFlow))}
+          ${(netFlow < 0 ? '−' : '+') + formatAmount(Math.abs(netFlow))}
         </div>
       </div>
     </div>`;
@@ -594,6 +589,7 @@ async function loadDashboard() {
 
   if (cfResult.status === 'fulfilled' && cfResult.value?.forecastId) {
     _renderCfStrip(cfResult.value);
+    if (_lastData) _lastData.cfData = cfResult.value;
   }
 
   if (dashResult.status === 'rejected') {
@@ -633,6 +629,18 @@ document.addEventListener('mm-theme-change', () => {
   if (!_lastData) return;
   _renderTrendChart(_lastData.monthlyTrend);
   _renderBreakdown(_lastData.categoryBreakdown);
+});
+
+/* --------------------------------------------------------------------------
+   Currency change — re-render all amounts from cache
+   -------------------------------------------------------------------------- */
+document.addEventListener('mm-currency-change', () => {
+  if (!_lastData) return;
+  _renderKpi(_lastData.kpi);
+  _renderTrendChart(_lastData.monthlyTrend);
+  _renderBreakdown(_lastData.categoryBreakdown);
+  _renderRecentTransactions(_lastData.recentTransactions);
+  if (_lastData.cfData)  _renderCfStrip(_lastData.cfData);
 });
 
 /* --------------------------------------------------------------------------

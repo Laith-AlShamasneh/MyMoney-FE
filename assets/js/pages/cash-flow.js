@@ -10,6 +10,7 @@ import { guardPage }                  from '../core/auth.js';
 import { CashFlowService }            from '../services/cash-flow-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showError }                  from '../components/toast.js';
+import { formatAmount }               from '../core/currency.js';
 import {
   incomeColors, expenseColors,
   chartTooltipOptions, chartLegendLabels, chartScales, chartTextColor,
@@ -61,9 +62,7 @@ let _timelineChart  = null;
 const _lang = () => getLanguage();
 
 function _fmtAmount(value) {
-  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(value ?? 0);
+  return formatAmount(value ?? 0);
 }
 
 function _fmtPct(value) {
@@ -618,5 +617,14 @@ async function init() {
   _wireEvents();
   await loadPage();
 }
+
+document.addEventListener('mm-currency-change', () => {
+  if (!_forecast) return;
+  _renderKpis(_forecast);
+  const timeline = (_forecast.monthlyTimeline ?? []).slice(0, _visibleMonths);
+  _renderMonthlyTable(timeline);
+  _renderGoals(_forecast.goalProjections ?? []);
+  _renderRecurring(_forecast);
+});
 
 init();

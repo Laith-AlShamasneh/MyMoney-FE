@@ -11,6 +11,7 @@ import { TransactionService }         from '../services/transaction-service.js';
 import { CategoryService }            from '../services/category-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showToast, showSuccess, showError } from '../components/toast.js';
+import { formatAmount, getDisplayCurrency }  from '../core/currency.js';
 import {
   incomeColors, expenseColors, chartPalette,
   chartTooltipOptions, chartLegendLabels, chartScales, chartSurfaceColor,
@@ -91,11 +92,8 @@ function _pad(n)     { return String(n).padStart(2, '0'); }
 /* ==========================================================================
    Formatting
    ========================================================================== */
-function _fmtCurrency(amount) {
-  const lang = getLanguage();
-  return new Intl.NumberFormat(lang === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(amount);
+function _fmtCurrency(amount, currencyCode = null) {
+  return formatAmount(amount, currencyCode);
 }
 
 function _fmtDate(dateStr) {
@@ -216,8 +214,15 @@ function _renderTable(items) {
       ? `<img src="/assets/images/categories/${_esc(tx.categoryIcon)}" width="18" alt="" class="me-1">`
       : `<i class="bi bi-tag-fill"></i>`;
 
-    const amtCls = isIncome ? 'tx-amount-income' : 'tx-amount-expense';
-    const amtSign = isIncome ? '+' : '−';
+    const amtCls       = isIncome ? 'tx-amount-income' : 'tx-amount-expense';
+    const amtSign      = isIncome ? '+' : '−';
+    const displayCode  = getDisplayCurrency();
+    const txCode       = tx.currencyCode;
+    const hasOriginal  = txCode && txCode !== displayCode && tx.baseCurrencyAmount;
+    const amountHtml   = hasOriginal
+      ? `<div><span class="tx-amount ${amtCls}">${amtSign} ${_fmtCurrency(tx.baseCurrencyAmount, displayCode)}</span></div>
+         <div class="mm-amt-original">${_fmtCurrency(tx.amount, txCode)} <span class="mm-currency-badge mm-currency-badge-converted">${txCode}</span></div>`
+      : `<span class="tx-amount ${amtCls}">${amtSign} ${_fmtCurrency(tx.amount, txCode || displayCode)}</span>`;
 
     return `<tr>
       <td class="text-nowrap">${_fmtDate(tx.transactionDate)}</td>
@@ -229,9 +234,7 @@ function _renderTable(items) {
         </div>
       </td>
       <td><span class="tx-desc" title="${_esc(tx.description)}">${_esc(tx.description) || '<span class="text-muted">—</span>'}</span></td>
-      <td class="text-end">
-        <span class="tx-amount ${amtCls}">${amtSign} ${_fmtCurrency(tx.amount)}</span>
-      </td>
+      <td class="text-end">${amountHtml}</td>
       <td class="text-center">
         <div class="d-flex justify-content-center gap-1">
           <button class="btn-row-action btn-row-edit"
@@ -841,6 +844,14 @@ document.addEventListener('mm-theme-change', () => {
   if (_lastAnalyticsData && _s.analyticsVisible) {
     _renderAnalytics(_lastAnalyticsData);
   }
+});
+
+/* ==========================================================================
+   Currency change — reload transactions and analytics with new display currency
+   ========================================================================== */
+document.addEventListener('mm-currency-change', () => {
+  _loadData();
+  if (_s.analyticsVisible) _loadAnalytics();
 });
 
 /* ==========================================================================

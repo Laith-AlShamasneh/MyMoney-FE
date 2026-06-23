@@ -11,6 +11,7 @@ import { BudgetService }              from '../services/budget-service.js';
 import { ApiError, post }             from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { Config }                     from '../core/config.js';
+import { formatAmount }               from '../core/currency.js';
 import {
   chartPalette, chartTooltipOptions, chartLegendLabels,
   chartScales, incomeColors, expenseColors, chartSurfaceColor,
@@ -62,9 +63,7 @@ function _esc(str) {
 function _lang() { return getLanguage(); }
 
 function _fmtCurrency(val) {
-  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(val ?? 0);
+  return formatAmount(val ?? 0);
 }
 
 function _fmtPct(val) {
@@ -805,6 +804,13 @@ function _wireEvents() {
     if (!_s.dashboard) return;
     _renderBarChart(_s.dashboard.trend ?? []);
     _renderDonutChart(_s.allBudgets);
+  });
+
+  document.addEventListener('mm-currency-change', () => {
+    if (!_s.dashboard) return;
+    if (_s.dashboard.summary) _renderKpis(_s.dashboard.summary);
+    _applyFilters();
+    _renderGrid();
   });
 }
 

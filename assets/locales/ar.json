@@ -1672,5 +1672,41 @@
       "desc":  "أنت جاهز تماماً. لوحة تحكمك مستعدة لمساعدتك في التحكم بأموالك. عمل رائع!",
       "cta":   "ابدأ استخدام ماي ماني"
     }
+  },
+
+  "currency": {
+    "page_title":                 "أسعار الصرف",
+    "page_subtitle":              "إدارة العملات وأسعار الصرف والتفضيلات.",
+    "switcher_aria":              "تغيير العملة",
+    "switcher_search_placeholder":"بحث في العملات…",
+    "switcher_current":           "الحالية",
+    "switcher_all":               "جميع العملات",
+    "switcher_no_results":        "لا توجد عملات",
+    "manage_rates":               "إدارة أسعار الصرف",
+    "all_currencies":             "جميع العملات",
+    "statistics_active_pairs":    "الأزواج النشطة",
+    "statistics_total_rates":     "إجمالي الأسعار",
+    "statistics_newest":          "أحدث سعر",
+    "statistics_stale":           "أيام منذ آخر مزامنة",
+    "convert_title":              "محوّل العملات",
+    "convert_amount":             "المبلغ",
+    "convert_from":               "من",
+    "convert_to":                 "إلى",
+    "convert_invalid_amount":     "الرجاء إدخال مبلغ صحيح.",
+    "set_rate_title":             "تعيين سعر يدوي",
+    "set_rate_from":              "من عملة",
+    "set_rate_to":                "إلى عملة",
+    "set_rate_value":             "سعر الصرف",
+    "set_rate_date":              "تاريخ السريان",
+    "set_rate_submit":            "تعيين السعر",
+    "set_rate_success":           "تم حفظ سعر الصرف بنجاح.",
+    "rates_refresh":              "تحديث",
+    "rates_sync":                 "مزامنة الآن",
+    "rates_empty":                "لا تتوفر أسعار صرف",
+    "rates_empty_desc":           "عيّن سعراً يدوياً أو أطلق مزامنة للبدء.",
+    "rates_auto":                 "تلقائي",
+    "rates_estimated":            "مقدّر",
+    "rates_manual":               "يدوي",
+    "sync_success":               "تمت مزامنة الأسعار بنجاح."
   }
 }

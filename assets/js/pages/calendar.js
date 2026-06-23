@@ -16,6 +16,7 @@ import { guardPage }                   from '../core/auth.js';
 import { CalendarService }             from '../services/calendar-service.js';
 import { ApiError }                    from '../core/api.js';
 import { showError, showSuccess }      from '../components/toast.js';
+import { formatAmount }                from '../core/currency.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Constants
@@ -220,9 +221,7 @@ function _fmtDateTime(utcStr) {
 
 function _fmtAmount(amount) {
   if (amount == null) return '';
-  return new Intl.NumberFormat(_isAr() ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(amount);
+  return formatAmount(amount);
 }
 
 function _esc(str) {
@@ -1209,5 +1208,9 @@ async function init() {
     showError(err instanceof ApiError ? err.message : t('errors.unknown'));
   }
 }
+
+document.addEventListener('mm-currency-change', () => {
+  _refreshCurrentView().catch(() => {});
+});
 
 init();

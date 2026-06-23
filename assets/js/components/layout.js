@@ -14,6 +14,10 @@ import { Config } from '../core/config.js';
 import { t, getLanguage, setLanguage } from '../core/i18n.js';
 import { getCurrentUser, logout } from '../core/auth.js';
 import { initNotificationBell } from './notifications.js';
+import {
+  getDisplayCurrency, setDisplayCurrency,
+  getCurrencyList, initCurrency, currencyFlag,
+} from '../core/currency.js';
 
 /* --------------------------------------------------------------------------
    Navigation item definitions
@@ -126,9 +130,11 @@ function _buildSidebar() {
 }
 
 function _buildNavbar(user) {
-  const userName = user?.displayName || t('layout.user_placeholder');
-  const avatarSrc = user?.profileImageUrl || '/assets/images/avatar/avatar.jpg';
+  const userName   = user?.displayName || t('layout.user_placeholder');
+  const avatarSrc  = user?.profileImageUrl || '/assets/images/avatar/avatar.jpg';
   const themeLabel = t('layout.switch_to_dark');
+  const currCode   = getDisplayCurrency();
+  const currFlag   = currencyFlag(currCode);
 
   return `
     <nav class="navbar admin-navbar navbar-expand bg-white" id="adminNavbar">
@@ -150,6 +156,34 @@ function _buildNavbar(user) {
                   title="${t('layout.lang_switch_aria')}">
             ${t('layout.lang_switch_label')}
           </button>
+
+          <div class="currency-switcher-wrap" id="currencySwitcherWrap">
+            <button class="currency-switcher-btn" type="button"
+                    id="currencySwitcherBtn"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-label="${t('currency.switcher_aria')}">
+              <span class="cs-flag" id="csBtnFlag" aria-hidden="true">${currFlag}</span>
+              <span class="cs-code" id="csBtnCode">${currCode}</span>
+              <i class="bi bi-chevron-down cs-caret" aria-hidden="true"></i>
+            </button>
+            <div class="currency-dropdown d-none" id="currencyDropdown" role="listbox"
+                 aria-label="${t('currency.switcher_aria')}">
+              <div class="cs-search-wrap position-relative">
+                <i class="bi bi-search cs-search-icon" aria-hidden="true"></i>
+                <input type="search" class="cs-search-input" id="csSearchInput"
+                       placeholder="${t('currency.switcher_search_placeholder')}"
+                       autocomplete="off" spellcheck="false">
+              </div>
+              <div class="cs-list" id="csListWrap" role="presentation"></div>
+              <div class="cs-footer">
+                <a class="cs-footer-link" href="${Config.ROUTES.CURRENCY}">
+                  <i class="bi bi-graph-up" aria-hidden="true"></i>
+                  ${t('currency.manage_rates')}
+                </a>
+              </div>
+            </div>
+          </div>
 
           <button class="icon-button theme-toggle" type="button"
                   data-theme-toggle
@@ -287,6 +321,172 @@ function _wireEvents() {
     logoutBtn.disabled = true;
     await logout();
   });
+
+  /* Currency switcher */
+  _wireCurrencySwitcher();
+}
+
+/* --------------------------------------------------------------------------
+   Currency switcher logic
+   -------------------------------------------------------------------------- */
+function _buildCurrencyList(filter = '') {
+  const list      = getCurrencyList();
+  const current   = getDisplayCurrency();
+  const lang      = getLanguage();
+  const query     = filter.trim().toLowerCase();
+  const isAr      = lang === 'ar';
+
+  const items = query
+    ? list.filter(c =>
+        c.code.toLowerCase().includes(query) ||
+        c.nameEn.toLowerCase().includes(query) ||
+        (c.nameAr && c.nameAr.includes(query))
+      )
+    : list;
+
+  if (!items.length) {
+    return `<div class="cs-no-results">${t('currency.switcher_no_results')}</div>`;
+  }
+
+  let html = '';
+
+  // Show active currency first when not searching
+  if (!query) {
+    const active = items.find(c => c.code === current);
+    if (active) {
+      html += `<div class="cs-section-label">${t('currency.switcher_current')}</div>`;
+      html += _buildCsItem(active, current, isAr);
+      html += `<div class="cs-section-label">${t('currency.switcher_all')}</div>`;
+    } else {
+      html += `<div class="cs-section-label">${t('currency.switcher_all')}</div>`;
+    }
+  }
+
+  items.forEach(c => {
+    if (!query && c.code === current) return; // already shown above
+    html += _buildCsItem(c, current, isAr);
+  });
+
+  return html;
+}
+
+function _buildCsItem(c, current, isAr) {
+  const flag    = currencyFlag(c.code);
+  const name    = isAr && c.nameAr ? c.nameAr : c.nameEn;
+  const isActive = c.code === current;
+  const check   = isActive ? '<i class="bi bi-check2 cs-item-check" aria-hidden="true"></i>' : '';
+
+  return `<button class="cs-item${isActive ? ' active' : ''}"
+                   type="button"
+                   role="option"
+                   aria-selected="${isActive}"
+                   data-cs-code="${c.code}">
+    <span class="cs-item-flag" aria-hidden="true">${flag}</span>
+    <span class="cs-item-body">
+      <span class="cs-item-code">${c.code}</span>
+      <span class="cs-item-name">${name}</span>
+    </span>
+    ${check}
+  </button>`;
+}
+
+function _renderCurrencyDropdown(filter = '') {
+  const wrap = document.getElementById('csListWrap');
+  if (wrap) wrap.innerHTML = _buildCurrencyList(filter);
+}
+
+function _updateSwitcherButton(code) {
+  const btnCode = document.getElementById('csBtnCode');
+  const btnFlag = document.getElementById('csBtnFlag');
+  if (btnCode) btnCode.textContent = code;
+  if (btnFlag) btnFlag.textContent = currencyFlag(code);
+}
+
+function _wireCurrencySwitcher() {
+  const btn      = document.getElementById('currencySwitcherBtn');
+  const dropdown = document.getElementById('currencyDropdown');
+  const search   = document.getElementById('csSearchInput');
+  const wrap     = document.getElementById('currencySwitcherWrap');
+  if (!btn || !dropdown) return;
+
+  let _open = false;
+
+  function openDropdown() {
+    if (_open) return;
+    _open = true;
+    _renderCurrencyDropdown('');
+    dropdown.classList.remove('d-none');
+    btn.setAttribute('aria-expanded', 'true');
+    setTimeout(() => search?.focus(), 60);
+  }
+
+  function closeDropdown() {
+    if (!_open) return;
+    _open = false;
+    dropdown.classList.add('d-none');
+    btn.setAttribute('aria-expanded', 'false');
+    if (search) search.value = '';
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    _open ? closeDropdown() : openDropdown();
+  });
+
+  // Search filter
+  search?.addEventListener('input', () => {
+    _renderCurrencyDropdown(search.value);
+  });
+
+  // Item selection (event delegation)
+  dropdown.addEventListener('click', (e) => {
+    const item = e.target.closest('[data-cs-code]');
+    if (!item) return;
+    const code = item.dataset.csCode;
+    if (!code) return;
+
+    // Animate selection
+    item.style.transition = 'background 0.1s ease';
+    item.style.background = 'var(--mm-primary-light)';
+    setTimeout(() => {
+      setDisplayCurrency(code);
+      _updateSwitcherButton(code);
+      closeDropdown();
+
+      // Persist to backend (non-blocking)
+      import('../services/currency-service.js').then(({ CurrencyService }) => {
+        CurrencyService.updateUserPreferences({
+          baseCurrencyCode:    code,
+          displayCurrencyCode: code,
+          numberFormatId:      1,
+          symbolStyleId:       1,
+          negativeFormatId:    1,
+          currencyPositionId:  1,
+        }).catch(() => { /* non-fatal */ });
+      });
+    }, 80);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (_open && !wrap?.contains(e.target)) closeDropdown();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && _open) { closeDropdown(); btn.focus(); }
+  });
+
+  // When currency-change event fires (from other sources), sync the button
+  document.addEventListener('mm-currency-change', (e) => {
+    _updateSwitcherButton(e.detail.code);
+    if (_open) _renderCurrencyDropdown(search?.value || '');
+  });
+
+  // Populate list once currencies are loaded
+  document.addEventListener('mm-currencies-loaded', () => {
+    if (_open) _renderCurrencyDropdown(search?.value || '');
+  });
 }
 
 /* --------------------------------------------------------------------------
@@ -335,6 +535,12 @@ export function initLayout() {
 
   /* Notification bell */
   initNotificationBell();
+
+  /* Currency — load prefs + list asynchronously; fires mm-currency-change if needed */
+  initCurrency().then(() => {
+    document.dispatchEvent(new CustomEvent('mm-currencies-loaded'));
+    _updateSwitcherButton(getDisplayCurrency());
+  }).catch(() => { /* non-fatal */ });
 }
 
 /**

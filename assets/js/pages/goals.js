@@ -11,6 +11,7 @@ import { RecurringService }           from '../services/recurring-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { Config }                     from '../core/config.js';
+import { formatAmount }               from '../core/currency.js';
 
 /* ── Constants ──────────────────────────────────────────────────────────────── */
 const PAGE_SIZE = 12;
@@ -56,10 +57,7 @@ const _esc  = str => {
 
 /* ── Formatters ─────────────────────────────────────────────────────────────── */
 function _fmtCurrency(amount) {
-  const lang = getLanguage();
-  return new Intl.NumberFormat(lang === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(amount ?? 0);
+  return formatAmount(amount ?? 0);
 }
 
 function _fmtDate(dateStr) {
@@ -760,5 +758,10 @@ function _bindGridEvents() {
   });
   $('goalsNextBtn').addEventListener('click', async () => {
     if (_s.page * PAGE_SIZE < _s.total) { _s.page++; await _loadGoalList(); _renderGoals(); }
+  });
+
+  document.addEventListener('mm-currency-change', () => {
+    if (_s.dashboard?.kpi) _renderKpiStrip(_s.dashboard.kpi);
+    _renderGoals();
   });
 })();

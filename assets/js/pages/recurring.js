@@ -10,6 +10,7 @@ import { RecurringService }              from '../services/recurring-service.js'
 import { CategoryService }               from '../services/category-service.js';
 import { ApiError }                      from '../core/api.js';
 import { showSuccess, showError }        from '../components/toast.js';
+import { formatAmount }                  from '../core/currency.js';
 
 /* ── State ─────────────────────────────────────────────────────────────────── */
 const _s = {
@@ -48,10 +49,7 @@ const _hide = el  => el?.classList.add('d-none');
 
 /* ── Formatters ────────────────────────────────────────────────────────────── */
 function _fmtCurrency(amount) {
-  const lang = getLanguage();
-  return new Intl.NumberFormat(lang === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(amount ?? 0);
+  return formatAmount(amount ?? 0);
 }
 
 function _fmtDate(dateStr) {
@@ -977,5 +975,11 @@ async function init() {
     _loadDashboard(),
   ]);
 }
+
+document.addEventListener('mm-currency-change', () => {
+  if (_s.dashboard) _renderKpis(_s.dashboard);
+  _loadRecurring();
+  if (_s.subLoaded) _loadSubscriptions();
+});
 
 init();

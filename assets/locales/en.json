@@ -1675,5 +1675,41 @@
       "desc":  "You're all set. Your dashboard is ready to help you take control of your finances. Great job!",
       "cta":   "Start Using MyMoney"
     }
+  },
+
+  "currency": {
+    "page_title":                 "Exchange Rates",
+    "page_subtitle":              "Manage currencies, exchange rates, and preferences.",
+    "switcher_aria":              "Switch currency",
+    "switcher_search_placeholder":"Search currency…",
+    "switcher_current":           "Current",
+    "switcher_all":               "All Currencies",
+    "switcher_no_results":        "No currencies found",
+    "manage_rates":               "Manage Exchange Rates",
+    "all_currencies":             "All Currencies",
+    "statistics_active_pairs":    "Active Pairs",
+    "statistics_total_rates":     "Total Rates",
+    "statistics_newest":          "Newest Rate",
+    "statistics_stale":           "Days Since Sync",
+    "convert_title":              "Currency Converter",
+    "convert_amount":             "Amount",
+    "convert_from":               "From",
+    "convert_to":                 "To",
+    "convert_invalid_amount":     "Please enter a valid amount.",
+    "set_rate_title":             "Set Manual Rate",
+    "set_rate_from":              "From Currency",
+    "set_rate_to":                "To Currency",
+    "set_rate_value":             "Exchange Rate",
+    "set_rate_date":              "Effective Date",
+    "set_rate_submit":            "Set Rate",
+    "set_rate_success":           "Exchange rate saved successfully.",
+    "rates_refresh":              "Refresh",
+    "rates_sync":                 "Sync Now",
+    "rates_empty":                "No exchange rates available",
+    "rates_empty_desc":           "Set a manual rate or trigger a sync to get started.",
+    "rates_auto":                 "Auto",
+    "rates_estimated":            "Estimated",
+    "rates_manual":               "Manual",
+    "sync_success":               "Rates synced successfully."
   }
 }

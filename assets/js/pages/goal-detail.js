@@ -11,6 +11,7 @@ import { RecurringService }           from '../services/recurring-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { Config }                     from '../core/config.js';
+import { formatAmount }               from '../core/currency.js';
 
 /* ── Constants ──────────────────────────────────────────────────────────────── */
 const RING_C_LG = 502.65; // 2π × r80
@@ -56,10 +57,7 @@ const _esc  = str => {
 
 /* ── Formatters ─────────────────────────────────────────────────────────────── */
 function _fmtCurrency(amount) {
-  const lang = getLanguage();
-  return new Intl.NumberFormat(lang === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(amount ?? 0);
+  return formatAmount(amount ?? 0);
 }
 
 function _fmtDate(dateStr) {
@@ -715,5 +713,13 @@ async function _submitDelete() {
     $('contribLoadMoreBtn').disabled = true;
     await _loadContributions(true);
     $('contribLoadMoreBtn').disabled = false;
+  });
+
+  document.addEventListener('mm-currency-change', () => {
+    if (!_goal) return;
+    _renderHero(_goal);
+    _renderStats(_goal);
+    _renderMilestones(_goal);
+    _renderLinkedRecurring(_goal.recurringLinks ?? []);
   });
 })();

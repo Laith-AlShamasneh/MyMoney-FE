@@ -9,6 +9,7 @@ import { guardPage }                    from '../core/auth.js';
 import { FinancialIntelligenceService } from '../services/financial-intelligence-service.js';
 import { ApiError }                     from '../core/api.js';
 import { showError, showSuccess }       from '../components/toast.js';
+import { formatAmount }                 from '../core/currency.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
@@ -55,9 +56,7 @@ const PAGE_SIZE_INSIGHTS = 12;
 const _lang = () => getLanguage();
 
 function _fmtAmount(value) {
-  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(value ?? 0);
+  return formatAmount(value ?? 0);
 }
 
 function _esc(str) {
@@ -579,5 +578,12 @@ async function init() {
   _wireInteractions();
   await loadPage();
 }
+
+document.addEventListener('mm-currency-change', () => {
+  if (!_lastDashData) return;
+  _renderHealth(_lastDashData.latestSnapshot ?? null, _lastDashData.topInsights ?? []);
+  _renderCategoryTrends(_lastDashData.categoryTrends ?? []);
+  _renderRecommendations(_lastDashData.recommendations ?? []);
+});
 
 init();

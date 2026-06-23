@@ -391,4 +391,8 @@ async function init() {
   initOnboarding();
 }
 
+document.addEventListener('mm-currency-change', () => {
+  _loadNotifications();
+});
+
 init();

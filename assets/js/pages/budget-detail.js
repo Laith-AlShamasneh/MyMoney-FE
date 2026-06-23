@@ -11,6 +11,7 @@ import { BudgetService }              from '../services/budget-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { Config }                     from '../core/config.js';
+import { formatAmount }               from '../core/currency.js';
 import {
   chartPalette, chartTooltipOptions, chartLegendLabels,
   chartScales, chartTextColor,
@@ -58,9 +59,7 @@ function _esc(str) {
 function _lang() { return getLanguage(); }
 
 function _fmtCurrency(val) {
-  return new Intl.NumberFormat(_lang() === 'ar' ? 'ar-JO' : 'en-US', {
-    style: 'currency', currency: 'JOD', minimumFractionDigits: 3,
-  }).format(val ?? 0);
+  return formatAmount(val ?? 0);
 }
 
 function _fmtPct(val) {
@@ -641,6 +640,13 @@ function _wireEvents() {
     if (!_s.budget) return;
     const chartData = [...(_s.budget.history ?? [])].sort((a, b) => new Date(a.periodStart) - new Date(b.periodStart));
     if (chartData.length) _renderTrendChart(chartData);
+  });
+
+  document.addEventListener('mm-currency-change', () => {
+    if (!_s.budget) return;
+    _renderHeader(_s.budget);
+    _renderPeriodKpis(_s.budget);
+    _renderPeriodsTable();
   });
 }
 

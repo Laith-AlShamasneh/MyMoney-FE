@@ -1,0 +1,596 @@
+/* ==========================================================================
+   currency.css — MyMoney
+   Currency switcher, exchange rate cards, conversion panel, badges.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Currency Switcher Button (in navbar)
+   -------------------------------------------------------------------------- */
+.currency-switcher-btn {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            6px;
+  height:         36px;
+  padding:        0 10px;
+  border:         1px solid var(--mm-border);
+  border-radius:  var(--mm-radius);
+  background:     var(--mm-surface);
+  color:          var(--mm-text);
+  font-size:      var(--mm-text-sm);
+  font-weight:    600;
+  font-family:    var(--mm-font-mono), var(--mm-font-sans);
+  letter-spacing: 0.03em;
+  cursor:         pointer;
+  transition:     border-color var(--mm-duration-base) var(--mm-ease),
+                  background   var(--mm-duration-base) var(--mm-ease),
+                  box-shadow   var(--mm-duration-base) var(--mm-ease);
+  white-space:    nowrap;
+  user-select:    none;
+}
+.currency-switcher-btn:hover {
+  border-color: var(--mm-primary);
+  background:   var(--mm-primary-light);
+  box-shadow:   var(--mm-shadow-xs);
+}
+.currency-switcher-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--mm-ring);
+}
+.currency-switcher-btn .cs-flag   { font-size: 1rem; line-height: 1; }
+.currency-switcher-btn .cs-code   { color: var(--mm-text); }
+.currency-switcher-btn .cs-caret  {
+  font-size:  0.65rem;
+  color:      var(--mm-muted);
+  transition: transform var(--mm-duration-base) var(--mm-ease);
+}
+.currency-switcher-btn[aria-expanded="true"] .cs-caret {
+  transform: rotate(180deg);
+}
+
+/* --------------------------------------------------------------------------
+   2. Currency Switcher Dropdown
+   -------------------------------------------------------------------------- */
+.currency-switcher-wrap {
+  position: relative;
+}
+.currency-dropdown {
+  position:         absolute;
+  top:              calc(100% + 8px);
+  right:            0;
+  width:            300px;
+  background:       var(--mm-surface);
+  border:           1px solid var(--mm-border);
+  border-radius:    var(--mm-radius-lg);
+  box-shadow:       var(--mm-shadow-lg);
+  z-index:          1055;
+  overflow:         hidden;
+  /* Entry animation */
+  transform-origin: top right;
+  animation:        cs-dropdown-in var(--mm-duration-base) var(--mm-ease-spring) forwards;
+}
+.currency-dropdown.d-none {
+  display: none !important;
+}
+@keyframes cs-dropdown-in {
+  from { opacity: 0; transform: scale(0.93) translateY(-6px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+[dir="rtl"] .currency-dropdown {
+  right: auto;
+  left:  0;
+  transform-origin: top left;
+}
+
+.cs-search-wrap {
+  padding:       10px 12px 8px;
+  border-bottom: 1px solid var(--mm-border-soft);
+}
+.cs-search-input {
+  width:         100%;
+  height:        34px;
+  padding:       0 10px 0 34px;
+  border:        1px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  background:    var(--mm-surface-soft);
+  color:         var(--mm-text);
+  font-size:     var(--mm-text-sm);
+  outline:       none;
+  transition:    border-color var(--mm-duration-fast) var(--mm-ease),
+                 box-shadow   var(--mm-duration-fast) var(--mm-ease);
+}
+.cs-search-input:focus {
+  border-color: var(--mm-primary);
+  box-shadow:   var(--mm-ring);
+}
+.cs-search-icon {
+  position:   absolute;
+  left:       22px;
+  top:        50%;
+  transform:  translateY(-50%);
+  color:      var(--mm-muted);
+  font-size:  0.8rem;
+  pointer-events: none;
+}
+[dir="rtl"] .cs-search-icon {
+  left:  auto;
+  right: 22px;
+}
+[dir="rtl"] .cs-search-input { padding: 0 34px 0 10px; }
+
+.cs-list {
+  max-height:  260px;
+  overflow-y:  auto;
+  overscroll-behavior: contain;
+}
+.cs-list::-webkit-scrollbar { width: 4px; }
+.cs-list::-webkit-scrollbar-track  { background: transparent; }
+.cs-list::-webkit-scrollbar-thumb  { background: var(--mm-border); border-radius: 9999px; }
+
+.cs-section-label {
+  padding:        6px 14px 4px;
+  font-size:      0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color:          var(--mm-muted);
+  font-weight:    600;
+}
+
+.cs-item {
+  display:        flex;
+  align-items:    center;
+  gap:            10px;
+  padding:        8px 14px;
+  cursor:         pointer;
+  transition:     background var(--mm-duration-fast) var(--mm-ease);
+  border:         none;
+  background:     none;
+  width:          100%;
+  text-align:     left;
+}
+[dir="rtl"] .cs-item { text-align: right; }
+.cs-item:hover { background: var(--mm-surface-soft); }
+.cs-item.active {
+  background:   var(--mm-primary-light);
+  color:        var(--mm-primary);
+}
+.cs-item-flag   { font-size: 1.15rem; flex-shrink: 0; line-height: 1; }
+.cs-item-body   { flex: 1; min-width: 0; text-align: left; }
+[dir="rtl"] .cs-item-body { text-align: right; }
+.cs-item-code   {
+  display:     block;
+  font-size:   var(--mm-text-sm);
+  font-weight: 600;
+  font-family: var(--mm-font-mono), var(--mm-font-sans);
+  color:       inherit;
+  line-height: 1.2;
+}
+.cs-item-name   {
+  display:     block;
+  font-size:   0.7rem;
+  color:       var(--mm-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
+.cs-item-check {
+  font-size:   0.75rem;
+  color:       var(--mm-primary);
+  flex-shrink: 0;
+}
+.cs-no-results {
+  padding:    24px 16px;
+  text-align: center;
+  color:      var(--mm-muted);
+  font-size:  var(--mm-text-sm);
+}
+
+.cs-footer {
+  border-top: 1px solid var(--mm-border-soft);
+  padding:    8px 14px;
+}
+.cs-footer-link {
+  display:        flex;
+  align-items:    center;
+  gap:            6px;
+  font-size:      var(--mm-text-sm);
+  color:          var(--mm-primary);
+  text-decoration: none;
+  padding:        4px 0;
+  transition:     color var(--mm-duration-fast) var(--mm-ease);
+}
+.cs-footer-link:hover { color: var(--mm-primary-dark); text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   3. Currency Amount Badges (inline in tables / cards)
+   -------------------------------------------------------------------------- */
+.mm-currency-badge {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            3px;
+  font-size:      0.68rem;
+  font-weight:    600;
+  font-family:    var(--mm-font-mono), var(--mm-font-sans);
+  padding:        1px 6px;
+  border-radius:  var(--mm-radius-full);
+  letter-spacing: 0.04em;
+  white-space:    nowrap;
+  line-height:    1.6;
+}
+.mm-currency-badge-primary {
+  background: var(--mm-primary-light);
+  color:      var(--mm-primary);
+}
+.mm-currency-badge-muted {
+  background: var(--mm-border-soft);
+  color:      var(--mm-muted);
+  border:     1px solid var(--mm-border);
+}
+.mm-currency-badge-converted {
+  background: rgba(245,158,11,0.12);
+  color:      var(--mm-warning);
+  border:     1px solid rgba(245,158,11,0.2);
+}
+
+/* Converted amount display (original in tooltip/secondary row) */
+.mm-amt-converted    { display: inline-flex; align-items: center; gap: 5px; }
+.mm-amt-badge        {
+  font-size:   0.62rem;
+  font-weight: 700;
+  font-family: var(--mm-font-mono), var(--mm-font-sans);
+  background:  rgba(245,158,11,0.12);
+  color:       var(--mm-warning);
+  border:      1px solid rgba(245,158,11,0.2);
+  padding:     0 4px;
+  border-radius: var(--mm-radius-full);
+  letter-spacing: 0.05em;
+}
+.mm-amt-original {
+  display:     block;
+  font-size:   0.7rem;
+  color:       var(--mm-muted);
+  margin-top:  2px;
+}
+.mm-amt-original-inline {
+  font-size:  0.72rem;
+  color:      var(--mm-muted);
+  margin-inline-start: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Exchange Rate Cards (exchange rates page)
+   -------------------------------------------------------------------------- */
+.rate-card {
+  background:    var(--mm-surface);
+  border:        1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding:       20px;
+  transition:    box-shadow var(--mm-duration-base) var(--mm-ease),
+                 border-color var(--mm-duration-base) var(--mm-ease),
+                 transform var(--mm-duration-base) var(--mm-ease);
+}
+.rate-card:hover {
+  box-shadow:   var(--mm-shadow);
+  border-color: var(--mm-primary);
+  transform:    translateY(-1px);
+}
+.rate-card-pair {
+  display:        flex;
+  align-items:    center;
+  gap:            10px;
+  margin-bottom:  14px;
+}
+.rate-card-flags {
+  display:     flex;
+  align-items: center;
+  gap:         -4px;
+}
+.rate-card-flag {
+  font-size:  1.5rem;
+  line-height: 1;
+}
+.rate-card-arrow {
+  color:      var(--mm-muted);
+  font-size:  0.85rem;
+}
+.rate-card-codes {
+  font-size:   var(--mm-text-sm);
+  font-weight: 700;
+  font-family: var(--mm-font-mono), var(--mm-font-sans);
+  color:       var(--mm-text);
+  letter-spacing: 0.04em;
+}
+.rate-card-rate {
+  font-size:   var(--mm-text-2xl);
+  font-weight: 700;
+  color:       var(--mm-text);
+  font-family: var(--mm-font-mono), var(--mm-font-sans);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.rate-card-inverse {
+  font-size: var(--mm-text-sm);
+  color:     var(--mm-muted);
+  margin-bottom: 12px;
+}
+.rate-card-meta {
+  display:         flex;
+  flex-wrap:       wrap;
+  gap:             6px 14px;
+  font-size:       0.7rem;
+  color:           var(--mm-muted);
+  border-top:      1px solid var(--mm-border-soft);
+  padding-top:     10px;
+  margin-top:      8px;
+}
+.rate-card-meta-item { display: flex; align-items: center; gap: 4px; }
+.rate-source-badge {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            3px;
+  font-size:      0.62rem;
+  font-weight:    600;
+  padding:        1px 6px;
+  border-radius:  var(--mm-radius-full);
+  letter-spacing: 0.04em;
+}
+.rate-source-manual    { background: var(--mm-info-light);    color: var(--mm-info);    }
+.rate-source-automatic { background: var(--mm-success-light); color: var(--mm-success); }
+.rate-source-estimated { background: var(--mm-warning-light); color: var(--mm-warning); }
+
+/* --------------------------------------------------------------------------
+   5. Currency Converter Panel
+   -------------------------------------------------------------------------- */
+.converter-panel {
+  background:    var(--mm-surface);
+  border:        1px solid var(--mm-border);
+  border-radius: var(--mm-radius-xl);
+  padding:       28px;
+  box-shadow:    var(--mm-shadow-sm);
+}
+.converter-panel .converter-row {
+  display:     flex;
+  align-items: flex-end;
+  gap:         12px;
+}
+.converter-field {
+  flex:        1;
+  min-width:   0;
+}
+.converter-field label {
+  display:       block;
+  font-size:     var(--mm-text-sm);
+  font-weight:   600;
+  color:         var(--mm-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.converter-field .form-control,
+.converter-field .form-select {
+  height:        48px;
+  font-size:     var(--mm-text-lg);
+  font-family:   var(--mm-font-mono), var(--mm-font-sans);
+  font-weight:   600;
+  border:        1.5px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  background:    var(--mm-surface-soft);
+  color:         var(--mm-text);
+  transition:    border-color var(--mm-duration-fast) var(--mm-ease),
+                 box-shadow   var(--mm-duration-fast) var(--mm-ease);
+}
+.converter-field .form-control:focus,
+.converter-field .form-select:focus {
+  border-color: var(--mm-primary);
+  box-shadow:   var(--mm-ring);
+  background:   var(--mm-surface);
+}
+.converter-swap-btn {
+  flex-shrink:   0;
+  width:         44px;
+  height:        44px;
+  border-radius: var(--mm-radius-full);
+  border:        1.5px solid var(--mm-border);
+  background:    var(--mm-surface);
+  color:         var(--mm-text);
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  font-size:     1rem;
+  cursor:        pointer;
+  transition:    all var(--mm-duration-base) var(--mm-ease-spring);
+  margin-bottom: 2px;
+}
+.converter-swap-btn:hover {
+  border-color: var(--mm-primary);
+  background:   var(--mm-primary-light);
+  color:        var(--mm-primary);
+  transform:    rotate(180deg);
+}
+
+.converter-result {
+  margin-top:    24px;
+  padding:       20px;
+  background:    var(--mm-primary-light);
+  border:        1px solid rgba(37,99,235,0.15);
+  border-radius: var(--mm-radius-lg);
+}
+html[data-theme="dark"] .converter-result {
+  background: rgba(96,165,250,0.08);
+  border-color: rgba(96,165,250,0.18);
+}
+.converter-result-amount {
+  font-size:   2rem;
+  font-weight: 700;
+  font-family: var(--mm-font-mono), var(--mm-font-sans);
+  color:       var(--mm-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.converter-result-rate {
+  font-size: var(--mm-text-sm);
+  color:     var(--mm-muted);
+}
+.converter-result-copy {
+  position:   absolute;
+  top:        12px;
+  right:      12px;
+  width:      30px;
+  height:     30px;
+  border:     1px solid var(--mm-border);
+  border-radius: var(--mm-radius);
+  background: var(--mm-surface);
+  color:      var(--mm-muted);
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  font-size:  0.8rem;
+  cursor:     pointer;
+  transition: all var(--mm-duration-fast) var(--mm-ease);
+}
+.converter-result-copy:hover {
+  border-color: var(--mm-primary);
+  color:        var(--mm-primary);
+  background:   var(--mm-primary-light);
+}
+[dir="rtl"] .converter-result-copy { right: auto; left: 12px; }
+
+/* --------------------------------------------------------------------------
+   6. Statistics Cards (exchange rate page top strip)
+   -------------------------------------------------------------------------- */
+.stat-card {
+  background:    var(--mm-surface);
+  border:        1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding:       18px 20px;
+  display:       flex;
+  align-items:   center;
+  gap:           14px;
+}
+.stat-card-icon {
+  width:          44px;
+  height:         44px;
+  border-radius:  var(--mm-radius);
+  display:        flex;
+  align-items:    center;
+  justify-content: center;
+  font-size:      1.1rem;
+  flex-shrink:    0;
+}
+.stat-card-icon-blue   { background: var(--mm-primary-light); color: var(--mm-primary);   }
+.stat-card-icon-green  { background: var(--mm-success-light); color: var(--mm-success);   }
+.stat-card-icon-amber  { background: var(--mm-warning-light); color: var(--mm-warning);   }
+.stat-card-icon-info   { background: var(--mm-info-light);    color: var(--mm-info);      }
+.stat-card-value {
+  font-size:   1.4rem;
+  font-weight: 700;
+  font-family: var(--mm-font-mono), var(--mm-font-sans);
+  color:       var(--mm-text);
+  line-height: 1.1;
+}
+.stat-card-label {
+  font-size: var(--mm-text-sm);
+  color:     var(--mm-muted);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Set Manual Rate Form
+   -------------------------------------------------------------------------- */
+.set-rate-form {
+  background:    var(--mm-surface);
+  border:        1px solid var(--mm-border);
+  border-radius: var(--mm-radius-xl);
+  padding:       24px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Currency Settings Section
+   -------------------------------------------------------------------------- */
+.currency-settings-preview {
+  background:    var(--mm-surface-soft);
+  border:        1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding:       16px 20px;
+  font-size:     var(--mm-text-lg);
+  font-weight:   700;
+  font-family:   var(--mm-font-mono), var(--mm-font-sans);
+  color:         var(--mm-text);
+  min-height:    56px;
+  display:       flex;
+  align-items:   center;
+  gap:           12px;
+  letter-spacing: -0.01em;
+}
+.currency-settings-preview .preview-label {
+  font-size:   var(--mm-text-sm);
+  font-weight: 400;
+  font-family: var(--mm-font-sans);
+  color:       var(--mm-muted);
+  margin-bottom: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   9. Display currency indicator (shown on KPI cards when conversion active)
+   -------------------------------------------------------------------------- */
+.display-currency-indicator {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            5px;
+  font-size:      0.68rem;
+  color:          var(--mm-muted);
+  font-family:    var(--mm-font-mono), var(--mm-font-sans);
+  letter-spacing: 0.04em;
+  margin-inline-start: 6px;
+}
+.display-currency-indicator .dci-dot {
+  width:  5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mm-primary);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   10. Dark mode adjustments
+   -------------------------------------------------------------------------- */
+html[data-theme="dark"] .currency-switcher-btn {
+  border-color: var(--mm-border);
+  background:   var(--mm-surface);
+}
+html[data-theme="dark"] .currency-switcher-btn:hover {
+  background: var(--mm-primary-light);
+}
+html[data-theme="dark"] .currency-dropdown,
+html[data-theme="dark"] .converter-panel,
+html[data-theme="dark"] .rate-card,
+html[data-theme="dark"] .set-rate-form,
+html[data-theme="dark"] .stat-card {
+  background:   var(--mm-surface);
+  border-color: var(--mm-border);
+}
+html[data-theme="dark"] .cs-search-input {
+  background: var(--mm-surface-soft);
+  color:      var(--mm-text);
+}
+
+/* --------------------------------------------------------------------------
+   11. RTL fixes
+   -------------------------------------------------------------------------- */
+[dir="rtl"] .cs-item       { text-align: right; }
+[dir="rtl"] .cs-footer-link { flex-direction: row-reverse; }
+[dir="rtl"] .rate-card-pair { flex-direction: row-reverse; }
+[dir="rtl"] .converter-row  { flex-direction: row-reverse; }
+[dir="rtl"] .stat-card       { flex-direction: row-reverse; }
+
+/* --------------------------------------------------------------------------
+   12. Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 576px) {
+  .currency-dropdown  { width: 280px; right: -8px; }
+  .converter-panel    { padding: 18px 14px; }
+  .converter-row      { flex-direction: column; gap: 8px; }
+  .converter-swap-btn { width: 38px; height: 38px; align-self: center; }
+}
