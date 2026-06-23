@@ -18,6 +18,7 @@ import {
   getDisplayCurrency, setDisplayCurrency,
   getCurrencyList, initCurrency, currencyFlag,
 } from '../core/currency.js';
+import { WorkspaceService } from '../services/workspace-service.js';
 
 /* --------------------------------------------------------------------------
    Navigation item definitions
@@ -34,6 +35,7 @@ const NAV_ITEMS = [
   { key: 'receipts',               path: Config.ROUTES.RECEIPTS,               icon: 'file-earmark-image',   i18nKey: 'nav.receipts' },
   { key: 'financial_intelligence',path: Config.ROUTES.FINANCIAL_INTELLIGENCE,icon: 'lightbulb',            i18nKey: 'nav.financial_intelligence' },
   { key: 'reports',               path: Config.ROUTES.REPORTS,               icon: 'file-earmark-bar-graph', i18nKey: 'nav.reports' },
+  { key: 'workspace',             path: Config.ROUTES.WORKSPACE_DASHBOARD,   icon: 'grid-1x2',             i18nKey: 'nav.workspace', dividerBefore: true },
   { key: 'profile',               path: Config.ROUTES.PROFILE,               icon: 'person-badge',         i18nKey: 'nav.profile' },
   { key: 'settings',              path: Config.ROUTES.SETTINGS,              icon: 'gear',                 i18nKey: 'nav.settings' },
 ];
@@ -95,9 +97,10 @@ function _isActivePath(itemPath) {
    HTML builders
    -------------------------------------------------------------------------- */
 function _buildNavItems() {
-  return NAV_ITEMS.map(({ path, icon, i18nKey }) => {
+  return NAV_ITEMS.map(({ path, icon, i18nKey, dividerBefore }) => {
     const isActive = _isActivePath(path);
-    return `
+    const divider  = dividerBefore ? '<hr class="sidebar-divider" aria-hidden="true">' : '';
+    return `${divider}
       <a class="nav-link${isActive ? ' active' : ''}" href="${path}"${isActive ? ' aria-current="page"' : ''}>
         <span class="nav-icon"><i class="bi bi-${icon}" aria-hidden="true"></i></span>
         <span class="nav-text" data-i18n="${i18nKey}">${t(i18nKey)}</span>
@@ -129,6 +132,48 @@ function _buildSidebar() {
     </aside>`;
 }
 
+function _buildWorkspaceSwitcher() {
+  const ctx = _loadWorkspaceContext();
+  const name  = ctx?.workspaceName || t('workspace.personal_mode');
+  const color = ctx?.color || '#2563eb';
+  const initial = name.trim().charAt(0).toUpperCase();
+
+  return `
+    <div class="ws-switcher-wrap" id="wsSwitcherWrap">
+      <button class="ws-switcher-btn" type="button"
+              id="wsSwitcherBtn"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-label="${t('workspace.switcher_aria')}">
+        <span class="ws-dot" id="wsDot" style="background:${color}"></span>
+        <span class="ws-switcher-name" id="wsName">${name}</span>
+        <i class="bi bi-chevron-down ws-switcher-caret" aria-hidden="true"></i>
+      </button>
+      <div class="ws-dropdown d-none" id="wsDropdown" role="listbox"
+           aria-label="${t('workspace.switcher_aria')}">
+        <div class="ws-dropdown-header" data-i18n="workspace.switcher_header">${t('workspace.switcher_header')}</div>
+        <div class="ws-dropdown-list" id="wsDropdownList"></div>
+        <div class="ws-dropdown-actions">
+          <a class="ws-dropdown-action" href="${Config.ROUTES.WORKSPACE_DASHBOARD}">
+            <i class="bi bi-grid-1x2" aria-hidden="true"></i>
+            <span data-i18n="workspace.manage">${t('workspace.manage')}</span>
+          </a>
+          <button class="ws-dropdown-action" type="button" id="wsCreateBtn">
+            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+            <span data-i18n="workspace.create_new">${t('workspace.create_new')}</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function _loadWorkspaceContext() {
+  try {
+    const raw = localStorage.getItem(Config.STORAGE_KEYS.WORKSPACE_CONTEXT);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
 function _buildNavbar(user) {
   const userName   = user?.displayName || t('layout.user_placeholder');
   const avatarSrc  = user?.profileImageUrl || '/assets/images/avatar/avatar.jpg';
@@ -148,6 +193,8 @@ function _buildNavbar(user) {
         </button>
 
         <div class="navbar-actions ms-auto">
+          ${_buildWorkspaceSwitcher()}
+
           <button class="icon-button lang-switch-btn" type="button"
                   data-lang-switch
                   data-i18n="layout.lang_switch_label"
@@ -324,6 +371,9 @@ function _wireEvents() {
 
   /* Currency switcher */
   _wireCurrencySwitcher();
+
+  /* Workspace switcher */
+  _wireWorkspaceSwitcher();
 }
 
 /* --------------------------------------------------------------------------
@@ -487,6 +537,139 @@ function _wireCurrencySwitcher() {
   document.addEventListener('mm-currencies-loaded', () => {
     if (_open) _renderCurrencyDropdown(search?.value || '');
   });
+}
+
+/* --------------------------------------------------------------------------
+   Workspace switcher logic
+   -------------------------------------------------------------------------- */
+const WS_COLORS = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#6366f1','#db2777'];
+
+function _wsInitials(name) {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  return parts.length > 1
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
+    : name.trim().charAt(0).toUpperCase();
+}
+
+function _buildWsItems(workspaces, currentId) {
+  if (!workspaces?.length) {
+    return `<div style="padding:0.75rem 1rem;font-size:0.8125rem;color:var(--mm-muted)" data-i18n="workspace.no_workspaces">${t('workspace.no_workspaces')}</div>`;
+  }
+  return workspaces.map(ws => {
+    const color   = ws.color || WS_COLORS[ws.workspaceId % WS_COLORS.length];
+    const init    = _wsInitials(ws.name);
+    const isActive = ws.workspaceId === currentId;
+    return `
+      <button class="ws-item${isActive ? ' active' : ''}" type="button"
+              role="option" aria-selected="${isActive}"
+              data-ws-id="${ws.workspaceId}" data-ws-color="${color}"
+              data-ws-name="${ws.name}">
+        <span class="ws-item-dot" style="background:${color}">${init}</span>
+        <span class="ws-item-body">
+          <span class="ws-item-name">${ws.name}</span>
+          <span class="ws-item-meta">${ws.memberCount ?? ''} ${ws.memberCount != null ? t('workspace.members_count') : ''}</span>
+        </span>
+        ${isActive ? '<i class="bi bi-check2 ws-item-check" aria-hidden="true"></i>' : ''}
+      </button>`;
+  }).join('');
+}
+
+function _wireWorkspaceSwitcher() {
+  const btn      = document.getElementById('wsSwitcherBtn');
+  const dropdown = document.getElementById('wsDropdown');
+  const listWrap = document.getElementById('wsDropdownList');
+  const wrap     = document.getElementById('wsSwitcherWrap');
+  const createBtn = document.getElementById('wsCreateBtn');
+  if (!btn || !dropdown) return;
+
+  let _open = false;
+  let _wsLoaded = false;
+
+  function openDropdown() {
+    if (_open) return;
+    _open = true;
+    dropdown.classList.remove('d-none');
+    btn.setAttribute('aria-expanded', 'true');
+    if (!_wsLoaded) {
+      _wsLoaded = true;
+      _loadWsList();
+    }
+  }
+
+  function closeDropdown() {
+    if (!_open) return;
+    _open = false;
+    dropdown.classList.add('d-none');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  async function _loadWsList() {
+    if (listWrap) listWrap.innerHTML = `<div style="padding:0.75rem 1rem;font-size:0.8125rem;color:var(--mm-muted)">${t('common.loading')}</div>`;
+    try {
+      const ctx = _loadWorkspaceContext();
+      const currentId = ctx?.currentWorkspaceId ?? null;
+      const list = await WorkspaceService.getList();
+      if (listWrap) listWrap.innerHTML = _buildWsItems(list, currentId);
+    } catch {
+      if (listWrap) listWrap.innerHTML = `<div style="padding:0.75rem 1rem;font-size:0.8125rem;color:var(--mm-danger)">${t('errors.server')}</div>`;
+    }
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    _open ? closeDropdown() : openDropdown();
+  });
+
+  dropdown.addEventListener('click', async (e) => {
+    const item = e.target.closest('[data-ws-id]');
+    if (!item) return;
+    const wsId  = Number(item.dataset.wsId) || null;
+    const color = item.dataset.wsColor || '#2563eb';
+    const name  = item.dataset.wsName  || '';
+    closeDropdown();
+    try {
+      await WorkspaceService.switchWorkspace(wsId);
+      // Update navbar display
+      const dot  = document.getElementById('wsDot');
+      const nm   = document.getElementById('wsName');
+      if (dot) dot.style.background = color;
+      if (nm)  nm.textContent = name;
+      // Notify page
+      document.dispatchEvent(new CustomEvent('mm-workspace-change', {
+        detail: { workspaceId: wsId, name, color },
+      }));
+    } catch { /* silently ignore — non-fatal */ }
+  });
+
+  createBtn?.addEventListener('click', () => {
+    closeDropdown();
+    window.location.href = Config.ROUTES.WORKSPACE_DASHBOARD + '?action=create';
+  });
+
+  document.addEventListener('click', (e) => {
+    if (_open && !wrap?.contains(e.target)) closeDropdown();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && _open) { closeDropdown(); btn.focus(); }
+  });
+
+  // When workspace context changes from another source, sync the button
+  document.addEventListener('mm-workspace-change', (e) => {
+    const dot = document.getElementById('wsDot');
+    const nm  = document.getElementById('wsName');
+    if (dot && e.detail?.color) dot.style.background = e.detail.color;
+    if (nm  && e.detail?.name)  nm.textContent = e.detail.name;
+  });
+
+  // Load context to display current workspace on first render
+  WorkspaceService.getContext().then(ctx => {
+    if (!ctx) return;
+    const dot = document.getElementById('wsDot');
+    const nm  = document.getElementById('wsName');
+    if (dot && ctx.color) dot.style.background = ctx.color;
+    if (nm)  nm.textContent = ctx.workspaceName || t('workspace.personal_mode');
+  }).catch(() => { /* non-fatal */ });
 }
 
 /* --------------------------------------------------------------------------

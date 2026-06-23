@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="workspace.accept_page_title">قبول الدعوة | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/workspace.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body class="d-flex align-items-center justify-content-center min-vh-100" style="background:var(--mm-body-bg)">
+
+  <div class="ws-accept-page w-100 px-3" style="max-width:480px">
+
+    <!-- Logo -->
+    <div class="text-center mb-4">
+      <img src="/assets/images/logo/logo.svg" alt="MyMoney" height="40" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Loading state -->
+    <div class="ws-accept-card text-center" id="acceptLoading">
+      <div class="ws-accept-icon mb-3">
+        <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem">
+          <span class="visually-hidden" data-i18n="workspace.loading">جاري التحميل...</span>
+        </div>
+      </div>
+      <p class="text-muted" data-i18n="workspace.accept_loading">جاري التحقق من الدعوة...</p>
+    </div>
+
+    <!-- Valid invitation -->
+    <div class="ws-accept-card d-none" id="acceptValid">
+      <!-- Workspace color stripe (injected by JS) -->
+      <div class="ws-settings-stripe" id="acceptColorStripe" style="background:#2563eb"></div>
+
+      <div class="text-center mb-4 pt-2">
+        <div class="ws-accept-icon mb-3">
+          <div class="ws-page-logo mx-auto" id="acceptWsLogo" style="width:64px;height:64px;font-size:1.5rem"></div>
+        </div>
+        <h5 class="fw-bold mb-1" id="acceptWsName">—</h5>
+        <p class="text-muted small mb-0" id="acceptWsType">—</p>
+      </div>
+
+      <div class="border rounded-3 p-3 mb-4" style="background:var(--mm-surface-2)">
+        <p class="mb-2 small text-muted" data-i18n="workspace.accept_invited_by">تمت دعوتك بواسطة</p>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="ws-member-avatar-initials flex-shrink-0" id="acceptInviterInitials" style="width:36px;height:36px;font-size:.8rem"></div>
+          <div>
+            <div class="fw-semibold small" id="acceptInviterName">—</div>
+            <div class="text-muted" style="font-size:.78rem" id="acceptInviterEmail">—</div>
+          </div>
+        </div>
+        <p class="mb-2 small text-muted" data-i18n="workspace.accept_your_role">دورك المُسند</p>
+        <span class="ws-role-badge" id="acceptRoleBadge">—</span>
+      </div>
+
+      <!-- Permission preview -->
+      <div class="mb-4">
+        <p class="fw-semibold small mb-2" data-i18n="workspace.invite_perm_preview_title">ستتمكن من</p>
+        <div id="acceptPermGrid" class="row g-2 small"></div>
+      </div>
+
+      <p class="text-muted small text-center mb-4">
+        <i class="bi bi-clock me-1" aria-hidden="true"></i>
+        <span data-i18n="workspace.accept_expires">تنتهي صلاحية هذه الدعوة في</span>
+        <strong id="acceptExpiry">—</strong>
+      </p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary btn-lg" id="acceptBtn" type="button">
+          <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+          <span data-i18n="workspace.accept_btn">قبول الدعوة والانضمام</span>
+        </button>
+        <button class="btn btn-outline-secondary" id="rejectBtn" type="button" data-i18n="workspace.reject_btn">رفض الدعوة</button>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div class="ws-accept-card text-center d-none" id="acceptSuccess">
+      <div class="ws-accept-icon ws-accept-icon-success mb-3">
+        <i class="bi bi-check-circle-fill" style="font-size:3rem;color:var(--bs-success)" aria-hidden="true"></i>
+      </div>
+      <h5 class="fw-bold mb-2" data-i18n="workspace.accept_success_title">مرحباً بك في مساحة العمل!</h5>
+      <p class="text-muted mb-4" data-i18n="workspace.accept_success_body">انضممت بنجاح. يمكنك الآن التعاون مع أعضاء الفريق.</p>
+      <a class="btn btn-primary" href="/pages/workspaces/dashboard.html" data-i18n="workspace.accept_go_dashboard">الذهاب إلى لوحة التحكم</a>
+    </div>
+
+    <!-- Rejected state -->
+    <div class="ws-accept-card text-center d-none" id="acceptRejected">
+      <div class="ws-accept-icon mb-3">
+        <i class="bi bi-x-circle-fill" style="font-size:3rem;color:var(--bs-secondary)" aria-hidden="true"></i>
+      </div>
+      <h5 class="fw-bold mb-2" data-i18n="workspace.reject_done_title">تم رفض الدعوة</h5>
+      <p class="text-muted mb-4" data-i18n="workspace.reject_done_body">رفضت الانضمام إلى مساحة العمل. يمكن للمرسل إعادة دعوتك في أي وقت.</p>
+      <a class="btn btn-outline-secondary" href="/pages/dashboard/index.html" data-i18n="workspace.go_home">العودة للرئيسية</a>
+    </div>
+
+    <!-- Error: expired -->
+    <div class="ws-accept-card text-center d-none" id="acceptExpired">
+      <div class="ws-accept-icon mb-3">
+        <i class="bi bi-hourglass-bottom" style="font-size:3rem;color:var(--bs-warning)" aria-hidden="true"></i>
+      </div>
+      <h5 class="fw-bold mb-2" data-i18n="workspace.accept_expired_title">انتهت صلاحية الدعوة</h5>
+      <p class="text-muted mb-4" data-i18n="workspace.accept_expired_body">انتهت مدة هذه الدعوة. اطلب من المرسل إعادة إرسال دعوة جديدة.</p>
+      <a class="btn btn-outline-secondary" href="/pages/dashboard/index.html" data-i18n="workspace.go_home">العودة للرئيسية</a>
+    </div>
+
+    <!-- Error: invalid -->
+    <div class="ws-accept-card text-center d-none" id="acceptInvalid">
+      <div class="ws-accept-icon mb-3">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size:3rem;color:var(--bs-danger)" aria-hidden="true"></i>
+      </div>
+      <h5 class="fw-bold mb-2" data-i18n="workspace.accept_invalid_title">رابط غير صالح</h5>
+      <p class="text-muted mb-4" data-i18n="workspace.accept_invalid_body">هذا الرابط غير صحيح أو تم استخدامه مسبقاً. تحقق من البريد الإلكتروني أو اطلب دعوة جديدة.</p>
+      <a class="btn btn-outline-secondary" href="/pages/dashboard/index.html" data-i18n="workspace.go_home">العودة للرئيسية</a>
+    </div>
+
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/workspace-accept.js"></script>
+</body>
+</html>

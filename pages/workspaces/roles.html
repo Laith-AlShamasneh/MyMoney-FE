@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="workspace.roles_page_title">الأدوار والصلاحيات | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/currency.css">
+  <link rel="stylesheet" href="/assets/css/workspace.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-shield-lock" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="workspace.roles_eyebrow">مساحة العمل</p>
+                <h1 class="h3 mb-1" data-i18n="workspace.roles_heading">الأدوار والصلاحيات</h1>
+                <p class="text-muted mb-0" data-i18n="workspace.roles_subheading">مصفوفة الصلاحيات الكاملة لكل دور في مساحة العمل.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Role cards overview -->
+          <div class="row g-3 mb-4" id="roleCardsRow">
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-owner" data-i18n="workspace.role_owner">المالك</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_owner_desc">تحكم كامل في مساحة العمل وجميع الموارد. لا يمكن إزالته.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-admin" data-i18n="workspace.role_admin">المدير</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_admin_desc">صلاحيات كاملة ما عدا حذف مساحة العمل أو تغيير المالك.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-manager" data-i18n="workspace.role_manager">المشرف</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_manager_desc">يدير المحتوى المالي ولا يملك صلاحيات إدارية على الأعضاء.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-accountant" data-i18n="workspace.role_accountant">المحاسب</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_accountant_desc">متخصص في المعاملات والتقارير والميزانيات المالية.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-viewer" data-i18n="workspace.role_viewer">المشاهد</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_viewer_desc">قراءة فقط لجميع البيانات المالية دون صلاحيات تعديل.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-auditor" data-i18n="workspace.role_auditor">المدقق</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_auditor_desc">يراجع سجلات التدقيق والمعاملات لأغراض الامتثال.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ws-role-badge ws-role-guest" data-i18n="workspace.role_guest">الضيف</span>
+                  </div>
+                  <p class="small text-muted mb-0" data-i18n="workspace.role_guest_desc">وصول محدود جداً للعرض العام فقط.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="d-flex align-items-center gap-4 mb-3 small text-muted px-1">
+            <span><i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i><span data-i18n="workspace.perm_allowed">مسموح</span></span>
+            <span><i class="bi bi-x-circle-fill text-danger me-1" aria-hidden="true"></i><span data-i18n="workspace.perm_denied">محظور</span></span>
+          </div>
+
+          <!-- Permission Matrix -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent border-bottom pt-3 px-4">
+              <h5 class="mb-0 fw-semibold" data-i18n="workspace.perm_matrix_title">مصفوفة الصلاحيات</h5>
+            </div>
+            <div class="card-body p-0">
+              <!-- Skeleton -->
+              <div id="matrixSkeleton" class="p-4">
+                <div class="ws-skeleton mb-3" style="height:16px;width:30%"></div>
+                <div class="ws-skeleton mb-2" style="height:13px;width:80%"></div>
+                <div class="ws-skeleton mb-2" style="height:13px;width:75%"></div>
+                <div class="ws-skeleton mb-4" style="height:13px;width:70%"></div>
+                <div class="ws-skeleton mb-3" style="height:16px;width:25%"></div>
+                <div class="ws-skeleton mb-2" style="height:13px;width:80%"></div>
+                <div class="ws-skeleton" style="height:13px;width:65%"></div>
+              </div>
+
+              <!-- Actual matrix (rendered by JS) -->
+              <div class="table-responsive d-none" id="matrixWrap">
+                <table class="table ws-matrix-table align-middle mb-0" id="permMatrix">
+                  <thead class="table-light sticky-top">
+                    <tr id="matrixHeaderRow">
+                      <th class="px-4 py-3" style="min-width:220px" data-i18n="workspace.col_permission">الصلاحية</th>
+                      <!-- Role columns injected by JS -->
+                    </tr>
+                  </thead>
+                  <tbody id="matrixBody">
+                    <!-- Section rows + perm rows injected by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- My permissions (current user's role) -->
+          <div class="card border-0 shadow-sm d-none" id="myPermsCard">
+            <div class="card-header bg-transparent border-bottom pt-3 px-4 d-flex align-items-center gap-2">
+              <h5 class="mb-0 fw-semibold" data-i18n="workspace.my_perms_title">صلاحياتي</h5>
+              <span class="ws-role-badge" id="myRoleBadge"></span>
+            </div>
+            <div class="card-body px-4 py-3">
+              <div id="myPermsGrid" class="row g-3"></div>
+            </div>
+          </div>
+
+        </div><!-- /container -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/workspace-roles.js"></script>
+</body>
+</html>

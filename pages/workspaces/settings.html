@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="workspace.settings_page_title">إعدادات مساحة العمل | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/currency.css">
+  <link rel="stylesheet" href="/assets/css/workspace.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-gear" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="workspace.settings_eyebrow">مساحة العمل</p>
+                <h1 class="h3 mb-1" data-i18n="workspace.settings_heading">الإعدادات</h1>
+                <p class="text-muted mb-0" data-i18n="workspace.settings_subheading">تخصيص مساحة العمل وضبط التفضيلات.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Permission guard -->
+          <div class="alert alert-warning d-flex gap-2 align-items-center d-none" id="noEditPermAlert" role="alert">
+            <i class="bi bi-lock flex-shrink-0" aria-hidden="true"></i>
+            <span data-i18n="workspace.settings_readonly_notice">أنت في وضع القراءة فقط. تواصل مع مالك مساحة العمل لتعديل الإعدادات.</span>
+          </div>
+
+          <div class="row g-4" id="settingsContent">
+
+            <!-- General settings -->
+            <div class="col-12 col-lg-8">
+              <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent border-bottom pt-3 px-4">
+                  <h5 class="mb-0 fw-semibold" data-i18n="workspace.settings_general_title">الإعدادات العامة</h5>
+                </div>
+                <div class="card-body px-4 py-3">
+
+                  <!-- Color stripe -->
+                  <div class="ws-settings-stripe mb-4" id="wsSettingsStripe" style="background:#2563eb"></div>
+
+                  <!-- Skeleton -->
+                  <div id="settingsSkeleton">
+                    <div class="ws-skeleton mb-3" style="height:14px;width:25%"></div>
+                    <div class="ws-skeleton mb-4" style="height:38px;width:100%"></div>
+                    <div class="ws-skeleton mb-3" style="height:14px;width:20%"></div>
+                    <div class="ws-skeleton mb-4" style="height:72px;width:100%"></div>
+                    <div class="ws-skeleton mb-3" style="height:14px;width:15%"></div>
+                    <div class="ws-skeleton" style="height:38px;width:60%"></div>
+                  </div>
+
+                  <form id="settingsForm" class="d-none" novalidate>
+                    <!-- Name -->
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold" for="settingNameInput" data-i18n="workspace.name_label">اسم مساحة العمل</label>
+                      <input type="text" class="form-control" id="settingNameInput" maxlength="100" required>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold" for="settingDescInput" data-i18n="workspace.desc_label">الوصف</label>
+                      <textarea class="form-control" id="settingDescInput" rows="3" maxlength="500"></textarea>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold" data-i18n="workspace.type_label">النوع</label>
+                      <div class="ws-type-grid" id="settingTypeGrid">
+                        <button type="button" class="ws-type-option" data-type-id="1">
+                          <span class="ws-type-icon">👤</span>
+                          <span class="ws-type-name" data-i18n="workspace.type_personal">شخصية</span>
+                        </button>
+                        <button type="button" class="ws-type-option" data-type-id="2">
+                          <span class="ws-type-icon">👨‍👩‍👧</span>
+                          <span class="ws-type-name" data-i18n="workspace.type_family">عائلية</span>
+                        </button>
+                        <button type="button" class="ws-type-option" data-type-id="3">
+                          <span class="ws-type-icon">🏢</span>
+                          <span class="ws-type-name" data-i18n="workspace.type_business">تجارية</span>
+                        </button>
+                        <button type="button" class="ws-type-option" data-type-id="4">
+                          <span class="ws-type-icon">👥</span>
+                          <span class="ws-type-name" data-i18n="workspace.type_team">فريق</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Color -->
+                    <div class="mb-4">
+                      <label class="form-label fw-semibold" data-i18n="workspace.color_label">اللون</label>
+                      <div class="ws-color-swatch-grid" id="settingColorSwatches">
+                        <button type="button" class="ws-color-swatch" data-color="#2563eb" style="background:#2563eb"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#7c3aed" style="background:#7c3aed"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#059669" style="background:#059669"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#d97706" style="background:#d97706"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#dc2626" style="background:#dc2626"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#0891b2" style="background:#0891b2"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#6366f1" style="background:#6366f1"></button>
+                        <button type="button" class="ws-color-swatch" data-color="#db2777" style="background:#db2777"></button>
+                      </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn btn-primary" id="saveSettingsBtn" data-i18n="workspace.save_btn">حفظ التغييرات</button>
+                      <button type="button" class="btn btn-outline-secondary" id="cancelSettingsBtn" data-i18n="workspace.cancel_btn">إلغاء</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Leave workspace -->
+              <div class="card border-0 shadow-sm" id="leaveWsCard">
+                <div class="card-header bg-transparent border-bottom pt-3 px-4">
+                  <h5 class="mb-0 fw-semibold text-warning" data-i18n="workspace.leave_section_title">مغادرة مساحة العمل</h5>
+                </div>
+                <div class="card-body px-4 py-3">
+                  <p class="text-muted small mb-3" data-i18n="workspace.leave_desc">عند مغادرة مساحة العمل ستفقد الوصول إلى جميع بياناتها. يمكن للمالك إعادة دعوتك لاحقاً.</p>
+                  <button class="btn btn-outline-warning" id="leaveWsBtn" type="button" data-i18n="workspace.leave_btn">مغادرة مساحة العمل</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sidebar info -->
+            <div class="col-12 col-lg-4">
+              <!-- Workspace identity card -->
+              <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body text-center py-4">
+                  <div class="ws-page-logo mx-auto mb-3" id="wsIdentityLogo" style="width:64px;height:64px;font-size:1.5rem"></div>
+                  <h6 class="fw-bold mb-1" id="wsIdentityName">—</h6>
+                  <p class="text-muted small mb-2" id="wsIdentityType">—</p>
+                  <span class="ws-role-badge" id="wsIdentityRole">—</span>
+                </div>
+              </div>
+
+              <!-- Danger zone (owner only) -->
+              <div class="card border-danger shadow-sm d-none" id="dangerZoneCard">
+                <div class="card-header bg-transparent border-bottom border-danger pt-3 px-4">
+                  <h5 class="mb-0 fw-semibold text-danger" data-i18n="workspace.danger_zone_title">منطقة الخطر</h5>
+                </div>
+                <div class="card-body px-4 py-3">
+                  <p class="text-muted small mb-3" data-i18n="workspace.delete_desc">سيُحذف جميع المحتوى والأعضاء والسجلات بشكل نهائي. لا يمكن التراجع.</p>
+                  <button class="btn btn-danger w-100" id="deleteWsBtn" type="button" data-i18n="workspace.delete_btn">حذف مساحة العمل</button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /row -->
+
+        </div><!-- /container -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- Leave confirmation -->
+  <div class="modal fade" id="leaveModal" tabindex="-1" aria-labelledby="leaveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="leaveModalLabel" data-i18n="workspace.leave_confirm_title">تأكيد المغادرة</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <p class="text-muted" data-i18n="workspace.leave_confirm_body">هل أنت متأكد أنك تريد مغادرة مساحة العمل؟ ستفقد الوصول إليها فوراً.</p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-warning" id="leaveConfirmBtn" data-i18n="workspace.leave_btn">مغادرة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-danger" id="deleteModalLabel" data-i18n="workspace.delete_confirm_title">حذف مساحة العمل</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <p class="text-muted mb-3" data-i18n="workspace.delete_confirm_body">هذا الإجراء لا يمكن التراجع عنه. اكتب اسم مساحة العمل للتأكيد.</p>
+          <input type="text" class="form-control" id="deleteConfirmInput" data-i18n-placeholder="workspace.delete_confirm_ph" placeholder="اكتب الاسم هنا...">
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-danger" id="deleteConfirmBtn" disabled data-i18n="workspace.delete_btn">حذف نهائياً</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/workspace-settings.js"></script>
+</body>
+</html>

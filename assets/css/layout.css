@@ -105,6 +105,13 @@ html[data-theme="dark"] .sidebar-header {
   padding: 1.1rem 1rem;
 }
 
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--mm-sidebar-border, rgba(255,255,255,.1));
+  margin: 0.25rem 0.5rem;
+  opacity: 1;
+}
+
 .sidebar-nav .nav-link {
   display: flex;
   align-items: center;

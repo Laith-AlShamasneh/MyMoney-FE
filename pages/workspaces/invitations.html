@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="workspace.invitations_page_title">الدعوات | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/currency.css">
+  <link rel="stylesheet" href="/assets/css/workspace.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-envelope-paper" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="workspace.invitations_eyebrow">مساحة العمل</p>
+                <h1 class="h3 mb-1" data-i18n="workspace.invitations_heading">الدعوات</h1>
+                <p class="text-muted mb-0" data-i18n="workspace.invitations_subheading">تتبع الدعوات المرسلة وإدارتها.</p>
+              </div>
+            </div>
+            <div class="page-heading-actions">
+              <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#inviteModal">
+                <i class="bi bi-person-plus" aria-hidden="true"></i>
+                <span data-i18n="workspace.invite_btn">دعوة عضو</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Status tabs -->
+          <ul class="nav nav-tabs mb-3" id="invStatusTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="tab-all" data-bs-toggle="tab" data-bs-target="#tabAll" type="button" role="tab">
+                <span data-i18n="workspace.filter_all_status">الكل</span>
+                <span class="badge bg-secondary ms-1" id="invCountAll">—</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="tab-pending" data-bs-toggle="tab" data-bs-target="#tabPending" type="button" role="tab">
+                <span data-i18n="workspace.inv_status_pending">معلقة</span>
+                <span class="badge bg-warning text-dark ms-1" id="invCountPending">—</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="tab-accepted" data-bs-toggle="tab" data-bs-target="#tabAccepted" type="button" role="tab">
+                <span data-i18n="workspace.inv_status_accepted">مقبولة</span>
+                <span class="badge bg-success ms-1" id="invCountAccepted">—</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="tab-rejected" data-bs-toggle="tab" data-bs-target="#tabRejected" type="button" role="tab">
+                <span data-i18n="workspace.inv_status_rejected">مرفوضة</span>
+                <span class="badge bg-danger ms-1" id="invCountRejected">—</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="tab-expired" data-bs-toggle="tab" data-bs-target="#tabExpired" type="button" role="tab">
+                <span data-i18n="workspace.inv_status_expired">منتهية</span>
+                <span class="badge bg-secondary ms-1" id="invCountExpired">—</span>
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab content -->
+          <div class="tab-content" id="invTabContent">
+            <div class="tab-pane fade show active" id="tabAll" role="tabpanel">
+              <div id="invListAll"></div>
+            </div>
+            <div class="tab-pane fade" id="tabPending" role="tabpanel">
+              <div id="invListPending"></div>
+            </div>
+            <div class="tab-pane fade" id="tabAccepted" role="tabpanel">
+              <div id="invListAccepted"></div>
+            </div>
+            <div class="tab-pane fade" id="tabRejected" role="tabpanel">
+              <div id="invListRejected"></div>
+            </div>
+            <div class="tab-pane fade" id="tabExpired" role="tabpanel">
+              <div id="invListExpired"></div>
+            </div>
+          </div>
+
+          <!-- Shared: Table card (rendered once, moved by JS) -->
+          <div id="invTableCard" class="card border-0 shadow-sm d-none">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="invTable">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="px-4 py-3" data-i18n="workspace.col_email">البريد الإلكتروني</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_role">الدور</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_inv_status">الحالة</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_sent">تاريخ الإرسال</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_expires">تاريخ الانتهاء</th>
+                      <th class="px-3 py-3 text-center" data-i18n="workspace.col_actions">إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="invTableBody">
+                    <!-- Skeleton -->
+                    <tr class="ws-skeleton-row"><td class="px-4 py-3" colspan="6"><div class="ws-skeleton" style="height:14px;width:70%"></div></td></tr>
+                    <tr class="ws-skeleton-row"><td class="px-4 py-3" colspan="6"><div class="ws-skeleton" style="height:14px;width:60%"></div></td></tr>
+                    <tr class="ws-skeleton-row"><td class="px-4 py-3" colspan="6"><div class="ws-skeleton" style="height:14px;width:55%"></div></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Empty state -->
+              <div class="ws-empty d-none" id="invEmpty" style="padding:2.5rem">
+                <div class="ws-empty-icon"><i class="bi bi-envelope" aria-hidden="true"></i></div>
+                <div class="ws-empty-title" data-i18n="workspace.invitations_empty_title">لا توجد دعوات</div>
+                <div class="ws-empty-desc" data-i18n="workspace.invitations_empty_desc">ادعُ أعضاء جدداً للانضمام إلى مساحة العمل.</div>
+                <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#inviteModal" data-i18n="workspace.invite_btn">دعوة عضو</button>
+              </div>
+
+              <!-- Pagination -->
+              <div class="d-flex align-items-center justify-content-between px-4 py-3 border-top d-none" id="invPagination">
+                <span class="text-muted small" id="invPageInfo"></span>
+                <div class="d-flex gap-1">
+                  <button class="btn btn-sm btn-outline-secondary" id="invPrevBtn" disabled>
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" id="invNextBtn" disabled>
+                    <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /container -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- Invite Member Modal (same as members page) -->
+  <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabelInv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="inviteModalLabelInv" data-i18n="workspace.invite_title">دعوة عضو جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="inviteForm" novalidate>
+            <div class="mb-4">
+              <label class="form-label fw-semibold" for="inviteEmail" data-i18n="workspace.invite_email_label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" id="inviteEmail" autocomplete="off"
+                     data-i18n-placeholder="workspace.invite_email_ph" placeholder="example@domain.com" required>
+              <div class="invalid-feedback" data-i18n="workspace.invite_email_invalid">أدخل بريداً إلكترونياً صحيحاً.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="workspace.invite_role_label">الدور</label>
+              <div class="ws-invite-role-grid" id="inviteRoleGrid">
+                <button type="button" class="ws-role-option" data-role-id="2">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-admin" data-i18n="workspace.role_admin">المدير</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_admin_desc">صلاحيات كاملة ما عدا الحذف.</span>
+                </button>
+                <button type="button" class="ws-role-option selected" data-role-id="3">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-manager" data-i18n="workspace.role_manager">المشرف</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_manager_desc">يدير المحتوى ولا يملك صلاحيات إدارية.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="4">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-accountant" data-i18n="workspace.role_accountant">المحاسب</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_accountant_desc">يتحكم في المعاملات المالية والتقارير.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="5">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-viewer" data-i18n="workspace.role_viewer">المشاهد</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_viewer_desc">قراءة فقط لجميع البيانات.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="6">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-auditor" data-i18n="workspace.role_auditor">المدقق</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_auditor_desc">يراجع سجلات التدقيق والمعاملات.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="7">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-guest" data-i18n="workspace.role_guest">الضيف</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_guest_desc">وصول محدود جداً للمحتوى العام.</span>
+                </button>
+              </div>
+            </div>
+            <div class="ws-perm-preview-box p-3 rounded-3" id="invitePermPreview" style="background:var(--mm-surface-2);border:1px solid var(--mm-border-color)">
+              <p class="fw-semibold mb-2 small" data-i18n="workspace.invite_perm_preview_title">معاينة الصلاحيات</p>
+              <div id="invitePermGrid" class="row g-2 small"></div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-primary" id="inviteSubmitBtn">
+            <i class="bi bi-send" aria-hidden="true"></i>
+            <span data-i18n="workspace.invite_send_btn">إرسال الدعوة</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel confirmation -->
+  <div class="modal fade" id="cancelInvModal" tabindex="-1" aria-labelledby="cancelInvModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="cancelInvModalLabel" data-i18n="workspace.cancel_inv_title">إلغاء الدعوة</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <p class="text-muted" id="cancelInvBody"></p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">تراجع</button>
+          <button type="button" class="btn btn-danger" id="cancelInvConfirmBtn" data-i18n="workspace.cancel_inv_confirm">إلغاء الدعوة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/workspace-invitations.js"></script>
+</body>
+</html>

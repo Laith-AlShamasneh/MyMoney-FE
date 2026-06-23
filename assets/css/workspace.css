@@ -1,0 +1,820 @@
+/* ==========================================================================
+   workspace.css — MyMoney Shared Accounts & Collaboration Platform
+   Styles for: workspace switcher, dashboard, members, invitations,
+               roles & permissions, settings, activity timeline.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. Role colour tokens
+   -------------------------------------------------------------------------- */
+:root {
+  --ws-role-owner:      #7c3aed;
+  --ws-role-owner-bg:   #f5f3ff;
+  --ws-role-admin:      #dc2626;
+  --ws-role-admin-bg:   #fff5f5;
+  --ws-role-manager:    #d97706;
+  --ws-role-manager-bg: #fffbeb;
+  --ws-role-accountant: #0891b2;
+  --ws-role-accountant-bg: #f0f9ff;
+  --ws-role-viewer:     #059669;
+  --ws-role-viewer-bg:  #f0fdfa;
+  --ws-role-auditor:    #6366f1;
+  --ws-role-auditor-bg: #eef2ff;
+  --ws-role-guest:      #6b7280;
+  --ws-role-guest-bg:   #f9fafb;
+
+  --ws-status-active:     #059669;
+  --ws-status-suspended:  #d97706;
+  --ws-status-removed:    #dc2626;
+  --ws-status-left:       #6b7280;
+
+  --ws-inv-pending:   #0891b2;
+  --ws-inv-accepted:  #059669;
+  --ws-inv-rejected:  #dc2626;
+  --ws-inv-expired:   #6b7280;
+  --ws-inv-cancelled: #9ca3af;
+}
+
+html[data-theme="dark"] {
+  --ws-role-owner-bg:      rgba(124, 58, 237, 0.15);
+  --ws-role-admin-bg:      rgba(220, 38, 38, 0.15);
+  --ws-role-manager-bg:    rgba(217, 119, 6, 0.15);
+  --ws-role-accountant-bg: rgba(8, 145, 178, 0.15);
+  --ws-role-viewer-bg:     rgba(5, 150, 105, 0.15);
+  --ws-role-auditor-bg:    rgba(99, 102, 241, 0.15);
+  --ws-role-guest-bg:      rgba(107, 114, 128, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   1. Workspace Switcher (in navbar)
+   -------------------------------------------------------------------------- */
+.ws-switcher-wrap {
+  position: relative;
+}
+
+.ws-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border: 1.5px solid var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  background: var(--mm-surface);
+  cursor: pointer;
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              background var(--mm-duration-fast) var(--mm-ease),
+              box-shadow var(--mm-duration-fast) var(--mm-ease);
+  max-width: 200px;
+  white-space: nowrap;
+}
+.ws-switcher-btn:hover {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary-light);
+  box-shadow: var(--mm-ring);
+}
+
+.ws-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--mm-primary);
+}
+
+.ws-switcher-name {
+  font-size: var(--mm-text-sm);
+  font-weight: 600;
+  color: var(--mm-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.ws-switcher-type {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  margin-inline-start: auto;
+}
+
+.ws-switcher-caret {
+  font-size: 0.65rem;
+  color: var(--mm-muted);
+  transition: transform var(--mm-duration-fast) var(--mm-ease);
+  flex-shrink: 0;
+}
+.ws-switcher-btn[aria-expanded="true"] .ws-switcher-caret {
+  transform: rotate(180deg);
+}
+
+/* Dropdown panel */
+.ws-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  width: 280px;
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  box-shadow: var(--mm-shadow-lg);
+  z-index: 1050;
+  overflow: hidden;
+}
+
+.ws-dropdown-header {
+  padding: 0.75rem 1rem 0.5rem;
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mm-muted);
+  border-bottom: 1px solid var(--mm-border-soft);
+}
+
+.ws-dropdown-list {
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0.375rem 0;
+}
+
+.ws-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-item:hover { background: var(--mm-surface-soft); }
+.ws-item.active { background: var(--mm-primary-light); }
+
+.ws-item-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--mm-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ws-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ws-item-name {
+  font-size: var(--mm-text-sm);
+  font-weight: 600;
+  color: var(--mm-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.ws-item-meta {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  display: block;
+}
+
+.ws-item-check {
+  color: var(--mm-primary);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.ws-dropdown-actions {
+  border-top: 1px solid var(--mm-border-soft);
+  padding: 0.375rem 0;
+}
+
+.ws-dropdown-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--mm-text-sm);
+  color: var(--mm-text-secondary);
+  text-align: start;
+  text-decoration: none;
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-dropdown-action:hover { background: var(--mm-surface-soft); color: var(--mm-primary); }
+.ws-dropdown-action i { font-size: 0.9rem; }
+
+/* --------------------------------------------------------------------------
+   2. Workspace page header (replaces standard page-hero on workspace pages)
+   -------------------------------------------------------------------------- */
+.ws-page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.ws-page-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--mm-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ws-page-title-wrap { flex: 1; min-width: 0; }
+
+.ws-page-title {
+  font-size: var(--mm-text-xl);
+  font-weight: 700;
+  color: var(--mm-text);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.ws-page-subtitle {
+  font-size: var(--mm-text-sm);
+  color: var(--mm-muted);
+  margin: 0;
+}
+
+.ws-page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--mm-radius-full);
+}
+
+/* --------------------------------------------------------------------------
+   3. Role badges
+   -------------------------------------------------------------------------- */
+.ws-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--mm-radius-full);
+  white-space: nowrap;
+}
+.ws-role-owner     { color: var(--ws-role-owner);     background: var(--ws-role-owner-bg); }
+.ws-role-admin     { color: var(--ws-role-admin);     background: var(--ws-role-admin-bg); }
+.ws-role-manager   { color: var(--ws-role-manager);   background: var(--ws-role-manager-bg); }
+.ws-role-accountant{ color: var(--ws-role-accountant);background: var(--ws-role-accountant-bg); }
+.ws-role-viewer    { color: var(--ws-role-viewer);    background: var(--ws-role-viewer-bg); }
+.ws-role-auditor   { color: var(--ws-role-auditor);   background: var(--ws-role-auditor-bg); }
+.ws-role-guest     { color: var(--ws-role-guest);     background: var(--ws-role-guest-bg); }
+
+/* --------------------------------------------------------------------------
+   4. Member status badges
+   -------------------------------------------------------------------------- */
+.ws-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--mm-radius-full);
+}
+.ws-status-active    { color: var(--ws-status-active);    background: var(--mm-success-light); }
+.ws-status-suspended { color: var(--ws-status-suspended); background: var(--mm-warning-light); }
+.ws-status-removed   { color: var(--ws-status-removed);   background: var(--mm-danger-light); }
+.ws-status-left      { color: var(--ws-status-left);      background: var(--mm-surface-soft); border: 1px solid var(--mm-border-soft); }
+
+/* --------------------------------------------------------------------------
+   5. Invitation status badges
+   -------------------------------------------------------------------------- */
+.ws-inv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--mm-radius-full);
+}
+.ws-inv-pending   { color: var(--ws-inv-pending);   background: var(--mm-info-light); }
+.ws-inv-accepted  { color: var(--ws-inv-accepted);  background: var(--mm-success-light); }
+.ws-inv-rejected  { color: var(--ws-inv-rejected);  background: var(--mm-danger-light); }
+.ws-inv-expired   { color: var(--ws-inv-expired);   background: var(--mm-surface-soft); border: 1px solid var(--mm-border); }
+.ws-inv-cancelled { color: var(--ws-inv-cancelled); background: var(--mm-surface-soft); border: 1px solid var(--mm-border-soft); }
+
+/* --------------------------------------------------------------------------
+   6. Member card / row
+   -------------------------------------------------------------------------- */
+.ws-member-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--mm-surface-soft);
+  border: 2px solid var(--mm-border-soft);
+}
+
+.ws-member-avatar-initials {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ws-member-name {
+  font-size: var(--mm-text-sm);
+  font-weight: 600;
+  color: var(--mm-text);
+  line-height: 1.3;
+}
+
+.ws-member-email {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+}
+
+.ws-member-joined {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   7. Activity Timeline
+   -------------------------------------------------------------------------- */
+.ws-activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ws-activity-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--mm-border-soft);
+  animation: ws-fadeIn var(--mm-duration-slow) var(--mm-ease-out);
+}
+.ws-activity-item:last-child { border-bottom: none; }
+
+@keyframes ws-fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ws-activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.ws-activity-body { flex: 1; min-width: 0; }
+
+.ws-activity-text {
+  font-size: var(--mm-text-sm);
+  color: var(--mm-text);
+  line-height: 1.4;
+  margin: 0 0 0.2rem;
+}
+
+.ws-activity-meta {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Activity icon colours per event type */
+.ws-act-create   { background: var(--mm-primary-light);  color: var(--mm-primary); }
+.ws-act-update   { background: var(--mm-info-light);     color: var(--mm-info); }
+.ws-act-delete   { background: var(--mm-danger-light);   color: var(--mm-danger); }
+.ws-act-invite   { background: #eef2ff;                  color: #6366f1; }
+.ws-act-join     { background: var(--mm-success-light);  color: var(--mm-success); }
+.ws-act-leave    { background: var(--mm-warning-light);  color: var(--mm-warning); }
+.ws-act-role     { background: #f5f3ff;                  color: #7c3aed; }
+.ws-act-security { background: var(--mm-danger-light);   color: var(--mm-danger); }
+.ws-act-default  { background: var(--mm-surface-soft);   color: var(--mm-muted); }
+
+/* --------------------------------------------------------------------------
+   8. Permission matrix
+   -------------------------------------------------------------------------- */
+.ws-perm-section { margin-bottom: 1.5rem; }
+
+.ws-perm-section-title {
+  font-size: var(--mm-text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mm-muted);
+  margin-bottom: 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ws-perm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--mm-radius);
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-perm-item:hover { background: var(--mm-surface-soft); }
+
+.ws-perm-name {
+  font-size: var(--mm-text-sm);
+  color: var(--mm-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ws-perm-check { color: var(--mm-success); font-size: 1rem; }
+.ws-perm-cross { color: var(--mm-danger);  font-size: 1rem; }
+
+/* Role-permission matrix table */
+.ws-matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--mm-text-sm);
+}
+
+.ws-matrix-table th,
+.ws-matrix-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--mm-border-soft);
+  text-align: center;
+}
+
+.ws-matrix-table th:first-child,
+.ws-matrix-table td:first-child {
+  text-align: start;
+  font-weight: 500;
+  color: var(--mm-text);
+  min-width: 160px;
+}
+
+.ws-matrix-table thead th {
+  font-size: var(--mm-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mm-muted);
+  background: var(--mm-surface-soft);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.ws-matrix-table tbody tr:hover td { background: var(--mm-surface-soft); }
+
+/* --------------------------------------------------------------------------
+   9. Workspace KPI cards (dashboard)
+   -------------------------------------------------------------------------- */
+.ws-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ws-kpi-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border-soft);
+  border-radius: var(--mm-radius-lg);
+  padding: 1.125rem 1.25rem;
+  box-shadow: var(--mm-shadow-xs);
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease);
+}
+.ws-kpi-card:hover { box-shadow: var(--mm-shadow-sm); }
+
+.ws-kpi-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mm-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.ws-kpi-value {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--mm-text);
+  line-height: 1;
+  margin: 0 0 0.25rem;
+}
+
+.ws-kpi-label {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   10. Invite modal
+   -------------------------------------------------------------------------- */
+.ws-invite-role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.ws-role-option {
+  border: 2px solid var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  padding: 0.625rem 0.75rem;
+  cursor: pointer;
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              background var(--mm-duration-fast) var(--mm-ease);
+  text-align: start;
+}
+.ws-role-option:hover { border-color: var(--mm-primary); background: var(--mm-primary-light); }
+.ws-role-option.selected {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary-light);
+  box-shadow: var(--mm-ring);
+}
+
+.ws-role-option-name {
+  font-size: var(--mm-text-sm);
+  font-weight: 600;
+  color: var(--mm-text);
+  display: block;
+}
+.ws-role-option-desc {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  display: block;
+  margin-top: 0.125rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Workspace type pills (create/edit)
+   -------------------------------------------------------------------------- */
+.ws-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.ws-type-option {
+  border: 2px solid var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  padding: 0.875rem 0.75rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              background var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-type-option:hover  { border-color: var(--mm-primary); background: var(--mm-primary-light); }
+.ws-type-option.selected {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary-light);
+  box-shadow: var(--mm-ring);
+}
+
+.ws-type-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+.ws-type-name { font-size: var(--mm-text-sm); font-weight: 600; color: var(--mm-text); }
+.ws-type-desc { font-size: var(--mm-text-xs); color: var(--mm-muted); margin-top: 0.125rem; }
+
+/* --------------------------------------------------------------------------
+   12. Workspace color picker
+   -------------------------------------------------------------------------- */
+.ws-color-swatch-grid {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ws-color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  transition: transform var(--mm-duration-fast) var(--mm-ease),
+              box-shadow var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-color-swatch:hover { transform: scale(1.18); }
+.ws-color-swatch.selected { border-color: var(--mm-text); box-shadow: 0 0 0 2px var(--mm-bg); }
+
+/* --------------------------------------------------------------------------
+   13. Invitation accept/reject page
+   -------------------------------------------------------------------------- */
+.ws-accept-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--mm-bg);
+}
+
+.ws-accept-card {
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border-soft);
+  border-radius: var(--mm-radius-xl);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--mm-shadow-lg);
+  text-align: center;
+}
+
+.ws-accept-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--mm-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 auto 1.25rem;
+}
+
+.ws-accept-workspace-name {
+  font-size: var(--mm-text-xl);
+  font-weight: 700;
+  color: var(--mm-text);
+  margin-bottom: 0.25rem;
+}
+
+.ws-accept-inviter {
+  font-size: var(--mm-text-sm);
+  color: var(--mm-muted);
+  margin-bottom: 1.25rem;
+}
+
+.ws-accept-role-preview {
+  background: var(--mm-surface-soft);
+  border: 1px solid var(--mm-border-soft);
+  border-radius: var(--mm-radius-md);
+  padding: 0.875rem 1rem;
+  margin-bottom: 1.25rem;
+  text-align: start;
+}
+
+.ws-accept-expiry {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   14. Empty states (workspace-specific)
+   -------------------------------------------------------------------------- */
+.ws-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.ws-empty-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--mm-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--mm-muted);
+  margin: 0 auto 1rem;
+}
+
+.ws-empty-title {
+  font-size: var(--mm-text-lg);
+  font-weight: 600;
+  color: var(--mm-text);
+  margin-bottom: 0.375rem;
+}
+
+.ws-empty-desc {
+  font-size: var(--mm-text-sm);
+  color: var(--mm-muted);
+  max-width: 340px;
+  margin: 0 auto 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   15. Skeleton shimmer (reuses app-wide pattern)
+   -------------------------------------------------------------------------- */
+.ws-skeleton {
+  background: linear-gradient(90deg, var(--mm-surface-soft) 25%, var(--mm-border-soft) 50%, var(--mm-surface-soft) 75%);
+  background-size: 200% 100%;
+  animation: ws-shimmer 1.5s infinite;
+  border-radius: var(--mm-radius-sm);
+}
+@keyframes ws-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* --------------------------------------------------------------------------
+   16. Workspace nav badge (sidebar item)
+   -------------------------------------------------------------------------- */
+.ws-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--mm-radius-full);
+  background: var(--mm-primary);
+  color: #fff;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   17. Settings colour stripe (workspace colour preview)
+   -------------------------------------------------------------------------- */
+.ws-settings-stripe {
+  height: 4px;
+  border-radius: var(--mm-radius-full);
+  margin-bottom: 1.25rem;
+  transition: background var(--mm-duration-slow) var(--mm-ease);
+}
+
+/* --------------------------------------------------------------------------
+   18. Responsive tweaks
+   -------------------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+  .ws-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .ws-invite-role-grid { grid-template-columns: 1fr; }
+  .ws-type-grid { grid-template-columns: 1fr; }
+  .ws-dropdown { width: 240px; }
+  .ws-switcher-name { max-width: 72px; }
+  .ws-accept-card { padding: 1.75rem 1.25rem; }
+}
+
+/* --------------------------------------------------------------------------
+   19. Workspace list cards (personal mode dashboard)
+   -------------------------------------------------------------------------- */
+.ws-card {
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease),
+              transform  var(--mm-duration-fast)  var(--mm-ease);
+  cursor: pointer;
+}
+.ws-card:hover {
+  box-shadow: var(--mm-shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   20. Permission matrix section rows
+   -------------------------------------------------------------------------- */
+.ws-matrix-section td {
+  font-weight: 600;
+  font-size: var(--mm-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   21. Table skeleton rows (loading state)
+   -------------------------------------------------------------------------- */
+.ws-skeleton-row td { padding: 0.875rem 1rem; }
+

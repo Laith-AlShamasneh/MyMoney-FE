@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="workspace.members_page_title">الأعضاء | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/currency.css">
+  <link rel="stylesheet" href="/assets/css/workspace.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="workspace.members_eyebrow">مساحة العمل</p>
+                <h1 class="h3 mb-1" data-i18n="workspace.members_heading">الأعضاء</h1>
+                <p class="text-muted mb-0" data-i18n="workspace.members_subheading">إدارة الأعضاء والأدوار في مساحة العمل.</p>
+              </div>
+            </div>
+            <div class="page-heading-actions d-flex flex-wrap gap-2">
+              <button class="btn btn-outline-secondary btn-sm" id="exportMembersBtn" type="button">
+                <i class="bi bi-download" aria-hidden="true"></i>
+                <span data-i18n="workspace.export">تصدير</span>
+              </button>
+              <button class="btn btn-primary" id="inviteMemberBtn" type="button" data-bs-toggle="modal" data-bs-target="#inviteModal">
+                <i class="bi bi-person-plus" aria-hidden="true"></i>
+                <span data-i18n="workspace.invite_btn">دعوة عضو</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body py-2 px-3 d-flex flex-wrap align-items-center gap-2">
+              <!-- Search -->
+              <div class="input-group input-group-sm" style="max-width:260px">
+                <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input type="search" class="form-control border-start-0 ps-0" id="memberSearch"
+                       data-i18n-placeholder="workspace.search_members_ph" placeholder="بحث بالاسم أو البريد...">
+              </div>
+              <!-- Status filter -->
+              <select class="form-select form-select-sm" id="memberStatusFilter" style="max-width:160px">
+                <option value="" data-i18n="workspace.filter_all_status">جميع الحالات</option>
+                <option value="1" data-i18n="workspace.status_active">نشط</option>
+                <option value="2" data-i18n="workspace.status_suspended">موقوف</option>
+                <option value="3" data-i18n="workspace.status_removed">مُزال</option>
+                <option value="4" data-i18n="workspace.status_left">غادر</option>
+              </select>
+              <!-- Role filter -->
+              <select class="form-select form-select-sm" id="memberRoleFilter" style="max-width:160px">
+                <option value="" data-i18n="workspace.filter_all_roles">جميع الأدوار</option>
+                <option value="1" data-i18n="workspace.role_owner">المالك</option>
+                <option value="2" data-i18n="workspace.role_admin">المدير</option>
+                <option value="3" data-i18n="workspace.role_manager">المشرف</option>
+                <option value="4" data-i18n="workspace.role_accountant">المحاسب</option>
+                <option value="5" data-i18n="workspace.role_viewer">المشاهد</option>
+                <option value="6" data-i18n="workspace.role_auditor">المدقق</option>
+                <option value="7" data-i18n="workspace.role_guest">الضيف</option>
+              </select>
+              <span class="text-muted small ms-auto" id="memberCountLabel"></span>
+            </div>
+          </div>
+
+          <!-- Members table -->
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="membersTable">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="px-4 py-3" data-i18n="workspace.col_member">العضو</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_role">الدور</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_status">الحالة</th>
+                      <th class="px-3 py-3" data-i18n="workspace.col_joined">تاريخ الانضمام</th>
+                      <th class="px-3 py-3 text-center" data-i18n="workspace.col_actions">إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="membersTableBody">
+                    <!-- Skeleton rows -->
+                    <tr class="ws-skeleton-row"><td class="px-4 py-3" colspan="5"><div class="d-flex align-items-center gap-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:40px;height:40px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-1" style="height:14px;width:45%"></div><div class="ws-skeleton" style="height:12px;width:30%"></div></div></div></td></tr>
+                    <tr class="ws-skeleton-row"><td class="px-4 py-3" colspan="5"><div class="d-flex align-items-center gap-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:40px;height:40px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-1" style="height:14px;width:50%"></div><div class="ws-skeleton" style="height:12px;width:35%"></div></div></div></td></tr>
+                    <tr class="ws-skeleton-row"><td class="px-4 py-3" colspan="5"><div class="d-flex align-items-center gap-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:40px;height:40px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-1" style="height:14px;width:40%"></div><div class="ws-skeleton" style="height:12px;width:25%"></div></div></div></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Empty state -->
+              <div class="ws-empty d-none" id="membersEmpty" style="padding:2.5rem">
+                <div class="ws-empty-icon"><i class="bi bi-people" aria-hidden="true"></i></div>
+                <div class="ws-empty-title" data-i18n="workspace.members_empty_title">لا يوجد أعضاء</div>
+                <div class="ws-empty-desc" data-i18n="workspace.members_empty_desc">ادعُ أشخاصاً للانضمام إلى مساحة العمل.</div>
+                <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#inviteModal" data-i18n="workspace.invite_btn">دعوة عضو</button>
+              </div>
+
+              <!-- Pagination -->
+              <div class="d-flex align-items-center justify-content-between px-4 py-3 border-top d-none" id="membersPagination">
+                <span class="text-muted small" id="membersPageInfo"></span>
+                <div class="d-flex gap-1">
+                  <button class="btn btn-sm btn-outline-secondary" id="membersPrevBtn" disabled>
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" id="membersNextBtn" disabled>
+                    <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /container -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- Invite Member Modal -->
+  <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="inviteModalLabel" data-i18n="workspace.invite_title">دعوة عضو جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="inviteForm" novalidate>
+            <!-- Email -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold" for="inviteEmail" data-i18n="workspace.invite_email_label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" id="inviteEmail" autocomplete="off"
+                     data-i18n-placeholder="workspace.invite_email_ph" placeholder="example@domain.com" required>
+              <div class="invalid-feedback" data-i18n="workspace.invite_email_invalid">أدخل بريداً إلكترونياً صحيحاً.</div>
+            </div>
+
+            <!-- Role picker -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="workspace.invite_role_label">الدور</label>
+              <div class="ws-invite-role-grid" id="inviteRoleGrid">
+                <button type="button" class="ws-role-option" data-role-id="2">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-admin" data-i18n="workspace.role_admin">المدير</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_admin_desc">صلاحيات كاملة ما عدا الحذف.</span>
+                </button>
+                <button type="button" class="ws-role-option selected" data-role-id="3">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-manager" data-i18n="workspace.role_manager">المشرف</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_manager_desc">يدير المحتوى ولا يملك صلاحيات إدارية.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="4">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-accountant" data-i18n="workspace.role_accountant">المحاسب</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_accountant_desc">يتحكم في المعاملات المالية والتقارير.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="5">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-viewer" data-i18n="workspace.role_viewer">المشاهد</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_viewer_desc">قراءة فقط لجميع البيانات.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="6">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-auditor" data-i18n="workspace.role_auditor">المدقق</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_auditor_desc">يراجع سجلات التدقيق والمعاملات.</span>
+                </button>
+                <button type="button" class="ws-role-option" data-role-id="7">
+                  <span class="ws-role-option-badge ws-role-badge ws-role-guest" data-i18n="workspace.role_guest">الضيف</span>
+                  <span class="ws-role-option-desc" data-i18n="workspace.role_guest_desc">وصول محدود جداً للمحتوى العام.</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Permission preview -->
+            <div class="ws-perm-preview-box p-3 rounded-3" id="invitePermPreview" style="background:var(--mm-surface-2);border:1px solid var(--mm-border-color)">
+              <p class="fw-semibold mb-2 small" data-i18n="workspace.invite_perm_preview_title">معاينة الصلاحيات</p>
+              <div id="invitePermGrid" class="row g-2 small"></div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-primary" id="inviteSubmitBtn">
+            <i class="bi bi-send" aria-hidden="true"></i>
+            <span data-i18n="workspace.invite_send_btn">إرسال الدعوة</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Role Modal -->
+  <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="editRoleModalLabel" data-i18n="workspace.change_role_title">تغيير الدور</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <p class="text-muted small mb-3" id="editRoleMemberName"></p>
+          <select class="form-select" id="editRoleSelect">
+            <option value="2" data-i18n="workspace.role_admin">المدير</option>
+            <option value="3" data-i18n="workspace.role_manager">المشرف</option>
+            <option value="4" data-i18n="workspace.role_accountant">المحاسب</option>
+            <option value="5" data-i18n="workspace.role_viewer">المشاهد</option>
+            <option value="6" data-i18n="workspace.role_auditor">المدقق</option>
+            <option value="7" data-i18n="workspace.role_guest">الضيف</option>
+          </select>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-primary" id="editRoleSubmitBtn" data-i18n="workspace.save_btn">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm action modal -->
+  <div class="modal fade" id="confirmActionModal" tabindex="-1" aria-labelledby="confirmActionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="confirmActionModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <p id="confirmActionBody" class="text-muted"></p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-danger" id="confirmActionBtn" data-i18n="workspace.confirm_btn">تأكيد</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/workspace-members.js"></script>
+</body>
+</html>

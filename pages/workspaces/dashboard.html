@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="workspace.dashboard_page_title">مساحة العمل | MyMoney</title>
+
+  <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/currency.css">
+  <link rel="stylesheet" href="/assets/css/workspace.css">
+
+  <link rel="icon" href="/assets/images/favicon/favicon.ico">
+  <script>
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <div id="sidebar-root"></div>
+
+    <div class="admin-main">
+      <div id="navbar-root"></div>
+
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4">
+
+          <!-- Page heading -->
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-grid-1x2" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="workspace.dashboard_eyebrow">مركز التعاون</p>
+                <h1 class="h3 mb-1" id="wsDashHeading" data-i18n="workspace.dashboard_heading">نظرة عامة على مساحة العمل</h1>
+                <p class="text-muted mb-0" data-i18n="workspace.dashboard_subheading">راقب نشاط فريقك والتعاون المالي.</p>
+              </div>
+            </div>
+            <div class="page-heading-actions" id="wsDashActions">
+              <button class="btn btn-primary" type="button" id="createWsBtn" data-i18n="workspace.create_new">إنشاء مساحة عمل</button>
+            </div>
+          </div>
+
+          <!-- No workspace / personal mode banner -->
+          <div id="personalModeBanner" class="alert alert-info d-flex align-items-center gap-2 mb-4 d-none" role="alert">
+            <i class="bi bi-info-circle-fill flex-shrink-0" aria-hidden="true"></i>
+            <div>
+              <strong data-i18n="workspace.personal_mode">شخصي</strong>
+              — <span data-i18n="workspace.empty_desc">أنشئ أول مساحة عمل لتبدأ التعاون مع فريقك.</span>
+            </div>
+          </div>
+
+          <!-- Workspace list (when in personal mode) -->
+          <div id="wsListSection">
+            <!-- Skeleton -->
+            <div id="wsListSkeleton" class="row g-3 mb-4">
+              <div class="col-12 col-sm-6 col-lg-4"><div class="card border-0 shadow-sm" style="height:140px"><div class="card-body"><div class="ws-skeleton mb-2" style="height:18px;width:60%"></div><div class="ws-skeleton mb-2" style="height:14px;width:40%"></div><div class="ws-skeleton" style="height:14px;width:30%"></div></div></div></div>
+              <div class="col-12 col-sm-6 col-lg-4"><div class="card border-0 shadow-sm" style="height:140px"><div class="card-body"><div class="ws-skeleton mb-2" style="height:18px;width:60%"></div><div class="ws-skeleton mb-2" style="height:14px;width:40%"></div><div class="ws-skeleton" style="height:14px;width:30%"></div></div></div></div>
+            </div>
+            <!-- Cards -->
+            <div id="wsCards" class="row g-3 mb-4 d-none"></div>
+            <!-- Empty -->
+            <div id="wsEmpty" class="ws-empty d-none">
+              <div class="ws-empty-icon"><i class="bi bi-grid-1x2" aria-hidden="true"></i></div>
+              <div class="ws-empty-title" data-i18n="workspace.empty_title">لا توجد مساحات عمل بعد</div>
+              <div class="ws-empty-desc" data-i18n="workspace.empty_desc">أنشئ أول مساحة عمل لتبدأ التعاون مع فريقك.</div>
+              <button class="btn btn-primary mt-2" id="wsEmptyCta" data-i18n="workspace.empty_cta">إنشاء أول مساحة عمل</button>
+            </div>
+          </div>
+
+          <!-- Active workspace dashboard (when a workspace is selected) -->
+          <div id="wsActiveSection" class="d-none">
+
+            <!-- Workspace header -->
+            <div class="ws-page-header" id="wsPageHeader">
+              <div class="ws-page-logo" id="wsLogo"></div>
+              <div class="ws-page-title-wrap">
+                <h2 class="ws-page-title" id="wsActiveTitle"></h2>
+                <p class="ws-page-subtitle" id="wsActiveSubtitle"></p>
+              </div>
+              <div class="ms-auto d-flex gap-2 flex-wrap">
+                <a class="btn btn-outline-secondary btn-sm" id="wsMembersLink" href="/pages/workspaces/members.html">
+                  <i class="bi bi-people" aria-hidden="true"></i>
+                  <span data-i18n="workspace.members_heading">الأعضاء</span>
+                </a>
+                <a class="btn btn-outline-secondary btn-sm" id="wsSettingsLink" href="/pages/workspaces/settings.html">
+                  <i class="bi bi-gear" aria-hidden="true"></i>
+                  <span data-i18n="workspace.settings_heading">الإعدادات</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- KPI cards -->
+            <div class="ws-kpi-grid" id="wsKpiGrid">
+              <div class="ws-kpi-card">
+                <div class="ws-kpi-icon bg-primary-subtle text-primary"><i class="bi bi-people" aria-hidden="true"></i></div>
+                <div class="ws-kpi-value" id="kpiMembers">—</div>
+                <div class="ws-kpi-label" data-i18n="workspace.kpi_members">الأعضاء</div>
+              </div>
+              <div class="ws-kpi-card">
+                <div class="ws-kpi-icon" style="background:var(--ws-role-viewer-bg);color:var(--ws-role-viewer)"><i class="bi bi-envelope-paper" aria-hidden="true"></i></div>
+                <div class="ws-kpi-value" id="kpiPendingInv">—</div>
+                <div class="ws-kpi-label" data-i18n="workspace.kpi_pending_inv">دعوات معلقة</div>
+              </div>
+              <div class="ws-kpi-card">
+                <div class="ws-kpi-icon" style="background:var(--ws-role-owner-bg);color:var(--ws-role-owner)"><i class="bi bi-shield-check" aria-hidden="true"></i></div>
+                <div class="ws-kpi-value" id="kpiRole">—</div>
+                <div class="ws-kpi-label" data-i18n="workspace.kpi_role">دورك</div>
+              </div>
+              <div class="ws-kpi-card">
+                <div class="ws-kpi-icon bg-warning-subtle text-warning"><i class="bi bi-buildings" aria-hidden="true"></i></div>
+                <div class="ws-kpi-value" id="kpiType">—</div>
+                <div class="ws-kpi-label" data-i18n="workspace.kpi_type">نوع المساحة</div>
+              </div>
+            </div>
+
+            <div class="row g-4">
+              <!-- Activity timeline -->
+              <div class="col-12 col-lg-7">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header d-flex align-items-center justify-content-between bg-transparent border-bottom-0 pt-3 px-4">
+                    <h5 class="mb-0 fw-semibold" data-i18n="workspace.activity_title">النشاط الأخير</h5>
+                    <a class="btn btn-sm btn-outline-secondary" id="viewAllActivityBtn" href="/pages/workspaces/members.html">
+                      <span data-i18n="workspace.activity_load_more">تحميل المزيد</span>
+                    </a>
+                  </div>
+                  <div class="card-body px-4 py-3">
+                    <!-- Skeleton -->
+                    <div id="activitySkeleton">
+                      <div class="d-flex gap-3 mb-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:32px;height:32px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-2" style="height:14px;width:75%"></div><div class="ws-skeleton" style="height:12px;width:40%"></div></div></div>
+                      <div class="d-flex gap-3 mb-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:32px;height:32px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-2" style="height:14px;width:65%"></div><div class="ws-skeleton" style="height:12px;width:35%"></div></div></div>
+                      <div class="d-flex gap-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:32px;height:32px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-2" style="height:14px;width:55%"></div><div class="ws-skeleton" style="height:12px;width:30%"></div></div></div>
+                    </div>
+                    <ul class="ws-activity-list d-none" id="activityList"></ul>
+                    <div class="ws-empty d-none" id="activityEmpty" style="padding:1.5rem 0">
+                      <div class="ws-empty-icon"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
+                      <div class="ws-empty-title" data-i18n="workspace.activity_empty">لا يوجد نشاط بعد.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Members quick view -->
+              <div class="col-12 col-lg-5">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header d-flex align-items-center justify-content-between bg-transparent border-bottom-0 pt-3 px-4">
+                    <h5 class="mb-0 fw-semibold" data-i18n="workspace.members_heading">الأعضاء</h5>
+                    <a class="btn btn-sm btn-outline-secondary" href="/pages/workspaces/members.html">
+                      <span data-i18n="workspace.members_subheading">إدارة</span>
+                    </a>
+                  </div>
+                  <div class="card-body px-4 py-3">
+                    <div id="membersSkeleton">
+                      <div class="d-flex align-items-center gap-3 mb-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:38px;height:38px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-1" style="height:14px;width:55%"></div><div class="ws-skeleton" style="height:12px;width:40%"></div></div></div>
+                      <div class="d-flex align-items-center gap-3"><div class="ws-skeleton rounded-circle flex-shrink-0" style="width:38px;height:38px"></div><div class="flex-grow-1"><div class="ws-skeleton mb-1" style="height:14px;width:50%"></div><div class="ws-skeleton" style="height:12px;width:35%"></div></div></div>
+                    </div>
+                    <div id="membersQuickList" class="d-none"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- /wsActiveSection -->
+
+        </div><!-- /container -->
+      </main>
+
+      <div id="footer-root"></div>
+    </div>
+  </div>
+
+  <!-- Create Workspace Modal -->
+  <div class="modal fade" id="createWsModal" tabindex="-1" aria-labelledby="createWsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="createWsModalLabel" data-i18n="workspace.create_title">إنشاء مساحة عمل</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="createWsForm" novalidate>
+
+            <!-- Color stripe preview -->
+            <div class="ws-settings-stripe" id="wsColorStripe" style="background:#2563eb"></div>
+
+            <!-- Name -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="wsNameInput" data-i18n="workspace.name_label">اسم مساحة العمل</label>
+              <input type="text" class="form-control" id="wsNameInput" maxlength="100"
+                     data-i18n-placeholder="workspace.name_ph" placeholder="مثال: عائلة الراشد" required>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="wsDescInput" data-i18n="workspace.desc_label">الوصف</label>
+              <textarea class="form-control" id="wsDescInput" rows="2" maxlength="500"
+                        data-i18n-placeholder="workspace.desc_ph" placeholder="ما الغرض من هذه المساحة؟ (اختياري)"></textarea>
+            </div>
+
+            <!-- Type -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="workspace.type_label">النوع</label>
+              <div class="ws-type-grid" id="wsTypeGrid">
+                <button type="button" class="ws-type-option selected" data-type-id="1">
+                  <span class="ws-type-icon">👤</span>
+                  <span class="ws-type-name" data-i18n="workspace.type_personal">شخصية</span>
+                  <span class="ws-type-desc" data-i18n="workspace.type_personal_desc">لك وحدك.</span>
+                </button>
+                <button type="button" class="ws-type-option" data-type-id="2">
+                  <span class="ws-type-icon">👨‍👩‍👧</span>
+                  <span class="ws-type-name" data-i18n="workspace.type_family">عائلية</span>
+                  <span class="ws-type-desc" data-i18n="workspace.type_family_desc">شارك الماليات مع أسرتك.</span>
+                </button>
+                <button type="button" class="ws-type-option" data-type-id="3">
+                  <span class="ws-type-icon">🏢</span>
+                  <span class="ws-type-name" data-i18n="workspace.type_business">تجارية</span>
+                  <span class="ws-type-desc" data-i18n="workspace.type_business_desc">تتبع الحسابات التجارية معاً.</span>
+                </button>
+                <button type="button" class="ws-type-option" data-type-id="4">
+                  <span class="ws-type-icon">👥</span>
+                  <span class="ws-type-name" data-i18n="workspace.type_team">فريق</span>
+                  <span class="ws-type-desc" data-i18n="workspace.type_team_desc">تعاون مع فريقك.</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Colour picker -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold" data-i18n="workspace.color_label">اللون</label>
+              <div class="ws-color-swatch-grid" id="wsColorSwatches">
+                <button type="button" class="ws-color-swatch selected" data-color="#2563eb" style="background:#2563eb" title="Blue"></button>
+                <button type="button" class="ws-color-swatch" data-color="#7c3aed" style="background:#7c3aed" title="Violet"></button>
+                <button type="button" class="ws-color-swatch" data-color="#059669" style="background:#059669" title="Green"></button>
+                <button type="button" class="ws-color-swatch" data-color="#d97706" style="background:#d97706" title="Amber"></button>
+                <button type="button" class="ws-color-swatch" data-color="#dc2626" style="background:#dc2626" title="Red"></button>
+                <button type="button" class="ws-color-swatch" data-color="#0891b2" style="background:#0891b2" title="Cyan"></button>
+                <button type="button" class="ws-color-swatch" data-color="#6366f1" style="background:#6366f1" title="Indigo"></button>
+                <button type="button" class="ws-color-swatch" data-color="#db2777" style="background:#db2777" title="Pink"></button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="workspace.cancel_btn">إلغاء</button>
+          <button type="button" class="btn btn-primary" id="createWsSubmitBtn" data-i18n="workspace.create_submit">إنشاء مساحة العمل</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/assets/js/pages/workspace-dashboard.js"></script>
+</body>
+</html>
