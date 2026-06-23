@@ -47,6 +47,10 @@
     "transactions": "المعاملات",
     "reports": "التقارير",
     "workspace": "مساحات العمل",
+    "ws_members":     "الأعضاء",
+    "ws_invitations": "الدعوات",
+    "ws_roles":       "الأدوار والصلاحيات",
+    "ws_settings":    "إعدادات المساحة",
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
     "financial_intelligence": "الذكاء المالي",
@@ -390,7 +394,25 @@
     "confirm_email_change_go_login": "تسجيل الدخول",
 
     "change_email_heading": "تغيير البريد الإلكتروني",
-    "change_email_desc": "تحديث عنوان البريد الإلكتروني المرتبط بحسابك."
+    "change_email_desc": "تحديث عنوان البريد الإلكتروني المرتبط بحسابك.",
+
+    "currency_section":        "تفضيلات العملة",
+    "currency_desc":           "اختر طريقة عرض المبالغ في التطبيق.",
+    "currency_base":           "العملة الأساسية",
+    "currency_base_hint":      "العملة التي تكسب وتنفق بها في الغالب.",
+    "currency_display":        "عملة العرض",
+    "currency_display_hint":   "يتم تحويل المبالغ إلى هذه العملة للعرض.",
+    "currency_number_format":  "تنسيق الأرقام",
+    "currency_symbol_style":   "نمط الرمز",
+    "currency_symbol_symbol":  "رمز ($)",
+    "currency_symbol_code":    "رمز ISO (USD)",
+    "currency_symbol_name":    "الاسم (US Dollar)",
+    "currency_negative_format":"تنسيق السالب",
+    "currency_position":       "موضع الرمز",
+    "currency_position_prefix":"قبل الرقم ($1,234.56)",
+    "currency_position_suffix":"بعد الرقم (1,234.56$)",
+    "currency_save_btn":       "حفظ",
+    "currency_save_success":   "تم حفظ تفضيلات العملة."
   },
 
   "transactions": {
@@ -1995,7 +2017,12 @@
 
     "loading":         "جاري التحميل...",
     "switcher_switch": "تبديل",
-    "export":          "تصدير"
+    "export":          "تصدير",
+    "context_banner_aria": "مساحة العمل الحالية",
+    "switcher_label":      "تبديل مساحة العمل",
+    "perm_denied_title":   "الوصول مقيّد",
+    "perm_denied_body":    "ليس لديك صلاحية لعرض هذا المحتوى في مساحة العمل الحالية.",
+    "perm_denied_link":    "عرض الأدوار والصلاحيات"
   },
 
   "currency": {

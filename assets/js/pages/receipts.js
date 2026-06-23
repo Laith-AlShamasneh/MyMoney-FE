@@ -11,6 +11,7 @@ import { ReceiptService }             from '../services/receipt-service.js';
 import { ApiError }                   from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { formatAmount }               from '../core/currency.js';
+import { initWorkspaceContext }       from '../services/workspace-context.js';
 
 /* ── Constants ────────────────────────────────────────────────────────────── */
 const STATUS   = Object.freeze({ ACTIVE: 1, ARCHIVED: 2, DELETED: 3 });
@@ -156,6 +157,13 @@ async function init() {
   await initI18n();
   await guardPage();
   await initLayout();
+  await initWorkspaceContext({
+    viewPerm: 'view_receipts',
+    gates: [
+      { id: 'btnUpload',     perm: 'upload_receipt' },
+      { id: 'btnManageTags', perm: 'manage_members' },
+    ],
+  });
 
   _uploadModal = new bootstrap.Modal($('uploadModal'));
   _tagsModal   = new bootstrap.Modal($('tagsModal'));

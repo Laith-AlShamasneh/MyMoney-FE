@@ -47,6 +47,10 @@
     "transactions": "Transactions",
     "reports": "Reports",
     "workspace": "Workspaces",
+    "ws_members":     "Members",
+    "ws_invitations": "Invitations",
+    "ws_roles":       "Roles & Permissions",
+    "ws_settings":    "Workspace Settings",
     "profile": "Profile",
     "settings": "Settings",
     "financial_intelligence": "Intelligence",
@@ -390,7 +394,25 @@
     "confirm_email_change_go_login": "Sign In",
 
     "change_email_heading": "Change Email Address",
-    "change_email_desc": "Update the email address associated with your account."
+    "change_email_desc": "Update the email address associated with your account.",
+
+    "currency_section":        "Currency Preferences",
+    "currency_desc":           "Set how amounts are displayed across the app.",
+    "currency_base":           "Base Currency",
+    "currency_base_hint":      "The currency you primarily earn and spend in.",
+    "currency_display":        "Display Currency",
+    "currency_display_hint":   "Amounts are converted to this currency for display.",
+    "currency_number_format":  "Number Format",
+    "currency_symbol_style":   "Symbol Style",
+    "currency_symbol_symbol":  "Symbol ($)",
+    "currency_symbol_code":    "ISO Code (USD)",
+    "currency_symbol_name":    "Name (US Dollar)",
+    "currency_negative_format":"Negative Format",
+    "currency_position":       "Symbol Position",
+    "currency_position_prefix":"Prefix ($1,234.56)",
+    "currency_position_suffix":"Suffix (1,234.56$)",
+    "currency_save_btn":       "Save",
+    "currency_save_success":   "Currency preferences saved."
   },
 
   "transactions": {
@@ -1998,7 +2020,12 @@
 
     "loading":            "Loading...",
     "switcher_switch":    "Switch",
-    "export":             "Export"
+    "export":             "Export",
+    "context_banner_aria":  "Current workspace",
+    "switcher_label":       "Switch workspace",
+    "perm_denied_title":    "Access Restricted",
+    "perm_denied_body":     "You don't have permission to view this content in the current workspace.",
+    "perm_denied_link":     "View Roles & Permissions"
   },
 
   "currency": {

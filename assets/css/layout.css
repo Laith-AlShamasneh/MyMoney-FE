@@ -594,3 +594,96 @@ html[data-theme="dark"] .profile-button .avatar-sm {
     transform: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   12. Workspace sidebar sub-navigation
+   -------------------------------------------------------------------------- */
+.sidebar-subnav {
+  display: grid;
+  gap: 0.125rem;
+  padding: 0.25rem 0 0.25rem 1.75rem;
+  margin-top: 0.125rem;
+}
+
+[dir="rtl"] .sidebar-subnav {
+  padding-left: 0;
+  padding-right: 1.75rem;
+}
+
+.subnav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 36px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  color: var(--mm-sidebar-text);
+  font-size: var(--mm-text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background var(--mm-duration-fast) var(--mm-ease),
+              color     var(--mm-duration-fast) var(--mm-ease);
+  opacity: 0.8;
+}
+.subnav-link:hover,
+.subnav-link:focus { opacity: 1; background: var(--mm-sidebar-hover-bg); color: var(--mm-sidebar-text); }
+.subnav-link.active {
+  background: var(--mm-sidebar-active-bg);
+  color: var(--mm-sidebar-active-text);
+  opacity: 1;
+}
+.subnav-icon { font-size: 0.8rem; flex-shrink: 0; opacity: 0.75; }
+.subnav-link.active .subnav-icon { opacity: 1; }
+
+/* mini mode — hide subnav text, keep icons */
+.sidebar-mini .sidebar-subnav { padding-inline-start: 0.5rem; }
+.sidebar-mini .subnav-link .nav-text { display: none; }
+.sidebar-mini .subnav-link { justify-content: center; min-height: 32px; padding: 0.25rem; }
+
+/* --------------------------------------------------------------------------
+   13. Workspace context banner (shown at top of each page when in a workspace)
+   -------------------------------------------------------------------------- */
+.ws-context-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  margin-bottom: 1rem;
+  background: var(--mm-surface-2, var(--mm-surface-soft));
+  border: 1px solid var(--mm-border-soft);
+  border-radius: var(--mm-radius-md);
+  font-size: var(--mm-text-sm);
+  color: var(--mm-text-secondary);
+  animation: fadeInDown 0.25s var(--mm-ease-out);
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ws-context-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ws-context-name { font-weight: 600; color: var(--mm-text); }
+.ws-context-link {
+  color: var(--mm-muted);
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: color var(--mm-duration-fast) var(--mm-ease);
+  padding: 0.125rem 0.25rem;
+}
+.ws-context-link:hover { color: var(--mm-primary); }
+
+/* --------------------------------------------------------------------------
+   14. Permission-denied panel
+   -------------------------------------------------------------------------- */
+.ws-perm-denied {
+  background: var(--mm-surface);
+  border: 1px dashed var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  padding: 3rem 1.5rem;
+}

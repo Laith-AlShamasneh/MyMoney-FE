@@ -97,14 +97,37 @@ function _isActivePath(itemPath) {
    HTML builders
    -------------------------------------------------------------------------- */
 function _buildNavItems() {
-  return NAV_ITEMS.map(({ path, icon, i18nKey, dividerBefore }) => {
+  const wsCtx     = _loadWorkspaceContext();
+  const inWs      = !!(wsCtx?.workspaceId);
+
+  return NAV_ITEMS.map(({ key, path, icon, i18nKey, dividerBefore }) => {
     const isActive = _isActivePath(path);
     const divider  = dividerBefore ? '<hr class="sidebar-divider" aria-hidden="true">' : '';
+
+    let subNav = '';
+    if (key === 'workspace' && inWs) {
+      const wsPages = [
+        { path: Config.ROUTES.WORKSPACE_MEMBERS,     icon: 'people',        i18nKey: 'nav.ws_members' },
+        { path: Config.ROUTES.WORKSPACE_INVITATIONS, icon: 'envelope-paper',i18nKey: 'nav.ws_invitations' },
+        { path: Config.ROUTES.WORKSPACE_ROLES,       icon: 'shield-lock',   i18nKey: 'nav.ws_roles' },
+        { path: Config.ROUTES.WORKSPACE_SETTINGS,    icon: 'gear',          i18nKey: 'nav.ws_settings' },
+      ];
+      subNav = `<div class="sidebar-subnav" role="list">` +
+        wsPages.map(p => {
+          const active = _isActivePath(p.path);
+          return `
+          <a class="subnav-link${active ? ' active' : ''}" href="${p.path}" role="listitem"${active ? ' aria-current="page"' : ''}>
+            <span class="subnav-icon"><i class="bi bi-${p.icon}" aria-hidden="true"></i></span>
+            <span class="nav-text" data-i18n="${p.i18nKey}">${t(p.i18nKey)}</span>
+          </a>`;
+        }).join('') + `</div>`;
+    }
+
     return `${divider}
       <a class="nav-link${isActive ? ' active' : ''}" href="${path}"${isActive ? ' aria-current="page"' : ''}>
         <span class="nav-icon"><i class="bi bi-${icon}" aria-hidden="true"></i></span>
         <span class="nav-text" data-i18n="${i18nKey}">${t(i18nKey)}</span>
-      </a>`;
+      </a>${subNav}`;
   }).join('');
 }
 

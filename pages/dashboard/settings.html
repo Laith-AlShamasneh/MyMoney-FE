@@ -329,6 +329,105 @@
             </div>
           </div><!-- /.row (prefs) -->
 
+          <!-- ── Currency Preferences ──────────────────────────────────── -->
+          <div class="row g-4 mt-1 animate-stagger">
+            <div class="col-12">
+              <div class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1" data-i18n="settings.currency_section">Currency Preferences</h2>
+                    <p class="text-muted small mb-0" data-i18n="settings.currency_desc">
+                      Set how amounts are displayed across the app.
+                    </p>
+                  </div>
+                </div>
+
+                <div id="currencyPrefsLoading" class="placeholder-glow px-3 pb-3">
+                  <div class="placeholder col-8 mb-2" style="height:2rem;border-radius:.375rem;"></div>
+                  <div class="placeholder col-6 mb-2" style="height:2rem;border-radius:.375rem;"></div>
+                  <div class="placeholder col-7"      style="height:2rem;border-radius:.375rem;"></div>
+                </div>
+
+                <div id="currencyPrefsError" class="d-none px-3 pb-3">
+                  <div class="alert alert-danger py-2 small mb-0" id="currencyPrefsErrorMsg" role="alert"></div>
+                </div>
+
+                <form id="currencyPrefsForm" class="d-none" novalidate>
+                  <div class="row g-3 px-3 pb-3">
+
+                    <div class="col-md-6">
+                      <label class="form-label small fw-semibold" for="baseCurrencySelect"
+                             data-i18n="settings.currency_base">Base Currency</label>
+                      <select class="form-select form-select-sm" id="baseCurrencySelect" required></select>
+                      <div class="form-text" data-i18n="settings.currency_base_hint">
+                        The currency you primarily earn and spend in.
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label small fw-semibold" for="displayCurrencySelect"
+                             data-i18n="settings.currency_display">Display Currency</label>
+                      <select class="form-select form-select-sm" id="displayCurrencySelect" required></select>
+                      <div class="form-text" data-i18n="settings.currency_display_hint">
+                        Amounts are converted to this currency for display.
+                      </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                      <label class="form-label small fw-semibold" for="numberFormatSelect"
+                             data-i18n="settings.currency_number_format">Number Format</label>
+                      <select class="form-select form-select-sm" id="numberFormatSelect">
+                        <option value="1">1,234.56</option>
+                        <option value="2">1.234,56</option>
+                        <option value="3">1 234,56</option>
+                        <option value="4">1 234.56</option>
+                      </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                      <label class="form-label small fw-semibold" for="symbolStyleSelect"
+                             data-i18n="settings.currency_symbol_style">Symbol Style</label>
+                      <select class="form-select form-select-sm" id="symbolStyleSelect">
+                        <option value="1" data-i18n="settings.currency_symbol_symbol">Symbol ($)</option>
+                        <option value="2" data-i18n="settings.currency_symbol_code">ISO Code (USD)</option>
+                        <option value="3" data-i18n="settings.currency_symbol_name">Name (US Dollar)</option>
+                      </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                      <label class="form-label small fw-semibold" for="negativeFormatSelect"
+                             data-i18n="settings.currency_negative_format">Negative Format</label>
+                      <select class="form-select form-select-sm" id="negativeFormatSelect">
+                        <option value="1">-1,234.56</option>
+                        <option value="2">(1,234.56)</option>
+                        <option value="3">1,234.56−</option>
+                      </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                      <label class="form-label small fw-semibold" for="currencyPositionSelect"
+                             data-i18n="settings.currency_position">Symbol Position</label>
+                      <select class="form-select form-select-sm" id="currencyPositionSelect">
+                        <option value="1" data-i18n="settings.currency_position_prefix">Prefix ($1,234.56)</option>
+                        <option value="2" data-i18n="settings.currency_position_suffix">Suffix (1,234.56$)</option>
+                      </select>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-end pt-1">
+                      <button type="submit" class="btn btn-primary btn-sm" id="saveCurrencyPrefsBtn">
+                        <span class="spinner-border spinner-border-sm d-none me-1"
+                              id="currencySaveSpinner" role="status" aria-hidden="true"></span>
+                        <span data-i18n="settings.currency_save_btn">Save</span>
+                      </button>
+                    </div>
+
+                  </div>
+                </form>
+
+              </div><!-- /.panel -->
+            </div>
+          </div><!-- /.row (currency prefs) -->
+
         </div><!-- /.container-fluid -->
       </main>
 

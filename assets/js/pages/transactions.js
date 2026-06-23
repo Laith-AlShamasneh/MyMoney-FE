@@ -16,6 +16,7 @@ import {
   incomeColors, expenseColors, chartPalette,
   chartTooltipOptions, chartLegendLabels, chartScales, chartSurfaceColor,
 } from '../core/chart-theme.js';
+import { initWorkspaceContext } from '../services/workspace-context.js';
 
 /* --------------------------------------------------------------------------
    State
@@ -861,6 +862,11 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_transactions',
+    contentId: 'tablePanel',
+    gates: [{ id: 'btnAddTransaction', perm: 'create_transaction' }],
+  });
 
   _txModal     = new bootstrap.Modal($('txModal'));
   _deleteModal = new bootstrap.Modal($('deleteModal'));

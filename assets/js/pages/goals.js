@@ -12,6 +12,7 @@ import { ApiError }                   from '../core/api.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { Config }                     from '../core/config.js';
 import { formatAmount }               from '../core/currency.js';
+import { initWorkspaceContext }       from '../services/workspace-context.js';
 
 /* ── Constants ──────────────────────────────────────────────────────────────── */
 const PAGE_SIZE = 12;
@@ -693,6 +694,14 @@ function _bindGridEvents() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_goals',
+    contentId: 'goalsContent',
+    gates: [
+      { id: 'addGoalBtn',      perm: 'create_goal' },
+      { id: 'addGoalBtnEmpty', perm: 'create_goal' },
+    ],
+  });
 
   // Bootstrap modal instances
   _wizardModal     = new bootstrap.Modal($('goalWizardModal'));

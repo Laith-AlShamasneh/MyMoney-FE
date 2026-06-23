@@ -16,6 +16,7 @@ import {
   chartPalette, chartTooltipOptions, chartLegendLabels,
   chartScales, incomeColors, expenseColors, chartSurfaceColor,
 } from '../core/chart-theme.js';
+import { initWorkspaceContext } from '../services/workspace-context.js';
 
 /* --------------------------------------------------------------------------
    Constants / enums
@@ -821,6 +822,14 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_budgets',
+    contentId: 'budgetsContent',
+    gates: [
+      { id: 'addBudgetBtn',      perm: 'create_budget' },
+      { id: 'addBudgetBtnEmpty', perm: 'create_budget' },
+    ],
+  });
 
   _wizardModal = new bootstrap.Modal($('budgetWizardModal'));
   _editModal   = new bootstrap.Modal($('editBudgetModal'));

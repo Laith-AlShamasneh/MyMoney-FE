@@ -14,6 +14,7 @@ import { ApiError }                        from '../core/api.js';
 import { Config }                          from '../core/config.js';
 import { Loader }                          from '../components/loading.js';
 import { showSuccess, showError }          from '../components/toast.js';
+import { CurrencyService }                from '../services/currency-service.js';
 
 /* --------------------------------------------------------------------------
    State
@@ -58,6 +59,22 @@ const sessionsEmpty     = document.getElementById('sessionsEmpty');
 const sessionsContainer = document.getElementById('sessionsContainer');
 const revokeOthersWrap  = document.getElementById('revokeOthersWrap');
 const revokeOthersBtn   = document.getElementById('revokeOthersBtn');
+
+/* --------------------------------------------------------------------------
+   DOM refs — currency preferences
+   -------------------------------------------------------------------------- */
+const currencyPrefsLoading  = document.getElementById('currencyPrefsLoading');
+const currencyPrefsError    = document.getElementById('currencyPrefsError');
+const currencyPrefsErrorMsg = document.getElementById('currencyPrefsErrorMsg');
+const currencyPrefsForm     = document.getElementById('currencyPrefsForm');
+const baseCurrencySelect    = document.getElementById('baseCurrencySelect');
+const displayCurrencySelect = document.getElementById('displayCurrencySelect');
+const numberFormatSelect    = document.getElementById('numberFormatSelect');
+const symbolStyleSelect     = document.getElementById('symbolStyleSelect');
+const negativeFormatSelect  = document.getElementById('negativeFormatSelect');
+const currencyPositionSelect= document.getElementById('currencyPositionSelect');
+const saveCurrencyPrefsBtn  = document.getElementById('saveCurrencyPrefsBtn');
+const currencySaveSpinner   = document.getElementById('currencySaveSpinner');
 
 /* --------------------------------------------------------------------------
    Helpers
@@ -448,12 +465,73 @@ function wirePrefsToggles() {
   });
 }
 
+/* --------------------------------------------------------------------------
+   Currency preferences
+   -------------------------------------------------------------------------- */
+function _populateCurrencySelect(el, currencies, selectedCode) {
+  el.innerHTML = currencies.map(c =>
+    `<option value="${_esc(c.isoCode)}"${c.isoCode === selectedCode ? ' selected' : ''}>
+       ${_esc(c.isoCode)} — ${_esc(c.name)}
+     </option>`
+  ).join('');
+}
+
+async function loadCurrencyPrefs() {
+  try {
+    const [currencies, prefs] = await Promise.all([
+      CurrencyService.getCurrencies(),
+      CurrencyService.getUserPreferences(),
+    ]);
+
+    _populateCurrencySelect(baseCurrencySelect,    currencies, prefs?.baseCurrencyCode    ?? 'USD');
+    _populateCurrencySelect(displayCurrencySelect, currencies, prefs?.displayCurrencyCode ?? 'USD');
+
+    numberFormatSelect.value    = String(prefs?.numberFormatId     ?? 1);
+    symbolStyleSelect.value     = String(prefs?.symbolStyleId      ?? 1);
+    negativeFormatSelect.value  = String(prefs?.negativeFormatId   ?? 1);
+    currencyPositionSelect.value= String(prefs?.currencyPositionId ?? 1);
+
+    currencyPrefsLoading.classList.add('d-none');
+    currencyPrefsForm.classList.remove('d-none');
+  } catch (err) {
+    currencyPrefsLoading.classList.add('d-none');
+    currencyPrefsErrorMsg.textContent = err instanceof ApiError ? err.message : t('errors.unknown');
+    currencyPrefsError.classList.remove('d-none');
+  }
+}
+
+function _wireCurrencyPrefsForm() {
+  currencyPrefsForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveCurrencyPrefsBtn.disabled = true;
+    currencySaveSpinner.classList.remove('d-none');
+    try {
+      await CurrencyService.updateUserPreferences({
+        baseCurrencyCode:   baseCurrencySelect.value,
+        displayCurrencyCode:displayCurrencySelect.value,
+        numberFormatId:     parseInt(numberFormatSelect.value, 10),
+        symbolStyleId:      parseInt(symbolStyleSelect.value, 10),
+        negativeFormatId:   parseInt(negativeFormatSelect.value, 10),
+        currencyPositionId: parseInt(currencyPositionSelect.value, 10),
+      });
+      showSuccess(t('settings.currency_save_success'));
+      document.dispatchEvent(new CustomEvent('mm-currency-change'));
+    } catch (err) {
+      showError(err instanceof ApiError ? err.message : t('errors.unknown'));
+    } finally {
+      saveCurrencyPrefsBtn.disabled = false;
+      currencySaveSpinner.classList.add('d-none');
+    }
+  });
+}
+
 async function init() {
   await initI18n();
   await guardPage();
   initLayout();
   wirePrefsToggles();
-  await Promise.all([loadEmailState(), loadSessions(), loadNotificationPrefs()]);
+  _wireCurrencyPrefsForm();
+  await Promise.all([loadEmailState(), loadSessions(), loadNotificationPrefs(), loadCurrencyPrefs()]);
   initOnboarding();
 }
 

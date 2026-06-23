@@ -11,6 +11,7 @@ import { ReportService }               from '../services/report-service.js';
 import { ApiError }                    from '../core/api.js';
 import { Loader }                      from '../components/loading.js';
 import { showSuccess, showError }      from '../components/toast.js';
+import { initWorkspaceContext }        from '../services/workspace-context.js';
 
 /* --------------------------------------------------------------------------
    State
@@ -310,6 +311,11 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_reports',
+    contentId: 'generateForm',
+    gates: [{ id: 'generateBtn', perm: 'export_reports' }],
+  });
   _setDefaultDates();
   _syncLanguageDropdown();
   await Promise.all([loadTypes(), loadHistory()]);

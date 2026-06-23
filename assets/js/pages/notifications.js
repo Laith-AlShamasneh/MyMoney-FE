@@ -10,6 +10,7 @@ import { initOnboarding }             from '../components/onboarding.js';
 import { NotificationService }        from '../services/notification-service.js';
 import { showSuccess, showError }     from '../components/toast.js';
 import { Loader }                     from '../components/loading.js';
+import { initWorkspaceContext }       from '../services/workspace-context.js';
 
 /* ── Constants ────────────────────────────────────────────────────────────── */
 const PAGE_SIZE = 15;
@@ -385,6 +386,9 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm: 'view_notifications',
+  });
   _wireFilters();
   elMarkAllBtn?.addEventListener('click', _handleMarkAllRead);
   await _loadNotifications();

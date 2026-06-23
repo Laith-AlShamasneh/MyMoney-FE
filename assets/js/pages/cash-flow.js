@@ -15,6 +15,7 @@ import {
   incomeColors, expenseColors,
   chartTooltipOptions, chartLegendLabels, chartScales, chartTextColor,
 } from '../core/chart-theme.js';
+import { initWorkspaceContext } from '../services/workspace-context.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
@@ -614,6 +615,10 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_cashflow',
+    contentId: 'cfContent',
+  });
   _wireEvents();
   await loadPage();
 }

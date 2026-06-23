@@ -17,6 +17,7 @@ import { CalendarService }             from '../services/calendar-service.js';
 import { ApiError }                    from '../core/api.js';
 import { showError, showSuccess }      from '../components/toast.js';
 import { formatAmount }                from '../core/currency.js';
+import { initWorkspaceContext }        from '../services/workspace-context.js';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Constants
@@ -1190,6 +1191,11 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_calendar',
+    contentId: 'calContent',
+    gates: [{ id: 'calCreateBtn', perm: 'manage_calendar' }],
+  });
 
   _updateArrowIcons();
   _buildMonthHeader();

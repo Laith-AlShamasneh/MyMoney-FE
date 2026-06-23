@@ -10,6 +10,7 @@ import { FinancialIntelligenceService } from '../services/financial-intelligence
 import { ApiError }                     from '../core/api.js';
 import { showError, showSuccess }       from '../components/toast.js';
 import { formatAmount }                 from '../core/currency.js';
+import { initWorkspaceContext }         from '../services/workspace-context.js';
 
 /* --------------------------------------------------------------------------
    DOM refs
@@ -574,6 +575,10 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  await initWorkspaceContext({
+    viewPerm:  'view_insights',
+    contentId: 'filContent',
+  });
   _initTabs();
   _wireInteractions();
   await loadPage();
