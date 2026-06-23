@@ -113,7 +113,7 @@ async function loadInvitations() {
 
     const items = data?.items ?? data ?? [];
     const total = data?.totalCount ?? items.length;
-    _totalPages = data?.totalPages ?? Math.ceil(total / _pageSize) || 1;
+    _totalPages = (data?.totalPages ?? Math.ceil(total / _pageSize)) || 1;
     _allInvitations = items;
 
     updateTabCounts(items, total);
@@ -323,12 +323,12 @@ async function init() {
     return;
   }
 
-  if (!ctx?.workspaceId) {
+  if (!ctx?.currentWorkspaceId) {
     window.location.href = '/pages/workspaces/dashboard.html';
     return;
   }
 
-  _wsId     = ctx.workspaceId;
+  _wsId     = ctx.currentWorkspaceId;
   _myRoleId = ctx.roleId;
 
   // Hide invite button for viewers/auditors/guests

@@ -225,7 +225,7 @@ async function init() {
     return;
   }
 
-  if (!ctx?.workspaceId) {
+  if (!ctx?.currentWorkspaceId) {
     window.location.href = '/pages/workspaces/dashboard.html';
     return;
   }
@@ -237,7 +237,7 @@ async function init() {
 
   // Then fetch live permissions for "my permissions" card
   try {
-    const livePerms = await WorkspaceService.getMyPermissions(ctx.workspaceId);
+    const livePerms = await WorkspaceService.getMyPermissions(ctx.currentWorkspaceId);
     renderMyPerms(myRoleId, livePerms);
   } catch {
     // Fall back to static matrix for my perms

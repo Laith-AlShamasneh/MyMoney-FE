@@ -98,7 +98,7 @@ function _isActivePath(itemPath) {
    -------------------------------------------------------------------------- */
 function _buildNavItems() {
   const wsCtx     = _loadWorkspaceContext();
-  const inWs      = !!(wsCtx?.workspaceId);
+  const inWs      = !!(wsCtx?.currentWorkspaceId);
 
   return NAV_ITEMS.map(({ key, path, icon, i18nKey, dividerBefore }) => {
     const isActive = _isActivePath(path);
@@ -575,14 +575,14 @@ function _wsInitials(name) {
     : name.trim().charAt(0).toUpperCase();
 }
 
-function _buildWsItems(workspaces, currentId) {
+function _buildWsItems(workspaces) {
   if (!workspaces?.length) {
     return `<div style="padding:0.75rem 1rem;font-size:0.8125rem;color:var(--mm-muted)" data-i18n="workspace.no_workspaces">${t('workspace.no_workspaces')}</div>`;
   }
   return workspaces.map(ws => {
-    const color   = ws.color || WS_COLORS[ws.workspaceId % WS_COLORS.length];
-    const init    = _wsInitials(ws.name);
-    const isActive = ws.workspaceId === currentId;
+    const color    = ws.color || WS_COLORS[ws.workspaceId % WS_COLORS.length];
+    const init     = _wsInitials(ws.name);
+    const isActive = !!(ws.isCurrent);
     return `
       <button class="ws-item${isActive ? ' active' : ''}" type="button"
               role="option" aria-selected="${isActive}"
@@ -591,7 +591,7 @@ function _buildWsItems(workspaces, currentId) {
         <span class="ws-item-dot" style="background:${color}">${init}</span>
         <span class="ws-item-body">
           <span class="ws-item-name">${ws.name}</span>
-          <span class="ws-item-meta">${ws.memberCount ?? ''} ${ws.memberCount != null ? t('workspace.members_count') : ''}</span>
+          <span class="ws-item-meta">${ws.activeMemberCount != null ? t('workspace.members_count', { n: ws.activeMemberCount }) : ''}</span>
         </span>
         ${isActive ? '<i class="bi bi-check2 ws-item-check" aria-hidden="true"></i>' : ''}
       </button>`;
@@ -630,10 +630,8 @@ function _wireWorkspaceSwitcher() {
   async function _loadWsList() {
     if (listWrap) listWrap.innerHTML = `<div style="padding:0.75rem 1rem;font-size:0.8125rem;color:var(--mm-muted)">${t('common.loading')}</div>`;
     try {
-      const ctx = _loadWorkspaceContext();
-      const currentId = ctx?.currentWorkspaceId ?? null;
       const list = await WorkspaceService.getList();
-      if (listWrap) listWrap.innerHTML = _buildWsItems(list, currentId);
+      if (listWrap) listWrap.innerHTML = _buildWsItems(list);
     } catch {
       if (listWrap) listWrap.innerHTML = `<div style="padding:0.75rem 1rem;font-size:0.8125rem;color:var(--mm-danger)">${t('errors.server')}</div>`;
     }
@@ -659,7 +657,7 @@ function _wireWorkspaceSwitcher() {
       if (dot) dot.style.background = color;
       if (nm)  nm.textContent = name;
       // Notify page
-      document.dispatchEvent(new CustomEvent('mm-workspace-change', {
+      window.dispatchEvent(new CustomEvent('mm-workspace-change', {
         detail: { workspaceId: wsId, name, color },
       }));
     } catch { /* silently ignore — non-fatal */ }
@@ -678,7 +676,7 @@ function _wireWorkspaceSwitcher() {
   });
 
   // When workspace context changes from another source, sync the button
-  document.addEventListener('mm-workspace-change', (e) => {
+  window.addEventListener('mm-workspace-change', (e) => {
     const dot = document.getElementById('wsDot');
     const nm  = document.getElementById('wsName');
     if (dot && e.detail?.color) dot.style.background = e.detail.color;

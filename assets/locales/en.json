@@ -1706,6 +1706,7 @@
     "personal_mode":      "Personal",
     "no_workspaces":      "No workspaces yet",
     "manage":             "Manage Workspaces",
+    "manage_btn":         "Manage",
     "create_new":         "Create Workspace",
     "members_count":      "{n} members",
 
@@ -1744,10 +1745,11 @@
     "type_business": "Business",
     "type_team":     "Team",
 
-    "type_personal_desc": "Just for yourself.",
-    "type_family_desc":   "Share finances with your household.",
-    "type_business_desc": "Track business accounts together.",
-    "type_team_desc":     "Collaborate with your team.",
+    "type_personal_desc":   "Just for yourself.",
+    "type_family_desc":     "Share finances with your household.",
+    "type_business_desc":   "Track business accounts together.",
+    "type_team_desc":       "Collaborate with your team.",
+    "type_immutable_hint":  "Workspace type cannot be changed after creation.",
 
     "role_owner":       "Owner",
     "role_admin":       "Admin",

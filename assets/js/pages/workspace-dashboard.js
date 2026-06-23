@@ -127,11 +127,14 @@ async function loadWorkspaceList() {
 
     wsCards.querySelectorAll('[data-switch-ws]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const wsId = +btn.dataset.switchWs;
+        const wsId   = +btn.dataset.switchWs;
+        const manage = btn.dataset.manage === 'true';
         try {
           await WorkspaceService.switchWorkspace(wsId);
           window.dispatchEvent(new CustomEvent('mm-workspace-change', { detail: { workspaceId: wsId } }));
-          location.reload();
+          window.location.href = manage
+            ? '/pages/workspaces/settings.html'
+            : window.location.pathname;
         } catch (e) {
           showError(t('workspace.error_switch'));
         }
@@ -147,7 +150,7 @@ async function loadWorkspaceList() {
 function _buildWsCard(ws) {
   const type = WS_TYPES[ws.typeId] || WS_TYPES[1];
   const role = ROLES[ws.roleId] || ROLES[5];
-  const color = ws.colorHex || '#2563eb';
+  const color = ws.color || '#2563eb';
   return `
     <div class="col-12 col-sm-6 col-lg-4">
       <div class="card border-0 shadow-sm h-100 ws-card" style="border-top:3px solid ${_esc(color)} !important">
@@ -162,9 +165,15 @@ function _buildWsCard(ws) {
           ${ws.description ? `<p class="text-muted small mb-0 text-truncate">${_esc(ws.description)}</p>` : ''}
           <div class="d-flex align-items-center justify-content-between mt-auto pt-1">
             ${_roleBadge(ws.roleId)}
-            <button class="btn btn-sm btn-outline-primary" data-switch-ws="${ws.workspaceId}">
-              <span data-i18n="workspace.switcher_switch">${t('workspace.switcher_switch')}</span>
-            </button>
+            <div class="d-flex gap-1">
+              <button class="btn btn-sm btn-outline-secondary" data-switch-ws="${ws.workspaceId}" data-manage="true"
+                      title="${t('workspace.manage_btn')}">
+                <i class="bi bi-gear" aria-hidden="true"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-primary" data-switch-ws="${ws.workspaceId}">
+                <span>${t('workspace.switcher_switch')}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -175,9 +184,10 @@ function _buildWsCard(ws) {
    Active workspace
    -------------------------------------------------------------------------- */
 async function loadActiveWorkspace(ctx) {
-  const { workspaceId, workspaceName, colorHex, typeId, roleId } = ctx;
-  const color = colorHex || '#2563eb';
-  const type  = WS_TYPES[typeId] || WS_TYPES[1];
+  const workspaceId = ctx.currentWorkspaceId;
+  const { workspaceName, color: colorRaw, workspaceTypeId, roleId } = ctx;
+  const color = colorRaw || '#2563eb';
+  const type  = WS_TYPES[workspaceTypeId] || WS_TYPES[1];
 
   wsLogo.innerHTML = _wsLogoHtml(workspaceName, color, 52, '1.1rem');
   wsActiveTitle.textContent = workspaceName;
@@ -337,7 +347,7 @@ async function handleCreate() {
       name,
       description: desc || null,
       typeId:      _selectedTypeId,
-      colorHex:    _selectedColor,
+      color:       _selectedColor,
     });
 
     bootstrap.Modal.getInstance(document.getElementById('createWsModal'))?.hide();
@@ -374,7 +384,7 @@ async function init() {
     return;
   }
 
-  if (!ctx || !ctx.workspaceId) {
+  if (!ctx || !ctx.currentWorkspaceId) {
     // Personal mode
     personalModeBanner.classList.remove('d-none');
     await loadWorkspaceList();

@@ -81,7 +81,7 @@ async function loadSettings() {
     _wsData = ws;
     _originalName    = ws.name;
     _selectedTypeId  = ws.typeId || 1;
-    _selectedColor   = ws.colorHex || WS_COLORS[0];
+    _selectedColor   = ws.color || WS_COLORS[0];
 
     // Sidebar identity card
     const type = WS_TYPES[ws.typeId] || WS_TYPES[1];
@@ -99,9 +99,11 @@ async function loadSettings() {
       if (nameInput) nameInput.value = ws.name;
       if (descInput) descInput.value = ws.description || '';
 
-      // Type grid
+      // Type grid — type is immutable after creation, show as read-only
       typeGrid?.querySelectorAll('.ws-type-option').forEach(btn => {
         btn.classList.toggle('selected', +btn.dataset.typeId === _selectedTypeId);
+        btn.setAttribute('disabled', '');
+        btn.setAttribute('title', t('workspace.type_immutable_hint'));
       });
 
       // Color swatches
@@ -175,8 +177,7 @@ saveBtn?.addEventListener('click', async () => {
       workspaceId:  _wsId,
       name,
       description:  descInput?.value.trim() || null,
-      typeId:       _selectedTypeId,
-      colorHex:     _selectedColor,
+      color:        _selectedColor,
     });
     WorkspaceService.invalidateContext();
     window.dispatchEvent(new CustomEvent('mm-workspace-change', { detail: { workspaceId: _wsId } }));
@@ -198,7 +199,7 @@ cancelBtn?.addEventListener('click', () => {
   if (nameInput) nameInput.value = _wsData?.name || '';
   if (descInput) descInput.value = _wsData?.description || '';
   _selectedTypeId = _wsData?.typeId || 1;
-  _selectedColor  = _wsData?.colorHex || WS_COLORS[0];
+  _selectedColor  = _wsData?.color || WS_COLORS[0];
   typeGrid?.querySelectorAll('.ws-type-option').forEach(btn =>
     btn.classList.toggle('selected', +btn.dataset.typeId === _selectedTypeId)
   );
@@ -276,12 +277,12 @@ async function init() {
     return;
   }
 
-  if (!ctx?.workspaceId) {
+  if (!ctx?.currentWorkspaceId) {
     window.location.href = '/pages/workspaces/dashboard.html';
     return;
   }
 
-  _wsId     = ctx.workspaceId;
+  _wsId     = ctx.currentWorkspaceId;
   _myRoleId = ctx.roleId;
   _canEdit  = _myRoleId <= 2; // Owner or Admin can edit
 

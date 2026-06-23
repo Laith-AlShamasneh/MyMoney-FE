@@ -76,11 +76,11 @@ export async function initWorkspaceContext({ viewPerm, contentId, gates = [] } =
     return; // workspace API unavailable — continue as personal
   }
 
-  if (!_ctx?.workspaceId) return; // personal mode, no restrictions
+  if (!_ctx?.currentWorkspaceId) return; // personal mode, no restrictions
 
   // Load live permissions; fall back to static role map
   try {
-    const livePerms = await WorkspaceService.getMyPermissions(_ctx.workspaceId);
+    const livePerms = await WorkspaceService.getMyPermissions(_ctx.currentWorkspaceId);
     _perms = new Set(livePerms.map(p => (p.permissionName || p.name || '').toLowerCase()));
   } catch {
     _perms = _STATIC_ROLE_PERMS[_ctx.roleId] ?? new Set();

@@ -1703,6 +1703,7 @@
     "personal_mode":      "شخصي",
     "no_workspaces":      "لا توجد مساحات عمل بعد",
     "manage":             "إدارة مساحات العمل",
+    "manage_btn":         "إدارة",
     "create_new":         "إنشاء مساحة عمل",
     "members_count":      "{n} أعضاء",
 
@@ -1741,10 +1742,11 @@
     "type_business": "تجارية",
     "type_team":     "فريق",
 
-    "type_personal_desc": "لك وحدك.",
-    "type_family_desc":   "شارك الماليات مع أسرتك.",
-    "type_business_desc": "تتبع الحسابات التجارية معاً.",
-    "type_team_desc":     "تعاون مع فريقك.",
+    "type_personal_desc":  "لك وحدك.",
+    "type_family_desc":    "شارك الماليات مع أسرتك.",
+    "type_business_desc":  "تتبع الحسابات التجارية معاً.",
+    "type_team_desc":      "تعاون مع فريقك.",
+    "type_immutable_hint": "لا يمكن تغيير نوع مساحة العمل بعد إنشائها.",
 
     "role_owner":       "مالك",
     "role_admin":       "مسؤول",
