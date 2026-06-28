@@ -85,7 +85,7 @@ async function loadSettings() {
 
     // Sidebar identity card
     const type = WS_TYPES[ws.typeId] || WS_TYPES[1];
-    wsIdentityLogo.innerHTML = _wsInitials(ws.name);
+    wsIdentityLogo.textContent = _wsInitials(ws.name);
     wsIdentityLogo.style.background = _selectedColor;
     wsIdentityName.textContent = ws.name;
     wsIdentityType.textContent = `${type.icon} ${t(`workspace.type_${type.key}`)}`;

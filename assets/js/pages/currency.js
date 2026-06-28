@@ -4,6 +4,7 @@
  */
 
 import { initI18n, t, getLanguage }   from '../core/i18n.js';
+import { escapeHtml }                  from '../core/html.js';
 import { initLayout }                  from '../components/layout.js';
 import { guardPage }                   from '../core/auth.js';
 import { initOnboarding }              from '../components/onboarding.js';
@@ -153,7 +154,7 @@ function _buildRateCard(rate) {
             <span class="rate-source-badge ${srcCls}">${srcLbl}</span>
           </span>
           <span class="rate-card-meta-item text-muted">
-            ${rate.providerNameEn || t('currency.rates_manual')}
+            ${escapeHtml(rate.providerNameEn || t('currency.rates_manual'))}
           </span>
         </div>
       </div>
@@ -258,7 +259,7 @@ function _populateCurrencySelects() {
         const flag = currencyFlag(c.code);
         const name = _isAr() && c.nameAr ? c.nameAr : c.nameEn;
         const sel  = c.code === selectedCode ? ' selected' : '';
-        return `<option value="${c.code}"${sel}>${flag} ${c.code} — ${name}</option>`;
+        return `<option value="${escapeHtml(c.code)}"${sel}>${flag} ${escapeHtml(c.code)} — ${escapeHtml(name)}</option>`;
       }).join('');
   };
 

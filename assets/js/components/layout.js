@@ -11,6 +11,7 @@
  */
 
 import { Config } from '../core/config.js';
+import { escapeHtml } from '../core/html.js';
 import { t, getLanguage, setLanguage } from '../core/i18n.js';
 import { getCurrentUser, logout } from '../core/auth.js';
 import { initNotificationBell } from './notifications.js';
@@ -159,7 +160,6 @@ function _buildWorkspaceSwitcher() {
   const ctx = _loadWorkspaceContext();
   const name  = ctx?.workspaceName || t('workspace.personal_mode');
   const color = ctx?.color || '#2563eb';
-  const initial = name.trim().charAt(0).toUpperCase();
 
   return `
     <div class="ws-switcher-wrap" id="wsSwitcherWrap">
@@ -168,8 +168,8 @@ function _buildWorkspaceSwitcher() {
               aria-haspopup="listbox"
               aria-expanded="false"
               aria-label="${t('workspace.switcher_aria')}">
-        <span class="ws-dot" id="wsDot" style="background:${color}"></span>
-        <span class="ws-switcher-name" id="wsName">${name}</span>
+        <span class="ws-dot" id="wsDot" style="background:${escapeHtml(color)}"></span>
+        <span class="ws-switcher-name" id="wsName">${escapeHtml(name)}</span>
         <i class="bi bi-chevron-down ws-switcher-caret" aria-hidden="true"></i>
       </button>
       <div class="ws-dropdown d-none" id="wsDropdown" role="listbox"
@@ -288,8 +288,8 @@ function _buildNavbar(user) {
           <div class="dropdown">
             <button class="profile-button dropdown-toggle" type="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
-              <img class="avatar-img avatar-sm" src="${avatarSrc}" alt="${userName}" id="navbarUserAvatar">
-              <span class="profile-name d-none d-sm-inline" id="navbarUserName">${userName}</span>
+              <img class="avatar-img avatar-sm" src="${escapeHtml(avatarSrc)}" alt="${escapeHtml(userName)}" id="navbarUserAvatar">
+              <span class="profile-name d-none d-sm-inline" id="navbarUserName">${escapeHtml(userName)}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" href="${Config.ROUTES.PROFILE}" data-i18n="nav.profile">${t('nav.profile')}</a></li>
@@ -453,11 +453,11 @@ function _buildCsItem(c, current, isAr) {
                    type="button"
                    role="option"
                    aria-selected="${isActive}"
-                   data-cs-code="${c.code}">
+                   data-cs-code="${escapeHtml(c.code)}">
     <span class="cs-item-flag" aria-hidden="true">${flag}</span>
     <span class="cs-item-body">
-      <span class="cs-item-code">${c.code}</span>
-      <span class="cs-item-name">${name}</span>
+      <span class="cs-item-code">${escapeHtml(c.code)}</span>
+      <span class="cs-item-name">${escapeHtml(name)}</span>
     </span>
     ${check}
   </button>`;
@@ -586,11 +586,11 @@ function _buildWsItems(workspaces) {
     return `
       <button class="ws-item${isActive ? ' active' : ''}" type="button"
               role="option" aria-selected="${isActive}"
-              data-ws-id="${ws.workspaceId}" data-ws-color="${color}"
-              data-ws-name="${ws.name}">
-        <span class="ws-item-dot" style="background:${color}">${init}</span>
+              data-ws-id="${escapeHtml(ws.workspaceId)}" data-ws-color="${escapeHtml(color)}"
+              data-ws-name="${escapeHtml(ws.name)}">
+        <span class="ws-item-dot" style="background:${escapeHtml(color)}">${escapeHtml(init)}</span>
         <span class="ws-item-body">
-          <span class="ws-item-name">${ws.name}</span>
+          <span class="ws-item-name">${escapeHtml(ws.name)}</span>
           <span class="ws-item-meta">${ws.activeMemberCount != null ? t('workspace.members_count', { n: ws.activeMemberCount }) : ''}</span>
         </span>
         ${isActive ? '<i class="bi bi-check2 ws-item-check" aria-hidden="true"></i>' : ''}
