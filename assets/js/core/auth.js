@@ -3,7 +3,10 @@
  *
  * Authentication state management.
  *
- * - Access token stored in memory AND localStorage for cross-navigation persistence.
+ * - Access token stored in MEMORY ONLY (never persisted) — minimises the XSS
+ *   blast radius (a compromised script cannot read it from storage). On a fresh
+ *   page load it is re-acquired from the refresh token (one round trip per
+ *   navigation — the accepted trade-off in ADR-005).
  * - Refresh token stored in localStorage (key: mm.refreshToken).
  * - Wires itself into api.js on import via setAuthInterceptors().
  * - Provides guardPage() for protecting dashboard pages.
@@ -34,23 +37,6 @@ setAuthInterceptors(
 /* --------------------------------------------------------------------------
    Token persistence helpers
    -------------------------------------------------------------------------- */
-function _saveAccessToken(token, expiresAt) {
-  try {
-    localStorage.setItem(Config.STORAGE_KEYS.ACCESS_TOKEN, token);
-    if (expiresAt) localStorage.setItem(Config.STORAGE_KEYS.ACCESS_TOKEN_EXPIRY, expiresAt);
-  } catch {
-    /* localStorage unavailable */
-  }
-}
-
-function _loadAccessToken() {
-  try {
-    return localStorage.getItem(Config.STORAGE_KEYS.ACCESS_TOKEN);
-  } catch {
-    return null;
-  }
-}
-
 function _saveRefreshToken(token, expiresAt) {
   try {
     localStorage.setItem(Config.STORAGE_KEYS.REFRESH_TOKEN, token);
@@ -166,7 +152,8 @@ function _handleSessionExpired() {
    -------------------------------------------------------------------------- */
 
 /**
- * Applies a login/refresh response to in-memory state + localStorage.
+ * Applies a login/refresh response. The access token is kept in memory only;
+ * the refresh token and display data are persisted.
  * @param {{ accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt, email, displayName, roles }} result
  */
 function _applySession(result) {
@@ -184,9 +171,8 @@ function _applySession(result) {
       ?? false,
   };
 
-  /* Persist access token so it survives page navigation.
-     Also persist display data for layout rendering before the first API call. */
-  _saveAccessToken(result.accessToken, result.accessTokenExpiresAt);
+  /* Access token is intentionally NOT persisted (memory only — ADR-005).
+     Persist only display data so the layout can render before the first call. */
   _saveUser(_currentUser);
 
   if (result.refreshToken) {
@@ -245,43 +231,30 @@ export function updateCurrentUser(partial) {
 
 /**
  * Call at the top of every protected (dashboard) page script.
- * Performs a client-side-only session check — no server call.
  *
- * Flow:
- *  1. Access token in memory and valid → OK
- *  2. No in-memory token but stored refresh token (not locally expired) → OK
- *     The actual server refresh is deferred to the first 401 response via api.js.
- *  3. No stored refresh token or locally expired → redirect to login immediately.
- *
- * This reactive approach means refresh is only called when the server signals
- * expiry (401), never pre-emptively on every page load.
+ * Flow (access token lives in memory only, so it is empty on a fresh load):
+ *  1. Valid access token already in memory → OK (same-document case).
+ *  2. No in-memory token but a valid (not locally-expired) refresh token →
+ *     proactively mint a fresh access token from it BEFORE the page proceeds,
+ *     so the layout's notification poll and the first data call carry a token.
+ *  3. No usable refresh token, or the refresh fails → redirect to login.
  */
 export async function guardPage() {
-  /* Restore access token from localStorage if not already in memory */
-  if (!_accessToken) {
-    const stored = _loadAccessToken();
-    if (stored && !_isAccessTokenExpired(stored)) {
-      _accessToken = stored;
-    }
-  }
-
   if (_accessToken && !_isAccessTokenExpired(_accessToken)) {
-    /* Restore display data if not yet loaded into memory */
     if (!_currentUser) _currentUser = _loadUser();
     return;
   }
 
-  if (!_loadRefreshToken() || _isRefreshTokenExpired()) {
-    clearSession();
-    window.location.href = Config.ROUTES.LOGIN;
-    throw new Error('Not authenticated.');
+  if (_loadRefreshToken() && !_isRefreshTokenExpired()) {
+    /* Render the layout with cached display data while we refresh. */
+    if (!_currentUser) _currentUser = _loadUser();
+    const refreshed = await _tryRefreshToken();
+    if (refreshed) return;
   }
 
-  /* Restore display data from localStorage so the layout renders with the
-     real user name and avatar before the first API call triggers a refresh. */
-  if (!_currentUser) {
-    _currentUser = _loadUser();
-  }
+  clearSession();
+  window.location.href = Config.ROUTES.LOGIN;
+  throw new Error('Not authenticated.');
 }
 
 /**

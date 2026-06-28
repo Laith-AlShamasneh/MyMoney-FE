@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-nBwWk9tm7jUW8Jwi/WCHXRLONZxhKc9nya/Nd8EL/PM=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://localhost:44320; connect-src 'self' https://localhost:44320; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5wqsJI1+/GKhkxTOp+Gz7pSoSLjKvCqxCFH7+Rll0uw=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://localhost:44320; connect-src 'self' https://localhost:44320; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="MyMoney — التقويم المالي">
   <title data-i18n-page-title="calendar.page_title">التقويم المالي | MyMoney</title>
@@ -32,6 +32,12 @@
       document.documentElement.setAttribute('data-bs-theme',theme);
       document.documentElement.classList.add('mm-init');
     }catch(e){}
+    /* Safety net: never leave the page invisible. If app JS has not revealed
+       the body (module load failure / uncaught error), force-reveal it. */
+    function mmReveal(){document.documentElement.classList.remove('mm-init');}
+    setTimeout(mmReveal,4000);
+    window.addEventListener('error',mmReveal);
+    window.addEventListener('unhandledrejection',mmReveal);
   })();
   </script>
 </head>

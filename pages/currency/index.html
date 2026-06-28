@@ -2,18 +2,34 @@
 <html lang="ar" dir="rtl" data-theme="light" class="mm-init">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-nBwWk9tm7jUW8Jwi/WCHXRLONZxhKc9nya/Nd8EL/PM=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://localhost:44320; connect-src 'self' https://localhost:44320; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5wqsJI1+/GKhkxTOp+Gz7pSoSLjKvCqxCFH7+Rll0uw=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://localhost:44320; connect-src 'self' https://localhost:44320; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="currency.page_title">Exchange Rates — MyMoney</title>
 
   <!-- Inline theme/dir script to prevent FOUC -->
   <script>
-    (function(){
-      var t=localStorage.getItem('mm.theme');
-      if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t);
-      var l=localStorage.getItem('mm.lang');
-      if(l==='en'){document.documentElement.setAttribute('lang','en');document.documentElement.removeAttribute('dir');}
-    })();
+  (function(){
+    try{
+      var lang=localStorage.getItem('mm.lang')||'ar';
+      document.documentElement.lang=lang;
+      document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+      if(lang==='ar'&&!document.getElementById('mm-rtl-stylesheet')){
+        var l=document.createElement('link');
+        l.id='mm-rtl-stylesheet';l.rel='stylesheet';l.href='/assets/css/rtl.css';
+        document.head.appendChild(l);
+      }
+      var theme=localStorage.getItem('mm.theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',theme);
+      document.documentElement.setAttribute('data-bs-theme',theme);
+      document.documentElement.classList.add('mm-init');
+    }catch(e){}
+    /* Safety net: never leave the page invisible. If app JS has not revealed
+       the body (module load failure / uncaught error), force-reveal it. */
+    function mmReveal(){document.documentElement.classList.remove('mm-init');}
+    setTimeout(mmReveal,4000);
+    window.addEventListener('error',mmReveal);
+    window.addEventListener('unhandledrejection',mmReveal);
+  })();
   </script>
 
   <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
