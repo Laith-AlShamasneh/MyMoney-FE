@@ -807,11 +807,10 @@ function _wireEvents() {
     _renderDonutChart(_s.allBudgets);
   });
 
-  document.addEventListener('mm-currency-change', () => {
-    if (!_s.dashboard) return;
-    if (_s.dashboard.summary) _renderKpis(_s.dashboard.summary);
-    _applyFilters();
-    _renderGrid();
+    document.addEventListener('mm-currency-change', () => {
+    /* Re-fetch so amounts are converted by the backend for the new
+       display currency (re-rendering cached data would mis-label them). */
+    if (_s.dashboard) _reloadAfterChange();
   });
 }
 

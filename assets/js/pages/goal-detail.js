@@ -715,11 +715,9 @@ async function _submitDelete() {
     $('contribLoadMoreBtn').disabled = false;
   });
 
-  document.addEventListener('mm-currency-change', () => {
-    if (!_goal) return;
-    _renderHero(_goal);
-    _renderStats(_goal);
-    _renderMilestones(_goal);
-    _renderLinkedRecurring(_goal.recurringLinks ?? []);
+    document.addEventListener('mm-currency-change', () => {
+    /* Re-fetch so amounts are converted by the backend for the new
+       display currency (re-rendering cached data would mis-label them). */
+    if (_goal) _refreshGoal();
   });
 })();

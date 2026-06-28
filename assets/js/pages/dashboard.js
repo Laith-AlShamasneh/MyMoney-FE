@@ -632,15 +632,12 @@ document.addEventListener('mm-theme-change', () => {
 });
 
 /* --------------------------------------------------------------------------
-   Currency change — re-render all amounts from cache
+   Currency change — re-fetch so amounts are converted by the backend, not just
+   re-labelled with the new currency (re-rendering cached data would show the
+   previous currency's numbers under the new currency symbol).
    -------------------------------------------------------------------------- */
 document.addEventListener('mm-currency-change', () => {
-  if (!_lastData) return;
-  _renderKpi(_lastData.kpi);
-  _renderTrendChart(_lastData.monthlyTrend);
-  _renderBreakdown(_lastData.categoryBreakdown);
-  _renderRecentTransactions(_lastData.recentTransactions);
-  if (_lastData.cfData)  _renderCfStrip(_lastData.cfData);
+  loadDashboard();
 });
 
 /* --------------------------------------------------------------------------

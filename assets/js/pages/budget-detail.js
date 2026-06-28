@@ -642,11 +642,10 @@ function _wireEvents() {
     if (chartData.length) _renderTrendChart(chartData);
   });
 
-  document.addEventListener('mm-currency-change', () => {
-    if (!_s.budget) return;
-    _renderHeader(_s.budget);
-    _renderPeriodKpis(_s.budget);
-    _renderPeriodsTable();
+    document.addEventListener('mm-currency-change', () => {
+    /* Re-fetch so amounts are converted by the backend for the new
+       display currency (re-rendering cached data would mis-label them). */
+    if (_s.budget) _reloadDetail();
   });
 }
 

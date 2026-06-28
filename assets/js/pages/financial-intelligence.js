@@ -585,10 +585,9 @@ async function init() {
 }
 
 document.addEventListener('mm-currency-change', () => {
-  if (!_lastDashData) return;
-  _renderHealth(_lastDashData.latestSnapshot ?? null, _lastDashData.topInsights ?? []);
-  _renderCategoryTrends(_lastDashData.categoryTrends ?? []);
-  _renderRecommendations(_lastDashData.recommendations ?? []);
+  /* Re-fetch so amounts are converted by the backend for the new
+     display currency (re-rendering cached data would mis-label them). */
+  if (_lastDashData) loadPage();
 });
 
 init();

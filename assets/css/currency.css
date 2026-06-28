@@ -150,6 +150,8 @@
 }
 [dir="rtl"] .cs-item { text-align: right; }
 .cs-item:hover { background: var(--mm-surface-soft); }
+/* Keyboard-highlighted option (aria-activedescendant) in the currency combobox. */
+.cs-item.cs-active { background: var(--mm-primary-light); }
 .cs-item.active {
   background:   var(--mm-primary-light);
   color:        var(--mm-primary);

@@ -58,6 +58,7 @@ export const Config = Object.freeze({
     CALENDAR:               '/pages/calendar/index.html',
     RECEIPTS:               '/pages/receipts/index.html',
     CURRENCY:               '/pages/currency/index.html',
+    ERROR_403:              '/pages/errors/403.html',
     ERROR_404:              '/pages/errors/404.html',
     ERROR_500:              '/pages/errors/500.html',
     WORKSPACE_DASHBOARD:    '/pages/workspaces/dashboard.html',

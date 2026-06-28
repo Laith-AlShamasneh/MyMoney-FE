@@ -452,6 +452,7 @@ function _buildCsItem(c, current, isAr) {
   return `<button class="cs-item${isActive ? ' active' : ''}"
                    type="button"
                    role="option"
+                   id="cs-opt-${escapeHtml(c.code)}"
                    aria-selected="${isActive}"
                    data-cs-code="${escapeHtml(c.code)}">
     <span class="cs-item-flag" aria-hidden="true">${flag}</span>
@@ -484,12 +485,40 @@ function _wireCurrencySwitcher() {
 
   let _open = false;
 
+  /* Combobox keyboard support (WAI-ARIA): the search input owns focus and the
+     "active" option is tracked via aria-activedescendant, not real focus. */
+  if (search) {
+    search.setAttribute('role', 'combobox');
+    search.setAttribute('aria-controls', 'csListWrap');
+    search.setAttribute('aria-autocomplete', 'list');
+    search.setAttribute('aria-expanded', 'false');
+  }
+
+  function _options() { return [...dropdown.querySelectorAll('.cs-item')]; }
+  function _activeOption() { return dropdown.querySelector('.cs-item.cs-active'); }
+  function _setActive(item) {
+    _options().forEach((el) => { if (el !== item) { el.classList.remove('cs-active'); el.setAttribute('aria-selected', el.classList.contains('active')); } });
+    if (item) {
+      item.classList.add('cs-active');
+      item.setAttribute('aria-selected', 'true');
+      item.scrollIntoView({ block: 'nearest' });
+      search?.setAttribute('aria-activedescendant', item.id);
+    } else {
+      search?.removeAttribute('aria-activedescendant');
+    }
+  }
+  function _renderAndReset(filter) {
+    _renderCurrencyDropdown(filter);
+    _setActive(_options()[0] || null); // highlight first match for the keyboard
+  }
+
   function openDropdown() {
     if (_open) return;
     _open = true;
-    _renderCurrencyDropdown('');
     dropdown.classList.remove('d-none');
     btn.setAttribute('aria-expanded', 'true');
+    search?.setAttribute('aria-expanded', 'true');
+    _renderAndReset('');
     setTimeout(() => search?.focus(), 60);
   }
 
@@ -498,6 +527,8 @@ function _wireCurrencySwitcher() {
     _open = false;
     dropdown.classList.add('d-none');
     btn.setAttribute('aria-expanded', 'false');
+    search?.setAttribute('aria-expanded', 'false');
+    search?.removeAttribute('aria-activedescendant');
     if (search) search.value = '';
   }
 
@@ -506,9 +537,32 @@ function _wireCurrencySwitcher() {
     _open ? closeDropdown() : openDropdown();
   });
 
+  // Open with ArrowDown/Enter from the trigger button
+  btn.addEventListener('keydown', (e) => {
+    if (!_open && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault(); openDropdown();
+    }
+  });
+
   // Search filter
   search?.addEventListener('input', () => {
-    _renderCurrencyDropdown(search.value);
+    _renderAndReset(search.value);
+  });
+
+  // Keyboard navigation over the options (focus stays in the search input)
+  search?.addEventListener('keydown', (e) => {
+    const items = _options();
+    if (!items.length) return;
+    const cur = _activeOption();
+    let idx = cur ? items.indexOf(cur) : -1;
+    switch (e.key) {
+      case 'ArrowDown': e.preventDefault(); _setActive(items[(idx + 1) % items.length]); break;
+      case 'ArrowUp':   e.preventDefault(); _setActive(items[(idx - 1 + items.length) % items.length]); break;
+      case 'Home':      e.preventDefault(); _setActive(items[0]); break;
+      case 'End':       e.preventDefault(); _setActive(items[items.length - 1]); break;
+      case 'Enter':     if (cur) { e.preventDefault(); cur.click(); } break;
+      case 'Tab':       closeDropdown(); break;
+    }
   });
 
   // Item selection (event delegation)
@@ -609,15 +663,24 @@ function _wireWorkspaceSwitcher() {
   let _open = false;
   let _wsLoaded = false;
 
-  function openDropdown() {
+  function _wsOptions() { return [...dropdown.querySelectorAll('.ws-item')]; }
+  function _focusActiveWs() {
+    const active = dropdown.querySelector('.ws-item.active') || _wsOptions()[0];
+    active?.focus();
+  }
+  function _focusWsByIndex(idx) {
+    const items = _wsOptions();
+    if (items.length) items[(idx + items.length) % items.length].focus();
+  }
+
+  function openDropdown(focusList = false) {
     if (_open) return;
     _open = true;
     dropdown.classList.remove('d-none');
     btn.setAttribute('aria-expanded', 'true');
-    if (!_wsLoaded) {
-      _wsLoaded = true;
-      _loadWsList();
-    }
+    const afterReady = () => { if (focusList) _focusActiveWs(); };
+    if (!_wsLoaded) { _wsLoaded = true; _loadWsList().then(afterReady); }
+    else afterReady();
   }
 
   function closeDropdown() {
@@ -640,6 +703,26 @@ function _wireWorkspaceSwitcher() {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     _open ? closeDropdown() : openDropdown();
+  });
+
+  // Open into the list with ArrowDown/Enter from the trigger button
+  btn.addEventListener('keydown', (e) => {
+    if (!_open && (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault(); openDropdown(true);
+    }
+  });
+
+  // Roving focus over workspace options (Enter/Space activate the focused button natively)
+  dropdown.addEventListener('keydown', (e) => {
+    const items = _wsOptions();
+    if (!items.length) return;
+    const idx = items.indexOf(document.activeElement);
+    switch (e.key) {
+      case 'ArrowDown': e.preventDefault(); _focusWsByIndex(idx + 1); break;
+      case 'ArrowUp':   e.preventDefault(); _focusWsByIndex(idx - 1); break;
+      case 'Home':      e.preventDefault(); _focusWsByIndex(0); break;
+      case 'End':       e.preventDefault(); _focusWsByIndex(items.length - 1); break;
+    }
   });
 
   dropdown.addEventListener('click', async (e) => {

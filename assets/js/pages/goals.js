@@ -769,8 +769,9 @@ function _bindGridEvents() {
     if (_s.page * PAGE_SIZE < _s.total) { _s.page++; await _loadGoalList(); _renderGoals(); }
   });
 
-  document.addEventListener('mm-currency-change', () => {
-    if (_s.dashboard?.kpi) _renderKpiStrip(_s.dashboard.kpi);
-    _renderGoals();
+    document.addEventListener('mm-currency-change', () => {
+    /* Re-fetch so amounts are converted by the backend for the new
+       display currency (re-rendering cached data would mis-label them). */
+    if (_s.dashboard) _reloadAfterChange();
   });
 })();

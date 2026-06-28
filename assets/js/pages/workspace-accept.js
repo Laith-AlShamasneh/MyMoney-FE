@@ -2,6 +2,11 @@ import { initI18n, t, getLanguage } from '../core/i18n.js';
 import { WorkspaceService }         from '../services/workspace-service.js';
 import { Config }                   from '../core/config.js';
 
+/* Hide a broken logo image without an inline onerror handler (CSP-compliant). */
+document.querySelectorAll('img[data-hide-on-error]').forEach((img) => {
+  img.addEventListener('error', () => { img.style.display = 'none'; });
+});
+
 /* --------------------------------------------------------------------------
    Constants
    -------------------------------------------------------------------------- */

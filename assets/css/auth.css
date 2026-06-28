@@ -170,6 +170,13 @@ html[data-theme="dark"] .auth-card {
   margin: 0 auto 0.55rem;
 }
 
+.error-illustration-icon {
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--mm-muted);
+  margin-bottom: 0.25rem;
+}
+
 .error-code {
   color: var(--mm-primary);
   font-size: clamp(5rem, 18vw, 8rem);

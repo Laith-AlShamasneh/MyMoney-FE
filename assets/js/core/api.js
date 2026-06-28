@@ -18,6 +18,33 @@
 
 import { Config } from './config.js';
 
+/* Default client-side timeout for JSON API calls. A hung request (server stall,
+   lost connection mid-flight) aborts instead of spinning forever. File up/downloads
+   use the dedicated blob helpers and are intentionally not capped here. */
+const DEFAULT_TIMEOUT_MS = 30_000;
+
+/**
+ * Builds an AbortSignal that fires on either a caller-supplied signal or a timeout.
+ * Returns the combined signal, a cleanup() to stop the timer, and didTimeout().
+ */
+function _withTimeout(callerSignal, ms) {
+  const controller = new AbortController();
+  let timedOut = false;
+
+  if (callerSignal) {
+    if (callerSignal.aborted) controller.abort(callerSignal.reason);
+    else callerSignal.addEventListener('abort', () => controller.abort(callerSignal.reason), { once: true });
+  }
+
+  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, ms);
+
+  return {
+    signal: controller.signal,
+    cleanup: () => clearTimeout(timer),
+    didTimeout: () => timedOut,
+  };
+}
+
 /* --------------------------------------------------------------------------
    Auth interceptors (set by auth.js at import time)
    -------------------------------------------------------------------------- */
@@ -127,10 +154,12 @@ async function request(method, endpoint, body = null, options = {}) {
     Object.assign(headers, options._extraHeaders);
   }
 
+  const timeout = _withTimeout(options.signal, options.timeout ?? DEFAULT_TIMEOUT_MS);
+
   const fetchOptions = {
     method,
     headers,
-    signal: options.signal,
+    signal: timeout.signal,
   };
 
   if (body != null && method !== 'GET') {
@@ -142,12 +171,20 @@ async function request(method, endpoint, body = null, options = {}) {
   try {
     response = await fetch(url, fetchOptions);
   } catch (networkError) {
-    /* Network failure — offline, DNS, CORS pre-flight, etc. */
+    if (timeout.didTimeout()) {
+      /* Our timeout fired — surface it as a timeout, not a silent abort. */
+      await _showErrorToast('errors.timeout');
+      throw new ApiError('Request timed out.', [], Config.RESPONSE_CODES.REQUEST_TIMEOUT);
+    }
+    /* Caller-initiated cancellation — propagate quietly. */
     if (networkError.name === 'AbortError') {
       throw networkError;
     }
+    /* Network failure — offline, DNS, CORS pre-flight, etc. */
     await _showErrorToast('errors.network');
     throw networkError;
+  } finally {
+    timeout.cleanup();
   }
 
   /* --- Handle 401 Unauthorized: attempt silent token refresh once --- */
@@ -179,7 +216,7 @@ async function request(method, endpoint, body = null, options = {}) {
 
   /* --- Handle 403 Forbidden --- */
   if (response.status === 403) {
-    window.location.href = Config.ROUTES.ERROR_404;
+    window.location.href = Config.ROUTES.ERROR_403;
     throw new ApiError('Forbidden.', [], Config.RESPONSE_CODES.FORBIDDEN);
   }
 
@@ -342,7 +379,7 @@ export async function downloadBlobPost(endpoint, body = {}, options = {}) {
   }
 
   if (response.status === 403) {
-    window.location.href = Config.ROUTES.ERROR_404;
+    window.location.href = Config.ROUTES.ERROR_403;
     throw new ApiError('Forbidden.', [], Config.RESPONSE_CODES.FORBIDDEN);
   }
 
@@ -421,7 +458,7 @@ export async function downloadBlob(endpoint, options = {}) {
   }
 
   if (response.status === 403) {
-    window.location.href = Config.ROUTES.ERROR_404;
+    window.location.href = Config.ROUTES.ERROR_403;
     throw new ApiError('Forbidden.', [], Config.RESPONSE_CODES.FORBIDDEN);
   }
 

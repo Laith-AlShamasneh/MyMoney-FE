@@ -624,12 +624,9 @@ async function init() {
 }
 
 document.addEventListener('mm-currency-change', () => {
-  if (!_forecast) return;
-  _renderKpis(_forecast);
-  const timeline = (_forecast.monthlyTimeline ?? []).slice(0, _visibleMonths);
-  _renderMonthlyTable(timeline);
-  _renderGoals(_forecast.goalProjections ?? []);
-  _renderRecurring(_forecast);
+  /* Re-fetch so amounts are converted by the backend for the new
+     display currency (re-rendering cached data would mis-label them). */
+  if (_forecast) loadPage();
 });
 
 init();
