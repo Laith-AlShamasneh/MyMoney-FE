@@ -171,6 +171,24 @@ default avatar once.
 
 ---
 
+## Post-audit fixes (reported issues)
+
+### Workspace switcher unstyled on non-workspace pages
+**Symptom:** the workspace switcher in the top navbar rendered unstyled (a raw `<select>`-looking box
+and an unstyled dropdown list) on every page **except** the `/pages/workspaces/*` pages.
+
+**Cause:** the switcher is global navbar chrome (built by `layout.js` on every page), but its CSS lived in
+`workspace.css`, which is only linked on the 6 workspace pages.
+
+**Fix:** moved the entire "Workspace Switcher (in navbar)" section — all 24 rules
+(`.ws-switcher-wrap/btn`, `.ws-dot`, `.ws-switcher-name/caret`, `.ws-dropdown` + header/list/actions/action,
+`.ws-item` + dot/body/name/meta/check) plus its 2 responsive rules — from `workspace.css` into
+`layout.css`, which every dashboard page loads. Workspace pages also load `layout.css`, so they keep the
+styling with no duplication. Verified: both files brace-balanced, switcher rules now absent from
+`workspace.css` and present in `layout.css`, all files serve 200.
+
+---
+
 ## Deferred items (and why)
 
 | ID | Item | Why deferred |

@@ -683,3 +683,180 @@ html[data-theme="dark"] .profile-button .avatar-sm {
   border-radius: var(--mm-radius-lg);
   padding: 3rem 1.5rem;
 }
+
+/* ==========================================================================
+   Workspace switcher (global navbar chrome)
+   Moved here from workspace.css so the navbar switcher is styled on EVERY
+   page, not only the /pages/workspaces/* pages that load workspace.css.
+   ========================================================================== */
+.ws-switcher-wrap {
+  position: relative;
+}
+
+.ws-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border: 1.5px solid var(--mm-border);
+  border-radius: var(--mm-radius-md);
+  background: var(--mm-surface);
+  cursor: pointer;
+  transition: border-color var(--mm-duration-fast) var(--mm-ease),
+              background var(--mm-duration-fast) var(--mm-ease),
+              box-shadow var(--mm-duration-fast) var(--mm-ease);
+  max-width: 200px;
+  white-space: nowrap;
+}
+.ws-switcher-btn:hover {
+  border-color: var(--mm-primary);
+  background: var(--mm-primary-light);
+  box-shadow: var(--mm-ring);
+}
+
+.ws-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--mm-primary);
+}
+
+.ws-switcher-name {
+  font-size: var(--mm-text-sm);
+  font-weight: 600;
+  color: var(--mm-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.ws-switcher-type {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  margin-inline-start: auto;
+}
+
+.ws-switcher-caret {
+  font-size: 0.65rem;
+  color: var(--mm-muted);
+  transition: transform var(--mm-duration-fast) var(--mm-ease);
+  flex-shrink: 0;
+}
+.ws-switcher-btn[aria-expanded="true"] .ws-switcher-caret {
+  transform: rotate(180deg);
+}
+
+/* Dropdown panel */
+.ws-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  width: 280px;
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-lg);
+  box-shadow: var(--mm-shadow-lg);
+  z-index: 1050;
+  overflow: hidden;
+}
+
+.ws-dropdown-header {
+  padding: 0.75rem 1rem 0.5rem;
+  font-size: var(--mm-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mm-muted);
+  border-bottom: 1px solid var(--mm-border-soft);
+}
+
+.ws-dropdown-list {
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0.375rem 0;
+}
+
+.ws-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-item:hover { background: var(--mm-surface-soft); }
+.ws-item.active { background: var(--mm-primary-light); }
+.ws-item:focus-visible { outline: 2px solid var(--mm-primary); outline-offset: -2px; }
+
+.ws-item-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--mm-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ws-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ws-item-name {
+  font-size: var(--mm-text-sm);
+  font-weight: 600;
+  color: var(--mm-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.ws-item-meta {
+  font-size: var(--mm-text-xs);
+  color: var(--mm-muted);
+  display: block;
+}
+
+.ws-item-check {
+  color: var(--mm-primary);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.ws-dropdown-actions {
+  border-top: 1px solid var(--mm-border-soft);
+  padding: 0.375rem 0;
+}
+
+.ws-dropdown-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--mm-text-sm);
+  color: var(--mm-text-secondary);
+  text-align: start;
+  text-decoration: none;
+  transition: background var(--mm-duration-fast) var(--mm-ease);
+}
+.ws-dropdown-action:hover { background: var(--mm-surface-soft); color: var(--mm-primary); }
+.ws-dropdown-action i { font-size: 0.9rem; }
+
+@media (max-width: 575.98px) {
+  .ws-dropdown { width: 240px; }
+  .ws-switcher-name { max-width: 72px; }
+}
