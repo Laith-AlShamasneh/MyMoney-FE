@@ -1,0 +1,185 @@
+/* ==========================================================================
+   enhance.css — MyMoney design upgrade layer (2026)
+
+   A reversible, token-driven polish pass loaded LAST on every page. It elevates
+   depth, color, and motion across the whole app without touching the existing
+   stylesheets — remove the <link> to revert. Everything respects the design
+   tokens (so light/dark both work) and prefers-reduced-motion.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Token refinements — richer depth + gradient accents (cascade everywhere)
+   -------------------------------------------------------------------------- */
+:root {
+  --mm-primary-rgb: 37, 99, 235;
+
+  /* Brand gradients */
+  --mm-gradient-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #4f46e5 100%);
+  --mm-gradient-primary-soft: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(79,70,229,0.10));
+  --mm-gradient-success: linear-gradient(135deg, #10b981 0%, #0f766e 100%);
+  --mm-gradient-text: linear-gradient(120deg, #2563eb, #4f46e5 55%, #7c3aed);
+
+  /* Softer, deeper, layered elevation */
+  --mm-shadow-xs: 0 1px 2px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.05);
+  --mm-shadow-sm: 0 2px 6px rgba(15,23,42,0.06), 0 6px 16px rgba(15,23,42,0.07);
+  --mm-shadow:    0 4px 12px rgba(15,23,42,0.07), 0 12px 32px rgba(15,23,42,0.10);
+  --mm-shadow-lg: 0 8px 20px rgba(15,23,42,0.09), 0 24px 56px rgba(15,23,42,0.16);
+  --mm-shadow-primary: 0 8px 22px rgba(var(--mm-primary-rgb),0.32), 0 2px 8px rgba(var(--mm-primary-rgb),0.20);
+  --mm-ring: 0 0 0 4px rgba(var(--mm-primary-rgb),0.16);
+}
+
+html[data-theme="dark"] {
+  --mm-primary-rgb: 96, 165, 250;
+  --mm-gradient-primary: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+  --mm-gradient-text: linear-gradient(120deg, #93c5fd, #a5b4fc);
+  --mm-shadow-xs: 0 1px 2px rgba(0,0,0,0.30);
+  --mm-shadow-sm: 0 2px 8px rgba(0,0,0,0.34);
+  --mm-shadow:    0 6px 20px rgba(0,0,0,0.40);
+  --mm-shadow-lg: 0 16px 48px rgba(0,0,0,0.52);
+}
+
+/* --------------------------------------------------------------------------
+   2. New motion keyframes (mmx- namespace)
+   -------------------------------------------------------------------------- */
+@keyframes mmx-rise   { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes mmx-pop    { 0% { transform: scale(0.94); opacity: 0; } 60% { transform: scale(1.02); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes mmx-sheen  { from { transform: translateX(-130%) skewX(-18deg); } to { transform: translateX(230%) skewX(-18deg); } }
+
+/* --------------------------------------------------------------------------
+   3. Global feel — smoother interactions, refined focus + scrollbars
+   -------------------------------------------------------------------------- */
+a, .btn, .nav-link, .icon-button, .profile-button,
+.panel, .card, .form-control, .form-select, .badge {
+  transition: color var(--mm-duration-base) var(--mm-ease),
+              background-color var(--mm-duration-base) var(--mm-ease),
+              border-color var(--mm-duration-base) var(--mm-ease),
+              box-shadow var(--mm-duration-base) var(--mm-ease),
+              transform var(--mm-duration-base) var(--mm-ease-spring);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--mm-ring);
+  border-radius: var(--mm-radius-sm);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--mm-primary);
+  box-shadow: var(--mm-ring);
+}
+
+* { scrollbar-width: thin; scrollbar-color: var(--mm-border) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--mm-border); border-radius: 9999px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--mm-muted); background-clip: content-box; }
+
+/* --------------------------------------------------------------------------
+   4. Elevated surfaces — depth + entrance + gentle hover
+   -------------------------------------------------------------------------- */
+.panel, .card {
+  box-shadow: var(--mm-shadow-sm);
+  animation: mmx-rise var(--mm-duration-slow) var(--mm-ease-out) both;
+}
+.panel:hover, .card:hover {
+  box-shadow: var(--mm-shadow);
+  border-color: color-mix(in srgb, var(--mm-primary) 32%, var(--mm-border));
+}
+
+/* Small stat/KPI/summary cards get a real lift on hover */
+.stat-card, .kpi-card, .rate-card, .budget-card, .goal-card,
+.receipt-card, .receipt-kpi, .cf-kpi, .ws-kpi, .insight-card, .mm-stat {
+  transition: box-shadow var(--mm-duration-base) var(--mm-ease),
+              transform var(--mm-duration-base) var(--mm-ease-spring),
+              border-color var(--mm-duration-base) var(--mm-ease);
+}
+.stat-card:hover, .kpi-card:hover, .rate-card:hover, .budget-card:hover,
+.goal-card:hover, .receipt-card:hover, .receipt-kpi:hover, .cf-kpi:hover,
+.ws-kpi:hover, .insight-card:hover, .mm-stat:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--mm-shadow-lg);
+}
+
+/* Staggered entrance for grids of cards */
+.animate-stagger > *,
+.row > [class*="col"] > .panel {
+  animation: mmx-rise var(--mm-duration-slow) var(--mm-ease-out) both;
+}
+.animate-stagger > *:nth-child(2) { animation-delay: .05s; }
+.animate-stagger > *:nth-child(3) { animation-delay: .10s; }
+.animate-stagger > *:nth-child(4) { animation-delay: .15s; }
+.animate-stagger > *:nth-child(5) { animation-delay: .20s; }
+.animate-stagger > *:nth-child(6) { animation-delay: .25s; }
+
+/* --------------------------------------------------------------------------
+   5. Buttons — gradient primary, lift, press, sheen
+   -------------------------------------------------------------------------- */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  background: var(--mm-gradient-primary);
+  box-shadow: var(--mm-shadow-primary);
+}
+.btn-primary:hover, .btn-primary:focus {
+  background: var(--mm-gradient-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(var(--mm-primary-rgb),0.40), 0 3px 10px rgba(var(--mm-primary-rgb),0.22);
+}
+.btn-primary:active { transform: translateY(0) scale(0.985); }
+/* moving sheen on hover */
+.btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  transform: translateX(-130%) skewX(-18deg);
+  pointer-events: none;
+}
+.btn-primary:hover::after { animation: mmx-sheen .9s var(--mm-ease) forwards; }
+
+.btn { transition: transform var(--mm-duration-fast) var(--mm-ease-spring), box-shadow var(--mm-duration-base) var(--mm-ease), background-color var(--mm-duration-base) var(--mm-ease), border-color var(--mm-duration-base) var(--mm-ease); }
+.btn:not(.btn-primary):active { transform: scale(0.97); }
+
+/* --------------------------------------------------------------------------
+   6. Sidebar active item — gradient accent + pop
+   -------------------------------------------------------------------------- */
+.sidebar-nav .nav-link.active {
+  background: var(--mm-gradient-primary-soft);
+  box-shadow: inset 3px 0 0 var(--mm-primary), var(--mm-shadow-xs);
+}
+.sidebar-nav .nav-link.active .nav-icon {
+  background: var(--mm-gradient-primary);
+  box-shadow: var(--mm-shadow-primary);
+}
+[dir="rtl"] .sidebar-nav .nav-link.active { box-shadow: inset -3px 0 0 var(--mm-primary), var(--mm-shadow-xs); }
+
+/* --------------------------------------------------------------------------
+   7. Navbar — stronger glass
+   -------------------------------------------------------------------------- */
+.admin-navbar.bg-white {
+  backdrop-filter: saturate(1.4) blur(16px);
+  -webkit-backdrop-filter: saturate(1.4) blur(16px);
+}
+
+/* --------------------------------------------------------------------------
+   8. Headers — gradient eyebrow + page-title accent
+   -------------------------------------------------------------------------- */
+.eyebrow {
+  background: var(--mm-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   9. Accessibility — honor reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .panel:hover, .card:hover, .stat-card:hover, .kpi-card:hover,
+  .btn-primary:hover, .btn:active { transform: none !important; }
+}

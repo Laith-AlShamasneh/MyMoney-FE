@@ -9,6 +9,7 @@ import { initLayout }                 from '../components/layout.js';
 import { guardPage }                  from '../core/auth.js';
 import { CashFlowService }            from '../services/cash-flow-service.js';
 import { ApiError }                   from '../core/api.js';
+import { Config }                     from '../core/config.js';
 import { showError }                  from '../components/toast.js';
 import { formatAmount }               from '../core/currency.js';
 import {
@@ -528,11 +529,14 @@ async function loadPage() {
     forecast = await CashFlowService.getForecast(12);
   } catch (err) {
     cfSkeleton.classList.add('d-none');
-    if (err instanceof ApiError) {
-      showError(err.message);
-    } else {
-      showError(t('errors.unknown'));
+    /* A NOT_FOUND (code 8) means the user simply has no forecast yet — the
+       normal case for a new account. Show the friendly empty state, not an
+       error toast. (A forecast is computed from the user's transactions.) */
+    if (err instanceof ApiError && err.code === Config.RESPONSE_CODES.NOT_FOUND) {
+      cfNoData.classList.remove('d-none');
+      return;
     }
+    showError(err instanceof ApiError ? err.message : t('errors.unknown'));
     return;
   }
 
