@@ -14,6 +14,7 @@ import { Config } from '../core/config.js';
 import { escapeHtml } from '../core/html.js';
 import { t, getLanguage, setLanguage } from '../core/i18n.js';
 import { getCurrentUser, logout } from '../core/auth.js';
+import { initPrefetch } from '../core/prefetch.js';
 import { initNotificationBell } from './notifications.js';
 import {
   getDisplayCurrency, setDisplayCurrency,
@@ -822,6 +823,9 @@ export function initLayout() {
 
   /* Notification bell */
   initNotificationBell();
+
+  /* FH7: speculative prefetch of next page on user intent (faster MPA nav) */
+  initPrefetch();
 
   /* Currency — load prefs + list asynchronously; fires mm-currency-change if needed */
   initCurrency().then(() => {

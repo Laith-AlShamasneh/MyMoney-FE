@@ -107,7 +107,7 @@
 
 .cal-day-cell {
   min-height: 100px;
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
   border-bottom: 1px solid var(--mm-border);
   padding: 0.3rem;
   cursor: pointer;
@@ -116,7 +116,7 @@
 }
 
 .cal-day-cell:nth-child(7n) {
-  border-right: none;
+  border-inline-end: none;
 }
 
 .cal-day-cell:hover {
@@ -216,18 +216,18 @@
 }
 
 .cal-week-header-spacer {
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
 }
 
 .cal-week-header-day {
   padding: 0.5rem 0.25rem;
   text-align: center;
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
   cursor: pointer;
 }
 
 .cal-week-header-day:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 .cal-week-header-day .day-name {
@@ -267,20 +267,20 @@
   font-size: 0.65rem;
   color: var(--mm-muted);
   padding: 0.3rem 0.4rem;
-  text-align: right;
-  border-right: 1px solid var(--mm-border);
+  text-align: end;
+  border-inline-end: 1px solid var(--mm-border);
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
 .cal-week-allday-cell {
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
   padding: 0.2rem;
 }
 
 .cal-week-allday-cell:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 .cal-week-body {
@@ -291,7 +291,7 @@
 }
 
 .cal-time-col {
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
 }
 
 .cal-time-slot-label {
@@ -299,7 +299,7 @@
   font-size: 0.63rem;
   color: var(--mm-muted);
   padding: 0 0.4rem;
-  text-align: right;
+  text-align: end;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -307,12 +307,12 @@
 }
 
 .cal-week-day-col {
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
   position: relative;
 }
 
 .cal-week-day-col:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 .cal-week-hour-slot {
@@ -326,8 +326,7 @@
 
 .cal-week-event {
   position: absolute;
-  left: 2px;
-  right: 2px;
+  inset-inline: 2px;
   border-radius: 3px;
   padding: 0.1rem 0.25rem;
   font-size: 0.66rem;
@@ -477,7 +476,7 @@
 }
 
 .cal-agenda-today-badge {
-  margin-left: auto;
+  margin-inline-start: auto;
   font-size: 0.65rem;
   font-weight: 700;
   padding: 0.15rem 0.5rem;
@@ -565,11 +564,11 @@
 .cal-detail-drawer {
   position: fixed;
   top: var(--mm-navbar-height);
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   width: 360px;
   background: var(--mm-surface);
-  border-left: 1px solid var(--mm-border);
+  border-inline-start: 1px solid var(--mm-border);
   z-index: 1050;
   transform: translateX(100%);
   transition: transform var(--mm-duration-base);
@@ -578,11 +577,9 @@
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
 }
 
+/* Position + border auto-flip via logical props; only the physical transform
+   (off-screen direction) and box-shadow offset need an explicit RTL override. */
 [dir="rtl"] .cal-detail-drawer {
-  right: auto;
-  left: 0;
-  border-left: none;
-  border-right: 1px solid var(--mm-border);
   transform: translateX(-100%);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
 }
@@ -832,13 +829,13 @@
 
 .cal-skeleton-cell {
   height: 100px;
-  border-right: 1px solid var(--mm-border);
+  border-inline-end: 1px solid var(--mm-border);
   border-bottom: 1px solid var(--mm-border);
   padding: 0.4rem;
 }
 
 .cal-skeleton-cell:nth-child(7n) {
-  border-right: none;
+  border-inline-end: none;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────────── */
@@ -846,11 +843,7 @@
 @media (max-width: 768px) {
   .cal-detail-drawer {
     width: 100%;
-    border-left: none;
-  }
-
-  [dir="rtl"] .cal-detail-drawer {
-    border-right: none;
+    border-inline-start: none;
   }
 
   .cal-toolbar {
@@ -888,7 +881,3 @@
   direction: rtl;
 }
 
-[dir="rtl"] .cal-week-allday-label {
-  text-align: left;
-  justify-content: flex-start;
-}

@@ -706,13 +706,11 @@ html[data-theme="dark"] .status-archived { background: rgba(100,116,139,.18); co
   position: fixed;
   top: 0;
   bottom: 0;
-  /* Physical properties: drawer is on the right in LTR */
-  right: 0;
-  left: auto;
+  /* Logical inset/border auto-flip; drawer sits at the inline-end edge */
+  inset-inline-end: 0;
   width: min(520px, 100vw);
   background: var(--mm-surface);
-  border-left: 1px solid var(--mm-border);
-  border-right: none;
+  border-inline-start: 1px solid var(--mm-border);
   box-shadow: -8px 0 48px rgba(15,23,42,.14);
   z-index: 1050;
   display: flex;
@@ -726,12 +724,9 @@ html[data-theme="dark"] .status-archived { background: rgba(100,116,139,.18); co
   overflow: hidden;
 }
 
-/* RTL: drawer slides from the left */
+/* RTL: only the physical transform direction + box-shadow offset need flipping;
+   position and border are handled by the logical props above. */
 [dir="rtl"] .receipt-preview-drawer {
-  right: auto;
-  left: 0;
-  border-left: none;
-  border-right: 1px solid var(--mm-border);
   box-shadow: 8px 0 48px rgba(15,23,42,.14);
   transform: translateX(-110%);
 }
@@ -1311,7 +1306,7 @@ html[data-theme="dark"] .processing-queue {
   .receipt-toolbar { gap: 0.4rem; }
   .receipt-toolbar-search { max-width: 100%; flex: 1 1 100%; order: -1; }
   .receipt-preview-drawer { width: 100vw; }
-  .bulk-action-bar { left: 0.75rem; right: 0.75rem; transform: translateY(20px); }
+  .bulk-action-bar { inset-inline: 0.75rem; transform: translateY(20px); }
   .bulk-action-bar.show { transform: translateY(0); }
   .preview-detail-grid { grid-template-columns: 1fr; }
 }

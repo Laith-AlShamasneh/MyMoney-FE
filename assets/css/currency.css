@@ -56,7 +56,7 @@
 .currency-dropdown {
   position:         absolute;
   top:              calc(100% + 8px);
-  right:            0;
+  inset-inline-end: 0;
   width:            300px;
   background:       var(--mm-surface);
   border:           1px solid var(--mm-border);
@@ -76,9 +76,8 @@
   to   { opacity: 1; transform: scale(1)    translateY(0);    }
 }
 
+/* inset-inline-end auto-flips; only the physical transform-origin needs an RTL override */
 [dir="rtl"] .currency-dropdown {
-  right: auto;
-  left:  0;
   transform-origin: top left;
 }
 
@@ -89,7 +88,8 @@
 .cs-search-input {
   width:         100%;
   height:        34px;
-  padding:       0 10px 0 34px;
+  padding-block:  0;
+  padding-inline: 34px 10px;
   border:        1px solid var(--mm-border);
   border-radius: var(--mm-radius);
   background:    var(--mm-surface-soft);
@@ -105,18 +105,13 @@
 }
 .cs-search-icon {
   position:   absolute;
-  left:       22px;
+  inset-inline-start: 22px;
   top:        50%;
   transform:  translateY(-50%);
   color:      var(--mm-muted);
   font-size:  0.8rem;
   pointer-events: none;
 }
-[dir="rtl"] .cs-search-icon {
-  left:  auto;
-  right: 22px;
-}
-[dir="rtl"] .cs-search-input { padding: 0 34px 0 10px; }
 
 .cs-list {
   max-height:  260px;
@@ -146,9 +141,8 @@
   border:         none;
   background:     none;
   width:          100%;
-  text-align:     left;
+  text-align:     start;
 }
-[dir="rtl"] .cs-item { text-align: right; }
 .cs-item:hover { background: var(--mm-surface-soft); }
 /* Keyboard-highlighted option (aria-activedescendant) in the currency combobox. */
 .cs-item.cs-active { background: var(--mm-primary-light); }
@@ -157,8 +151,7 @@
   color:        var(--mm-primary);
 }
 .cs-item-flag   { font-size: 1.15rem; flex-shrink: 0; line-height: 1; }
-.cs-item-body   { flex: 1; min-width: 0; text-align: left; }
-[dir="rtl"] .cs-item-body { text-align: right; }
+.cs-item-body   { flex: 1; min-width: 0; text-align: start; }
 .cs-item-code   {
   display:     block;
   font-size:   var(--mm-text-sm);
@@ -438,7 +431,7 @@ html[data-theme="dark"] .converter-result {
 .converter-result-copy {
   position:   absolute;
   top:        12px;
-  right:      12px;
+  inset-inline-end: 12px;
   width:      30px;
   height:     30px;
   border:     1px solid var(--mm-border);
@@ -457,7 +450,6 @@ html[data-theme="dark"] .converter-result {
   color:        var(--mm-primary);
   background:   var(--mm-primary-light);
 }
-[dir="rtl"] .converter-result-copy { right: auto; left: 12px; }
 
 /* --------------------------------------------------------------------------
    6. Statistics Cards (exchange rate page top strip)
@@ -581,7 +573,6 @@ html[data-theme="dark"] .cs-search-input {
 /* --------------------------------------------------------------------------
    11. RTL fixes
    -------------------------------------------------------------------------- */
-[dir="rtl"] .cs-item       { text-align: right; }
 [dir="rtl"] .cs-footer-link { flex-direction: row-reverse; }
 [dir="rtl"] .rate-card-pair { flex-direction: row-reverse; }
 [dir="rtl"] .converter-row  { flex-direction: row-reverse; }
@@ -591,7 +582,7 @@ html[data-theme="dark"] .cs-search-input {
    12. Responsive
    -------------------------------------------------------------------------- */
 @media (max-width: 576px) {
-  .currency-dropdown  { width: 280px; right: -8px; }
+  .currency-dropdown  { width: 280px; inset-inline-end: -8px; }
   .converter-panel    { padding: 18px 14px; }
   .converter-row      { flex-direction: column; gap: 8px; }
   .converter-swap-btn { width: 38px; height: 38px; align-self: center; }

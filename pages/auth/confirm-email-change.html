@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5wqsJI1+/GKhkxTOp+Gz7pSoSLjKvCqxCFH7+Rll0uw=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://localhost:44320; connect-src 'self' https://localhost:44320; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <!-- FH7: resource hints — warm API + font/CDN connections before first use -->
+  <link rel="preconnect" href="https://localhost:44320" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="MyMoney — تأكيد تغيير البريد الإلكتروني">
   <title data-i18n-page-title="settings.confirm_email_change_page_title">تأكيد تغيير البريد الإلكتروني | MyMoney</title>
@@ -41,7 +46,7 @@
 
 <body class="auth-body">
 
-  <div class="auth-shell">
+  <main class="auth-shell">
     <div class="auth-card">
 
       <!-- Brand -->
@@ -93,7 +98,7 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
   <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
   <script type="module" src="/assets/js/pages/confirm-email-change.js"></script>

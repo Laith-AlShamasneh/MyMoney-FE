@@ -62,26 +62,25 @@ function _esc(s) {
 function _relativeTime(isoStr) {
   if (!isoStr) return '';
   try {
-    const diff = Date.now() - new Date(isoStr + 'Z').getTime();
-    const mins = Math.floor(diff / 60_000);
-    if (mins < 1)  return t('notifications.just_now');
+    const date = new Date(isoStr + 'Z');
+    const mins = Math.floor((Date.now() - date.getTime()) / 60_000);
+    if (mins < 1) return t('notifications.just_now');
+
+    const lang = getLanguage() === 'ar' ? 'ar' : 'en';
+    /* FM1: Intl.RelativeTimeFormat pluralizes correctly for every locale —
+       including Arabic's dual/few/many forms — so no hardcoded plural strings.
+       (The old code wrongly used the plural form for 2, e.g. "دقائق" not "دقيقتين".) */
     if (mins < 60) {
-      const lang = getLanguage();
-      return lang === 'ar'
-        ? `منذ ${mins} ${mins === 1 ? 'دقيقة' : 'دقائق'}`
-        : `${mins}m ago`;
+      return new Intl.RelativeTimeFormat(lang, { numeric: 'always' }).format(-mins, 'minute');
     }
     const hrs = Math.floor(mins / 60);
     if (hrs < 24) {
-      const lang = getLanguage();
-      return lang === 'ar'
-        ? `منذ ${hrs} ${hrs === 1 ? 'ساعة' : 'ساعات'}`
-        : `${hrs}h ago`;
+      return new Intl.RelativeTimeFormat(lang, { numeric: 'always' }).format(-hrs, 'hour');
     }
     return new Intl.DateTimeFormat(
-      getLanguage() === 'ar' ? 'ar-SA' : 'en-US',
+      lang === 'ar' ? 'ar-SA' : 'en-US',
       { month: 'short', day: 'numeric' }
-    ).format(new Date(isoStr + 'Z'));
+    ).format(date);
   } catch {
     return '';
   }
@@ -234,12 +233,21 @@ async function _fetchUnreadCount() {
 }
 
 function _startPolling() {
+  _stopPolling();
+  /* FM8: don't poll a backgrounded tab — saves battery/network. Polling
+     resumes (with an immediate refresh) when the tab becomes visible again. */
+  if (document.hidden) return;
   _fetchUnreadCount();
   _pollTimer = setInterval(_fetchUnreadCount, POLL_INTERVAL_MS);
 }
 
 function _stopPolling() {
   if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
+}
+
+function _onVisibilityChange() {
+  if (document.hidden) _stopPolling();
+  else _startPolling();
 }
 
 /* ── Event wiring ─────────────────────────────────────────────────────────── */
@@ -267,7 +275,13 @@ function _wireEvents() {
     if (e.key === 'Escape' && _open) _closeDropdown();
   });
 
-  window.addEventListener('beforeunload', _stopPolling);
+  /* Use pagehide (not beforeunload) so the page stays eligible for the
+     browser's back/forward cache — bfcache makes back-navigation near-instant.
+     Timers are auto-paused in bfcache; this just tidies up on real unload. */
+  window.addEventListener('pagehide', _stopPolling);
+
+  /* FM8: pause/resume unread polling with tab visibility. */
+  document.addEventListener('visibilitychange', _onVisibilityChange);
 }
 
 /* ── Public ───────────────────────────────────────────────────────────────── */

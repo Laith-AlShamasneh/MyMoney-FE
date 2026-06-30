@@ -122,9 +122,10 @@ function _applyTranslations() {
   document.querySelectorAll('[data-i18n-title]').forEach((el) => {
     el.title = t(el.dataset.i18nTitle);
   });
-  document.querySelectorAll('[data-i18n-html]').forEach((el) => {
-    el.innerHTML = t(el.dataset.i18nHtml);
-  });
+  /* FM11: the data-i18n-html / innerHTML sink was removed — it had no usages
+     anywhere and was a latent XSS vector. All translation rendering uses
+     textContent / attributes. If a future string genuinely needs markup,
+     build it with escapeHtml() (core/html.js) rather than reviving this. */
 
   const titleEl = document.querySelector('title[data-i18n-page-title]');
   if (titleEl) {

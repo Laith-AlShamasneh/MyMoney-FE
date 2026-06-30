@@ -4,6 +4,14 @@
    Load order: vendor/bootstrap.min.css → app.css → layout.css / auth.css → components.css
    ========================================================================== */
 
+/* FH3 — Inter font is currently loaded from the Google Fonts CDN (below).
+   Note: SRI cannot be applied to a CSS @import, and Google's response varies by
+   browser, so the only real hardening here is to self-host. A drop-in scaffold
+   is ready at assets/css/fonts/ — run `bash assets/css/fonts/download-inter.sh`
+   to fetch the woff2 files, then replace the @import below with:
+       @import url('./fonts/inter.css');
+   and drop https://fonts.googleapis.com / https://fonts.gstatic.com from the CSP
+   style-src/font-src in every page head. See assets/css/fonts/README.md. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap');
 
 /* --------------------------------------------------------------------------

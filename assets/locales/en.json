@@ -747,6 +747,8 @@
     "loading": "Loading financial intelligence..."
   },
 
+  "nav_recurring": "Recurring & Subscriptions",
+
   "recurring": {
     "page_title":  "Recurring & Subscriptions",
     "eyebrow":     "Automated Finance",

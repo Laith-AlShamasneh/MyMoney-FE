@@ -601,13 +601,9 @@ html[data-theme="dark"] .profile-button .avatar-sm {
 .sidebar-subnav {
   display: grid;
   gap: 0.125rem;
-  padding: 0.25rem 0 0.25rem 1.75rem;
+  padding-block: 0.25rem;
+  padding-inline: 1.75rem 0;
   margin-top: 0.125rem;
-}
-
-[dir="rtl"] .sidebar-subnav {
-  padding-left: 0;
-  padding-right: 1.75rem;
 }
 
 .subnav-link {

@@ -578,6 +578,12 @@
 
     "download_error":  "تعذّر تحميل التقرير. يرجى المحاولة مرة أخرى.",
 
+    "status_badge_pending":    "bg-secondary",
+    "status_badge_processing": "bg-primary",
+    "status_badge_completed":  "bg-success",
+    "status_badge_failed":     "bg-danger",
+    "status_badge_expired":    "bg-warning",
+
     "expiry_note": "تنتهي صلاحية التقارير بعد 7 أيام من الإنشاء.",
     "email_note":  "ستتلقى إشعاراً بالبريد الإلكتروني عندما يصبح التقرير جاهزاً."
   },

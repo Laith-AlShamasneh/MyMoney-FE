@@ -4,10 +4,25 @@
  */
 
 export const Config = Object.freeze({
-  /** Backend API base URL. Override via window.MM_API_BASE_URL for environment switching. */
-  API_BASE_URL: (typeof window !== 'undefined' && window.MM_API_BASE_URL)
-    ? window.MM_API_BASE_URL
-    : 'https://localhost:44320',
+  /**
+   * Backend API base URL.
+   * FM10: per-environment value comes from `window.MM_API_BASE_URL`, which a
+   * deployment sets via a small classic script loaded before the modules
+   * (see assets/js/core/env.example.js). The hardcoded `localhost:44320`
+   * fallback is now applied ONLY when actually running on localhost — so a
+   * production deploy that forgets to set the override fails loudly (empty
+   * base → visible request failures) instead of silently calling a dev URL.
+   */
+  API_BASE_URL: (function resolveApiBase() {
+    if (typeof window !== 'undefined' && window.MM_API_BASE_URL) return window.MM_API_BASE_URL;
+    const host = (typeof location !== 'undefined' && location.hostname) || '';
+    if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'https://localhost:44320';
+    console.error(
+      '[MyMoney] API base URL is not configured for this environment. ' +
+      'Set window.MM_API_BASE_URL (see assets/js/core/env.example.js) before the app modules load.'
+    );
+    return '';
+  })(),
 
   /** Application name used in page titles and UI. */
   APP_NAME: 'My Money',

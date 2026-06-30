@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5wqsJI1+/GKhkxTOp+Gz7pSoSLjKvCqxCFH7+Rll0uw=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://localhost:44320; connect-src 'self' https://localhost:44320; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <!-- FH7: resource hints — warm API + font/CDN connections before first use -->
+  <link rel="preconnect" href="https://localhost:44320" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="MyMoney — الميزانيات">
   <title data-i18n-page-title="budgets.page_title">الميزانيات | MyMoney</title>
@@ -399,7 +404,7 @@
   </div>
 
   <script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
   <script type="module" src="/assets/js/pages/budgets.js"></script>
 </body>
 </html>

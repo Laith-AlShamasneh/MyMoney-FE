@@ -332,13 +332,31 @@ export function deleteWithHeaders(endpoint, extraHeaders = {}, options = {}) {
  * @returns {Promise<{ blob: Blob, filename: string, contentType: string }>}
  */
 export async function downloadBlobPost(endpoint, body = {}, options = {}) {
-  const url = Config.API_BASE_URL + endpoint;
+  return _downloadBlob({
+    method: 'POST',
+    endpoint,
+    body,
+    accept: 'application/octet-stream, application/json, */*',
+    defaultFilename: 'receipt',
+    signal: options.signal,
+  });
+}
+
+/**
+ * FM9: shared core for binary downloads. Builds auth headers, fetches with a
+ * silent 401-refresh retry, maps 403 / 5xx / JSON-error-envelope to ApiError,
+ * and extracts the filename from Content-Disposition. downloadBlob (GET) and
+ * downloadBlobPost (POST) both delegate here instead of duplicating it.
+ *
+ * @returns {Promise<{ blob: Blob, filename: string, contentType: string }>}
+ */
+async function _downloadBlob({ method, endpoint, body, accept, defaultFilename, signal }) {
+  const url    = Config.API_BASE_URL + endpoint;
+  const isPost = method === 'POST';
 
   const buildHeaders = () => {
-    const h = {
-      Accept: 'application/octet-stream, application/json, */*',
-      'Content-Type': 'application/json',
-    };
+    const h = { Accept: accept };
+    if (isPost) h['Content-Type'] = 'application/json';
     try {
       const lang = localStorage.getItem('mm.lang') || 'ar';
       h['Accept-Language'] = lang === 'en' ? 'en' : 'ar';
@@ -349,12 +367,7 @@ export async function downloadBlobPost(endpoint, body = {}, options = {}) {
   };
 
   const doFetch = (headers) =>
-    fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-      signal: options.signal,
-    });
+    fetch(url, { method, headers, signal, ...(isPost ? { body: JSON.stringify(body) } : {}) });
 
   let response;
   try {
@@ -388,7 +401,7 @@ export async function downloadBlobPost(endpoint, body = {}, options = {}) {
     throw new ApiError('Server error.', [], Config.RESPONSE_CODES.INTERNAL_SERVER_ERROR);
   }
 
-  /* If response is JSON, it's an error envelope */
+  /* A JSON response here means an error envelope was returned, not the file */
   const ct = response.headers.get('Content-Type') || '';
   if (!response.ok || ct.includes('application/json')) {
     let envelope;
@@ -402,7 +415,7 @@ export async function downloadBlobPost(endpoint, body = {}, options = {}) {
 
   const disposition = response.headers.get('Content-Disposition') || '';
   const match       = disposition.match(/filename[^;=\n]*=['"]?([^'";\n]+)['"]?/i);
-  const filename    = match ? decodeURIComponent(match[1].trim()) : 'receipt';
+  const filename    = match ? decodeURIComponent(match[1].trim()) : defaultFilename;
 
   const blob = await response.blob();
   return { blob, filename, contentType: ct };
@@ -419,71 +432,12 @@ export async function downloadBlobPost(endpoint, body = {}, options = {}) {
  * @throws {Error}    On network/server errors.
  */
 export async function downloadBlob(endpoint, options = {}) {
-  const url = Config.API_BASE_URL + endpoint;
-
-  const buildHeaders = () => {
-    const h = { Accept: 'application/octet-stream, */*' };
-    try {
-      const lang = localStorage.getItem('mm.lang') || 'ar';
-      h['Accept-Language'] = lang === 'en' ? 'en' : 'ar';
-    } catch { /* ignore */ }
-    const token = _getAccessToken();
-    if (token) h['Authorization'] = `Bearer ${token}`;
-    return h;
-  };
-
-  const doFetch = (headers) =>
-    fetch(url, { method: 'GET', headers, signal: options.signal });
-
-  let response;
-  try {
-    response = await doFetch(buildHeaders());
-  } catch (err) {
-    if (err.name !== 'AbortError') await _showErrorToast('errors.network');
-    throw err;
-  }
-
-  /* Silent token refresh on 401 */
-  if (response.status === 401) {
-    const refreshed = await _ensureRefreshed();
-    if (refreshed) {
-      try { response = await doFetch(buildHeaders()); } catch (err) {
-        if (err.name !== 'AbortError') await _showErrorToast('errors.network');
-        throw err;
-      }
-    } else {
-      _onSessionExpired();
-      throw new ApiError('Session expired.', [], Config.RESPONSE_CODES.UNAUTHORIZED);
-    }
-  }
-
-  if (response.status === 403) {
-    window.location.href = Config.ROUTES.ERROR_403;
-    throw new ApiError('Forbidden.', [], Config.RESPONSE_CODES.FORBIDDEN);
-  }
-
-  if (response.status >= 500) {
-    await _showErrorToast('errors.server');
-    throw new ApiError('Server error.', [], Config.RESPONSE_CODES.INTERNAL_SERVER_ERROR);
-  }
-
-  /* Non-binary response means a JSON error envelope was returned */
-  const ct = response.headers.get('Content-Type') || '';
-  if (!response.ok || ct.includes('application/json')) {
-    let envelope;
-    try { envelope = await response.json(); } catch { envelope = {}; }
-    throw new ApiError(
-      envelope.message || 'Download failed.',
-      envelope.errors  || [],
-      envelope.code    || 0,
-    );
-  }
-
-  /* Extract filename from Content-Disposition: attachment; filename="..." */
-  const disposition = response.headers.get('Content-Disposition') || '';
-  const match       = disposition.match(/filename[^;=\n]*=['"]?([^'";\n]+)['"]?/i);
-  const filename    = match ? decodeURIComponent(match[1].trim()) : 'report.xlsx';
-
-  const blob = await response.blob();
+  const { blob, filename } = await _downloadBlob({
+    method: 'GET',
+    endpoint,
+    accept: 'application/octet-stream, */*',
+    defaultFilename: 'report.xlsx',
+    signal: options.signal,
+  });
   return { blob, filename };
 }
