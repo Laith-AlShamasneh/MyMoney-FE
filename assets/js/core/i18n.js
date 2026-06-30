@@ -153,7 +153,7 @@ async function _loadTranslations(lang) {
     _translations = await response.json();
     _setCachedTranslations(lang, _translations);
   } catch (err) {
-    console.warn(`[i18n] Failed to load locale "${lang}":`, err);
+    if (Config.DEBUG) console.warn(`[i18n] Failed to load locale "${lang}":`, err);
     _translations = {};
   }
 }

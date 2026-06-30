@@ -529,16 +529,6 @@ html[data-theme="dark"] .converter-result {
 /* --------------------------------------------------------------------------
    9. Display currency indicator (shown on KPI cards when conversion active)
    -------------------------------------------------------------------------- */
-.display-currency-indicator {
-  display:        inline-flex;
-  align-items:    center;
-  gap:            5px;
-  font-size:      0.68rem;
-  color:          var(--mm-muted);
-  font-family:    var(--mm-font-mono), var(--mm-font-sans);
-  letter-spacing: 0.04em;
-  margin-inline-start: 6px;
-}
 .display-currency-indicator .dci-dot {
   width:  5px;
   height: 5px;

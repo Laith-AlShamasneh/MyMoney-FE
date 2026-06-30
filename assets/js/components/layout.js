@@ -22,6 +22,13 @@ import {
 } from '../core/currency.js';
 import { WorkspaceService } from '../services/workspace-service.js';
 
+/* FL7: escapeHtml guards HTML attributes but NOT CSS, so a crafted workspace
+   colour could still inject CSS via an inline style="background:...". Only let
+   a strict hex colour through; anything else falls back to the primary token. */
+function _safeColor(color, fallback = 'var(--mm-primary)') {
+  return /^#[0-9a-fA-F]{3,8}$/.test(String(color ?? '').trim()) ? color : fallback;
+}
+
 /* --------------------------------------------------------------------------
    Navigation item definitions
    Add / remove items here — they auto-reflect on every dashboard page.
@@ -169,7 +176,7 @@ function _buildWorkspaceSwitcher() {
               aria-haspopup="listbox"
               aria-expanded="false"
               aria-label="${t('workspace.switcher_aria')}">
-        <span class="ws-dot" id="wsDot" style="background:${escapeHtml(color)}"></span>
+        <span class="ws-dot" id="wsDot" style="background:${_safeColor(color)}"></span>
         <span class="ws-switcher-name" id="wsName">${escapeHtml(name)}</span>
         <i class="bi bi-chevron-down ws-switcher-caret" aria-hidden="true"></i>
       </button>
@@ -643,7 +650,7 @@ function _buildWsItems(workspaces) {
               role="option" aria-selected="${isActive}"
               data-ws-id="${escapeHtml(ws.workspaceId)}" data-ws-color="${escapeHtml(color)}"
               data-ws-name="${escapeHtml(ws.name)}">
-        <span class="ws-item-dot" style="background:${escapeHtml(color)}">${escapeHtml(init)}</span>
+        <span class="ws-item-dot" style="background:${_safeColor(color)}">${escapeHtml(init)}</span>
         <span class="ws-item-body">
           <span class="ws-item-name">${escapeHtml(ws.name)}</span>
           <span class="ws-item-meta">${ws.activeMemberCount != null ? t('workspace.members_count', { n: ws.activeMemberCount }) : ''}</span>
@@ -826,6 +833,18 @@ export function initLayout() {
 
   /* FH7: speculative prefetch of next page on user intent (faster MPA nav) */
   initPrefetch();
+
+  /* FL8: CSP-safe broken-avatar fallback. Inline onerror is blocked by the CSP,
+     and the 'error' event doesn't bubble, so catch it in the capture phase and
+     swap any failed avatar image to the default once (the guard prevents loops
+     if the default is itself missing). */
+  document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img?.tagName === 'IMG' && img.classList.contains('avatar-img') && !img.dataset.avatarFallback) {
+      img.dataset.avatarFallback = '1';
+      img.src = '/assets/images/avatar/avatar.jpg';
+    }
+  }, true);
 
   /* Currency — load prefs + list asynchronously; fires mm-currency-change if needed */
   initCurrency().then(() => {

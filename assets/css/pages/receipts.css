@@ -1174,18 +1174,6 @@ html[data-theme="dark"] .bulk-action-bar {
 /* --------------------------------------------------------------------------
    14. Processing Queue Panel
    -------------------------------------------------------------------------- */
-.processing-queue {
-  background: var(--mm-surface);
-  border: 1px solid var(--mm-border);
-  border-radius: var(--mm-radius-lg);
-  overflow: hidden;
-  box-shadow: var(--mm-shadow-xs);
-}
-
-html[data-theme="dark"] .processing-queue {
-  background: #1e293b;
-  border-color: #334155;
-}
 
 .processing-queue-item {
   display: flex;

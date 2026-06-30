@@ -10,6 +10,8 @@
  *   showToast('تم الحفظ بنجاح.', 'success');
  */
 
+import { t } from '../core/i18n.js';
+
 /* --------------------------------------------------------------------------
    Container — created once and reused
    -------------------------------------------------------------------------- */
@@ -65,7 +67,7 @@ export function showToast(message, type = 'info', duration = 5000) {
     <div class="d-flex align-items-center gap-2 p-3">
       <i class="bi bi-${config.icon} ${config.textClass} flex-shrink-0" aria-hidden="true" style="font-size:1.1rem"></i>
       <span class="flex-grow-1">${_escapeHtml(message)}</span>
-      <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+      <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="${_escapeHtml(t('common.close'))}"></button>
     </div>`;
 
   container.appendChild(toastEl);

@@ -224,8 +224,11 @@ The frontend must store these, guard protected pages, and silently refresh the a
 - **Access token** → stored in memory only (`auth.js` module variable). Never written to
   localStorage or sessionStorage. Cleared on page refresh (triggers silent re-auth from refresh token).
 - **Refresh token** → stored in `localStorage` under key `mm.refreshToken`.
-  Accepted trade-off: localStorage is accessible to JS, but the app has no third-party scripts and CSP
-  headers should be set at the server to mitigate XSS risk.
+  Accepted trade-off: localStorage is accessible to JS. XSS risk is mitigated by a hash-locked
+  Content-Security-Policy (now implemented as a `<meta http-equiv>` on every page — no `'unsafe-inline'`
+  for scripts) and by output-escaping. The only third-party script is Chart.js, loaded from jsdelivr with a
+  Subresource-Integrity hash (see Dependency Audit). For production, the CSP should also be sent as a
+  server response header and its `connect-src`/`img-src` origins pointed at the real API host.
 - **Auth guard** → `auth.js` exports `guardPage()`. Every protected HTML page calls it in its module
   script. If no valid session can be restored, redirects to `/pages/auth/login.html`.
 - **Silent refresh** → `api.js` intercepts a 401 response, calls the refresh endpoint, updates the
@@ -508,8 +511,13 @@ adds noise, increases repository size, and confuses future developers.
 | Bootstrap Icons | 1.13.1 | 1.13.1 | No action — already latest |
 | Popper.js | Bundled in Bootstrap | — | Bundled — no separate action |
 | jQuery | Not present | — | Do not add |
-| Any charting library | Not present | — | Evaluate when chart features are needed |
+| Chart.js | 4.4.3 (CDN) | 4.4.x | **Present** — used for dashboard/budget/cash-flow/transactions charts. Loaded from jsdelivr with an SRI hash + `crossorigin`. A self-host scaffold is ready at `assets/vendors/chart.js/` (README + download script). |
+| Inter (Google Fonts) | CDN `@import` in `app.css` | — | **Present** — webfont loaded from `fonts.googleapis.com`. SRI is not applicable to a CSS `@import`; a self-host scaffold is ready at `assets/css/fonts/`. |
 
-**Security assessment:** No third-party CDN links. No external script tags. All vendor files are
-locally hosted. No known vulnerabilities in Bootstrap 5.3.8 or Bootstrap Icons 1.13.1 as of June 2026.
-Risk level: **Low**.
+**Security assessment (updated after the 2026-06 frontend audit remediation):** The app now loads two
+third-party resources from CDNs — **Chart.js** (jsdelivr, pinned with a Subresource-Integrity hash) and
+the **Inter** webfont (Google Fonts `@import`). Both have ready self-host scaffolds to remove the CDNs
+entirely. All other vendor files (Bootstrap, Bootstrap Icons) are locally hosted. A hash-locked
+Content-Security-Policy (no `'unsafe-inline'` for scripts) is enforced via a `<meta>` on every page,
+which is what makes the localStorage refresh-token trade-off (ADR-005) acceptable. No known
+vulnerabilities in the pinned dependency versions as of June 2026. Risk level: **Low**.

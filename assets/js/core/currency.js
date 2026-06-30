@@ -160,21 +160,9 @@ export function formatAmountWithOriginal(convertedAmount, displayCurrency, origi
   return { display, original };
 }
 
-/**
- * Returns an HTML snippet showing the amount, optionally with a small badge
- * indicating the original currency when it differs from the display currency.
- */
-export function formatAmountHtml(amount, currencyCode = null, opts = {}) {
-  const displayCurrency = getDisplayCurrency();
-  const usedCode        = (currencyCode ?? displayCurrency).toUpperCase();
-  const isConverted     = usedCode !== displayCurrency;
-
-  const formatted = formatAmount(amount, usedCode);
-  if (!isConverted || opts.noOriginal) return formatted;
-
-  const originalFormatted = formatAmount(amount, usedCode);
-  return `<span class="mm-amt-converted" title="${originalFormatted}">${formatAmount(amount, displayCurrency)}<span class="mm-amt-badge">${usedCode}</span></span>`;
-}
+/* FL4: removed the dead+buggy formatAmountHtml — it had zero usages and never
+   actually converted (it formatted the same raw amount in two currencies).
+   Use formatAmount() / the conversion helpers instead. */
 
 /* --------------------------------------------------------------------------
    Currency list cache

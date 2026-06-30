@@ -291,32 +291,6 @@ html[data-theme="dark"] .btn-outline-secondary:focus {
 /* --------------------------------------------------------------------------
    6. Charts (CSS-based bar chart)
    -------------------------------------------------------------------------- */
-.chart-bars {
-  height: 292px;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(38px, 1fr));
-  align-items: end;
-  gap: 1rem;
-  padding: 1.2rem 0.4rem 0;
-  border-radius: 8px;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
-}
-
-html[data-theme="dark"] .chart-bars {
-  background: linear-gradient(180deg, #111827 0%, #182235 100%);
-}
-
-.chart-column {
-  height: 100%;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  align-items: end;
-  gap: 0.6rem;
-  color: var(--mm-muted);
-  font-size: 0.84rem;
-  font-weight: 700;
-  text-align: center;
-}
 
 .chart-column span {
   width: 100%;
@@ -327,13 +301,6 @@ html[data-theme="dark"] .chart-bars {
   background: linear-gradient(180deg, var(--mm-primary), var(--mm-success));
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
 }
-
-.bar-42 { --bar-size: 42%; }
-.bar-58 { --bar-size: 58%; }
-.bar-51 { --bar-size: 51%; }
-.bar-72 { --bar-size: 72%; }
-.bar-66 { --bar-size: 66%; }
-.bar-83 { --bar-size: 83%; }
 
 /* --------------------------------------------------------------------------
    7. Activity List
@@ -591,20 +558,6 @@ html[data-theme="dark"] .profile-avatar {
 /* --------------------------------------------------------------------------
    13. Donut Chart (CSS-based)
    -------------------------------------------------------------------------- */
-.donut-chart {
-  width: 190px;
-  height: 190px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: conic-gradient(
-    var(--mm-primary) 0 42%,
-    var(--mm-success) 42% 68%,
-    var(--mm-warning) 68% 86%,
-    var(--mm-danger) 86% 100%
-  );
-  box-shadow: var(--mm-shadow-sm);
-}
 
 .donut-chart span {
   width: 112px;
@@ -674,25 +627,6 @@ html[data-theme="dark"] .progress {
 /* --------------------------------------------------------------------------
    16. Blank / Empty State
    -------------------------------------------------------------------------- */
-.blank-panel {
-  min-height: 440px;
-  display: grid;
-  place-items: center;
-  text-align: center;
-}
-
-.blank-state {
-  max-width: 440px;
-  display: grid;
-  justify-items: center;
-}
-
-.blank-visual {
-  width: 88px;
-  height: 88px;
-  object-fit: contain;
-  margin-bottom: 0.9rem;
-}
 
 /* Premium empty state (replaces bare icon pattern) */
 .empty-state {
@@ -999,12 +933,6 @@ html[data-theme="dark"] .text-bg-danger {
 
   .metric-card {
     min-height: 146px;
-  }
-
-  .chart-bars {
-    height: 220px;
-    gap: 0.6rem;
-    padding-inline: 0.25rem;
   }
 
   .panel-header .d-flex,

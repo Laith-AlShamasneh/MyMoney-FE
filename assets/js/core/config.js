@@ -27,6 +27,10 @@ export const Config = Object.freeze({
   /** Application name used in page titles and UI. */
   APP_NAME: 'My Money',
 
+  /** FL5: when false, diagnostic console output is suppressed. Enable per
+   *  environment with `window.MM_DEBUG = true` (e.g. in env.js) for debugging. */
+  DEBUG: (typeof window !== 'undefined' && window.MM_DEBUG === true),
+
   /** Default language loaded on first visit. */
   DEFAULT_LANGUAGE: 'ar',
 
