@@ -179,7 +179,7 @@ function renderMatrix(myRoleId) {
 /* --------------------------------------------------------------------------
    My permissions card
    -------------------------------------------------------------------------- */
-function renderMyPerms(myRoleId, livePerms) {
+function renderMyPerms(myRoleId) {
   const card      = document.getElementById('myPermsCard');
   const badge     = document.getElementById('myRoleBadge');
   const grid      = document.getElementById('myPermsGrid');
@@ -191,10 +191,10 @@ function renderMyPerms(myRoleId, livePerms) {
     badge.textContent = t(`workspace.role_${role.key}`);
   }
 
-  // Use live perms from API if available, else fall back to static matrix
-  const mySet = livePerms
-    ? new Set(livePerms.map(p => (p.permissionName || p.name || '').toLowerCase()))
-    : (ROLE_PERMS[myRoleId] || new Set());
+  // Derive from the static role→permission matrix (same source the gate uses).
+  // The backend's live permission codes use a different vocabulary ('Calendar.View')
+  // than these PERM_GROUPS ids ('view_calendar'), so they can't be matched directly.
+  const mySet = ROLE_PERMS[myRoleId] || new Set();
 
   grid.innerHTML = PERM_GROUPS.map(g => {
     const allowed = g.perms.filter(p => mySet.has(p.id));
@@ -232,17 +232,10 @@ async function init() {
 
   const myRoleId = ctx.roleId || 5;
 
-  // Render the static matrix immediately
+  // Render the static matrix + the caller's permissions card (both from the
+  // static role→permission matrix — the FE's source of truth for these gates).
   renderMatrix(myRoleId);
-
-  // Then fetch live permissions for "my permissions" card
-  try {
-    const livePerms = await WorkspaceService.getMyPermissions(ctx.currentWorkspaceId);
-    renderMyPerms(myRoleId, livePerms);
-  } catch {
-    // Fall back to static matrix for my perms
-    renderMyPerms(myRoleId, null);
-  }
+  renderMyPerms(myRoleId);
 
   window.addEventListener('mm-workspace-change', () => location.reload());
 }

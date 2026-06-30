@@ -18,7 +18,7 @@
 }
 
 .budget-card:hover {
-  box-shadow: var(--mm-shadow-md);
+  box-shadow: var(--mm-shadow);
   transform: translateY(-1px);
 }
 
@@ -50,13 +50,13 @@
   width: 40px;
   height: 40px;
   border-radius: var(--mm-radius);
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
   flex-shrink: 0;
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 html[data-theme="dark"] .budget-icon {
@@ -90,7 +90,7 @@ html[data-theme="dark"] .budget-icon {
   border-radius: 100px;
   font-weight: 600;
   background: rgba(37,99,235,0.12);
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
   letter-spacing: 0.02em;
 }
 
@@ -99,8 +99,8 @@ html[data-theme="dark"] .budget-icon {
   padding: 0.15rem 0.45rem;
   border-radius: 100px;
   font-weight: 500;
-  background: var(--mm-surface-alt);
-  color: var(--mm-text-muted);
+  background: var(--mm-surface-soft);
+  color: var(--mm-muted);
 }
 
 .budget-status-badge {
@@ -112,7 +112,7 @@ html[data-theme="dark"] .budget-icon {
 
 .budget-status-active   { background: rgba(25,135,84,0.12); color: var(--mm-success); }
 .budget-status-paused   { background: rgba(255,193,7,0.15); color: #a67a00; }
-.budget-status-archived { background: var(--mm-surface-alt); color: var(--mm-text-muted); }
+.budget-status-archived { background: var(--mm-surface-soft); color: var(--mm-muted); }
 
 html[data-theme="dark"] .budget-status-paused { color: var(--mm-warning); }
 
@@ -149,7 +149,7 @@ html[data-theme="dark"] .budget-status-paused { color: var(--mm-warning); }
 
 .budget-health-label {
   font-size: 0.55rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -164,7 +164,7 @@ html[data-theme="dark"] .budget-status-paused { color: var(--mm-warning); }
 
 .budget-progress-bar {
   height: 8px;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   border-radius: 100px;
   overflow: hidden;
   position: relative;
@@ -210,7 +210,7 @@ html[data-theme="dark"] .budget-status-paused { color: var(--mm-warning); }
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   padding: 0.75rem;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   border-radius: var(--mm-radius);
 }
 
@@ -227,7 +227,7 @@ html[data-theme="dark"] .budget-stats {
 
 .budget-stat-label {
   font-size: 0.65rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -268,7 +268,7 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
 
 .budget-daily-left {
   font-size: 0.72rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
 }
 
 .budget-daily-left strong {
@@ -290,7 +290,7 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
 
 .budget-period-dates {
   font-size: 0.72rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
 }
 
 .budget-actions {
@@ -307,7 +307,7 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
   border: none;
   background: transparent;
   border-radius: var(--mm-radius-sm);
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   font-size: 0.875rem;
@@ -315,7 +315,7 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
 }
 
 .budget-action-btn:hover {
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   color: var(--mm-text);
 }
 
@@ -336,10 +336,10 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 0.75rem;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   border-radius: var(--mm-radius);
   font-size: 0.78rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
 }
 
 /* ── Dashboard KPI cards (budget-specific) ──────────────── */
@@ -380,7 +380,7 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
   margin-bottom: 0.25rem;
 }
 
-.budget-kpi-icon.icon-primary  { background: rgba(37,99,235,0.1);  color: var(--mm-brand-primary); }
+.budget-kpi-icon.icon-primary  { background: rgba(37,99,235,0.1);  color: var(--mm-primary); }
 .budget-kpi-icon.icon-success  { background: rgba(25,135,84,0.1);  color: var(--mm-success); }
 .budget-kpi-icon.icon-warning  { background: rgba(255,193,7,0.12); color: #a67a00; }
 .budget-kpi-icon.icon-danger   { background: rgba(220,53,69,0.1);  color: var(--mm-danger); }
@@ -389,7 +389,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 
 .budget-kpi-label {
   font-size: 0.72rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 500;
@@ -404,7 +404,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 
 .budget-kpi-hint {
   font-size: 0.72rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   min-height: 16px;
 }
 
@@ -463,7 +463,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 
 .budget-chart-panel-subtitle {
   font-size: 0.75rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
 }
 
 .budget-chart-wrap {
@@ -484,12 +484,12 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   margin-inline: auto;
   margin-bottom: 1.25rem;
 }
@@ -541,21 +541,21 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 }
 
 .budget-type-option:hover {
-  border-color: var(--mm-brand-primary);
+  border-color: var(--mm-primary);
   background: rgba(37,99,235,0.04);
 }
 
 .budget-type-option.selected {
-  border-color: var(--mm-brand-primary);
+  border-color: var(--mm-primary);
   background: rgba(37,99,235,0.07);
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 .budget-type-option-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -564,7 +564,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 
 .budget-type-option.selected .budget-type-option-icon {
   background: rgba(37,99,235,0.12);
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 .budget-type-option-name {
@@ -574,7 +574,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 
 .budget-type-option-desc {
   font-size: 0.68rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   line-height: 1.4;
 }
 
@@ -612,7 +612,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
 
 .budget-wizard-step.completed::after,
 .budget-wizard-step.active::after {
-  background: var(--mm-brand-primary);
+  background: var(--mm-primary);
 }
 
 .budget-wizard-dot {
@@ -626,33 +626,33 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
   font-size: 0.75rem;
   font-weight: 700;
   background: var(--mm-surface);
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   z-index: 1;
   position: relative;
   transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
 .budget-wizard-step.active .budget-wizard-dot {
-  border-color: var(--mm-brand-primary);
-  color: var(--mm-brand-primary);
+  border-color: var(--mm-primary);
+  color: var(--mm-primary);
 }
 
 .budget-wizard-step.completed .budget-wizard-dot {
-  border-color: var(--mm-brand-primary);
-  background: var(--mm-brand-primary);
+  border-color: var(--mm-primary);
+  background: var(--mm-primary);
   color: #fff;
 }
 
 .budget-wizard-step-label {
   font-size: 0.68rem;
   font-weight: 500;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   text-align: center;
 }
 
 .budget-wizard-step.active .budget-wizard-step-label,
 .budget-wizard-step.completed .budget-wizard-step-label {
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 /* ── Detail page ────────────────────────────────────────── */
@@ -673,7 +673,7 @@ html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning)
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
   flex-shrink: 0;
 }
 
@@ -735,7 +735,7 @@ html[data-theme="dark"] .budget-detail-icon {
 
 .budget-detail-kpi-label {
   font-size: 0.68rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 500;
@@ -750,7 +750,7 @@ html[data-theme="dark"] .budget-detail-icon {
 
 .budget-detail-kpi-hint {
   font-size: 0.68rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
 }
 
 /* ── Period history table ───────────────────────────────── */
@@ -764,7 +764,7 @@ html[data-theme="dark"] .budget-detail-icon {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   font-weight: 600;
   padding: 0.625rem 0.875rem;
   border-bottom: 1px solid var(--mm-border);
@@ -779,7 +779,7 @@ html[data-theme="dark"] .budget-detail-icon {
 }
 
 .budget-periods-table tbody tr:hover {
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
 }
 
 .budget-period-util-bar {
@@ -791,7 +791,7 @@ html[data-theme="dark"] .budget-detail-icon {
 .budget-period-util-track {
   width: 60px;
   height: 6px;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   border-radius: 100px;
   overflow: hidden;
   flex-shrink: 0;
@@ -835,7 +835,7 @@ html[data-theme="dark"] .health-band-badge.fair { color: var(--mm-warning); }
 
 .period-status-active   { background: rgba(25,135,84,0.12); color: var(--mm-success); }
 .period-status-exceeded { background: rgba(220,53,69,0.1);  color: var(--mm-danger); }
-.period-status-closed   { background: var(--mm-surface-alt); color: var(--mm-text-muted); }
+.period-status-closed   { background: var(--mm-surface-soft); color: var(--mm-muted); }
 
 /* ── Trend chart on detail ──────────────────────────────── */
 
@@ -848,7 +848,7 @@ html[data-theme="dark"] .health-band-badge.fair { color: var(--mm-warning); }
 
 .budget-analytics-trend-up   { color: var(--mm-danger); }
 .budget-analytics-trend-down { color: var(--mm-success); }
-.budget-analytics-trend-flat { color: var(--mm-text-muted); }
+.budget-analytics-trend-flat { color: var(--mm-muted); }
 
 /* ── RTL adjustments ────────────────────────────────────── */
 
@@ -881,7 +881,7 @@ html[data-theme="dark"] .health-band-badge.fair { color: var(--mm-warning); }
   border-radius: 100px;
   font-weight: 600;
   background: rgba(37,99,235,0.12);
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 .budget-card-period-badge {
@@ -889,8 +889,8 @@ html[data-theme="dark"] .health-band-badge.fair { color: var(--mm-warning); }
   padding: 0.15rem 0.45rem;
   border-radius: 100px;
   font-weight: 500;
-  background: var(--mm-surface-alt);
-  color: var(--mm-text-muted);
+  background: var(--mm-surface-soft);
+  color: var(--mm-muted);
 }
 
 .budget-card-period-badge.badge-paused {
@@ -899,8 +899,8 @@ html[data-theme="dark"] .health-band-badge.fair { color: var(--mm-warning); }
 }
 
 .budget-card-period-badge.badge-archived {
-  background: var(--mm-surface-alt);
-  color: var(--mm-text-muted);
+  background: var(--mm-surface-soft);
+  color: var(--mm-muted);
   opacity: 0.7;
 }
 
@@ -915,7 +915,7 @@ html[data-theme="dark"] .budget-card-period-badge.badge-paused { color: var(--mm
   border: none;
   background: transparent;
   border-radius: var(--mm-radius-sm);
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   padding: 0;
@@ -923,7 +923,7 @@ html[data-theme="dark"] .budget-card-period-badge.badge-paused { color: var(--mm
 }
 
 .budget-menu-btn:hover {
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   color: var(--mm-text);
 }
 
@@ -944,7 +944,7 @@ html[data-theme="dark"] .budget-card-period-badge.badge-paused { color: var(--mm
   justify-content: center;
   font-size: 1.1rem;
   flex-shrink: 0;
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 html[data-theme="dark"] .budget-card-icon {
@@ -963,7 +963,7 @@ html[data-theme="dark"] .budget-card-icon {
 
 .budget-card-category {
   font-size: 0.75rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -987,25 +987,25 @@ html[data-theme="dark"] .budget-card-icon {
 /* ── Stat aliases ───────────────────────────────────────── */
 
 .budget-stat-val   { font-size: 0.8125rem; font-weight: 700; color: var(--mm-text); white-space: nowrap; }
-.budget-stat-lbl   { font-size: 0.65rem; color: var(--mm-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.budget-stat-lbl   { font-size: 0.65rem; color: var(--mm-muted); text-transform: uppercase; letter-spacing: 0.04em; }
 
 /* ── KPI card aliases ───────────────────────────────────── */
 
 .budget-kpi-val    { font-size: 1.375rem; font-weight: 700; color: var(--mm-text); line-height: 1.2; }
-.budget-kpi-lbl    { font-size: 0.72rem; color: var(--mm-text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.budget-kpi-lbl    { font-size: 0.72rem; color: var(--mm-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
 
 /* ── Wizard label alias ─────────────────────────────────── */
 
 .budget-wizard-lbl {
   font-size: 0.68rem;
   font-weight: 500;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   text-align: center;
 }
 
 .budget-wizard-step.active .budget-wizard-lbl,
 .budget-wizard-step.done   .budget-wizard-lbl {
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 /* ── Search filter input ────────────────────────────────── */
@@ -1015,7 +1015,7 @@ html[data-theme="dark"] .budget-card-icon {
   inset-inline-start: 0.625rem;
   inset-block-start: 50%;
   transform: translateY(-50%);
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   font-size: 0.8rem;
   pointer-events: none;
 }
@@ -1076,7 +1076,7 @@ html[data-theme="dark"] .budget-detail-icon.health-fair { color: var(--mm-warnin
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--mm-surface-alt);
+  background: var(--mm-surface-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1086,7 +1086,7 @@ html[data-theme="dark"] .budget-detail-icon.health-fair { color: var(--mm-warnin
 
 .budget-type-option.selected .budget-type-icon {
   background: rgba(37,99,235,0.12);
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }
 
 .budget-type-name {
@@ -1096,7 +1096,7 @@ html[data-theme="dark"] .budget-detail-icon.health-fair { color: var(--mm-warnin
 
 .budget-type-desc {
   font-size: 0.68rem;
-  color: var(--mm-text-muted);
+  color: var(--mm-muted);
   line-height: 1.4;
 }
 
@@ -1107,15 +1107,15 @@ html[data-theme="dark"] .budget-detail-icon.health-fair { color: var(--mm-warnin
 /* ── Wizard done state (alias for completed) ─────────────── */
 
 .budget-wizard-step.done::after {
-  background: var(--mm-brand-primary);
+  background: var(--mm-primary);
 }
 
 .budget-wizard-step.done .budget-wizard-dot {
-  border-color: var(--mm-brand-primary);
-  background: var(--mm-brand-primary);
+  border-color: var(--mm-primary);
+  background: var(--mm-primary);
   color: #fff;
 }
 
 .budget-wizard-step.done .budget-wizard-lbl {
-  color: var(--mm-brand-primary);
+  color: var(--mm-primary);
 }

@@ -627,7 +627,7 @@ html[data-theme="dark"] {
   cursor: pointer;
 }
 .ws-card:hover {
-  box-shadow: var(--mm-shadow-md) !important;
+  box-shadow: var(--mm-shadow) !important;
   transform: translateY(-2px);
 }
 

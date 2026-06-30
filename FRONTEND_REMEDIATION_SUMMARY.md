@@ -187,6 +187,44 @@ and an unstyled dropdown list) on every page **except** the `/pages/workspaces/*
 styling with no duplication. Verified: both files brace-balanced, switcher rules now absent from
 `workspace.css` and present in `layout.css`, all files serve 200.
 
+### Owner (and all roles) wrongly "Access Restricted" in shared workspaces
+**Symptom:** in a shared workspace, every gated page showed "Access Restricted — You don't have
+permission to view this content," even for the workspace **Owner**.
+
+**Cause:** the permission gate (`services/workspace-context.js`) built its permission set from the
+live API as `p.permissionName || p.name` — but the backend returns permissions as
+`{ code, resource, action }` (no such fields), so every permission collapsed to `''`. Compounding it,
+the backend's permission codes use a different vocabulary (`Calendar.View`) than the FE gates
+(`view_calendar`, plus FE-only gates like `view_insights`/`view_activity`/`manage_cashflow` that have no
+backend code), so the live list can't drive the FE gates at all.
+
+**Fix:** the gate now derives permissions from the caller's role via the FE's `_STATIC_ROLE_PERMS` map
+keyed by `roleId` (returned by the context endpoint). That map is complete and matches the FE gate
+vocabulary, so Owner (`roleId 1`) gets the full set and is never wrongly restricted. Frontend-only
+change; no backend rebuild. *Note:* gating is now role-based — custom per-role permissions editing would
+require aligning the FE and backend permission vocabularies (separate, larger task).
+
+### Roles & Permissions page — permission display
+`workspace-roles.js` read the same non-existent `permissionName` field; updated it to read the backend's
+`code`/`resource`/`action` shape so the page lists permissions correctly.
+
+### Create-Budget wizard: invisible step circles / faint connectors (undefined CSS tokens)
+**Symptom:** in the Create Budget wizard, completed steps lost their numbered circle (appeared blank),
+connector lines were faint, and the active state wasn't brand-colored.
+
+**Cause:** `budgets.css` was authored against design tokens that **don't exist** in the app's token set —
+`--mm-brand-primary`, `--mm-text-muted`, `--mm-surface-alt`, `--mm-shadow-md`. An undefined `var()`
+makes the declaration invalid, so a *completed* step dot fell back to a white surface background while
+still setting white text → a white number on a white circle (invisible), and `.completed/.active`
+connectors fell back to the faint default border color.
+
+**Fix:** mapped the non-existent tokens to the real ones throughout `budgets.css`
+(`--mm-brand-primary`→`--mm-primary`, `--mm-text-muted`→`--mm-muted`,
+`--mm-surface-alt`→`--mm-surface-soft`, `--mm-shadow-md`→`--mm-shadow`; 67 replacements). The same
+undefined tokens were found and fixed in `goals.css` (11× `--mm-text-muted`) and `workspace.css`
+(1× `--mm-shadow-md`). An app-wide sweep now reports no undefined `--mm-*` tokens except 3 pre-existing
+`--mm-sidebar-*` references in `layout.css` (sidebar renders correctly; left as a separate minor item).
+
 ---
 
 ## Deferred items (and why)

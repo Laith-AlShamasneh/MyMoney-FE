@@ -78,13 +78,13 @@ export async function initWorkspaceContext({ viewPerm, contentId, gates = [] } =
 
   if (!_ctx?.currentWorkspaceId) return; // personal mode, no restrictions
 
-  // Load live permissions; fall back to static role map
-  try {
-    const livePerms = await WorkspaceService.getMyPermissions(_ctx.currentWorkspaceId);
-    _perms = new Set(livePerms.map(p => (p.permissionName || p.name || '').toLowerCase()));
-  } catch {
-    _perms = _STATIC_ROLE_PERMS[_ctx.roleId] ?? new Set();
-  }
+  // Permissions are derived from the caller's role via the static role→permission
+  // map. That map is the FE's source of truth — it matches the viewPerm/gate
+  // vocabulary used across pages ('view_calendar', 'view_insights', 'manage_cashflow',
+  // …). The backend's permission codes use a different scheme ('Calendar.View') and
+  // don't cover the FE-only gates, so they can't drive these checks. (Owner = roleId 1
+  // → full set, so the owner is never wrongly access-restricted.)
+  _perms = _STATIC_ROLE_PERMS[_ctx.roleId] ?? new Set();
 
   // Render workspace banner in page
   _renderBanner(_ctx);
