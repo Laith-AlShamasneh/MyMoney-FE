@@ -53,6 +53,15 @@ export function expenseColors() {
     : { backgroundColor: 'rgba(220,53,69,0.15)',   borderColor: '#dc3545' };
 }
 
+/** Primary-brand dataset colours (background fill + border) — e.g. a
+ *  cumulative-balance line overlaid on income/expense bars. Mirrors the
+ *  --mm-primary design token's light/dark values. */
+export function primaryColors() {
+  return _isDark()
+    ? { backgroundColor: 'rgba(96,165,250,0.1)',  borderColor: '#60a5fa' }
+    : { backgroundColor: 'rgba(37,99,235,0.08)',  borderColor: '#2563eb' };
+}
+
 /**
  * Colour palette for multi-series charts (donut categories, etc.).
  * Values are vivid enough to read on both light and dark backgrounds.

@@ -13,7 +13,7 @@ import { Config }                     from '../core/config.js';
 import { showError }                  from '../components/toast.js';
 import { formatAmount }               from '../core/currency.js';
 import {
-  incomeColors, expenseColors,
+  incomeColors, expenseColors, primaryColors,
   chartTooltipOptions, chartLegendLabels, chartScales, chartTextColor,
 } from '../core/chart-theme.js';
 import { initWorkspaceContext } from '../services/workspace-context.js';
@@ -238,9 +238,7 @@ function _renderChart(months) {
   const { labels, balances, incomes, expenses } = _buildChartData(months);
   const inc = incomeColors();
   const exp = expenseColors();
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const balanceColor = isDark ? '#60a5fa' : '#2563eb';
-  const balanceFill  = isDark ? 'rgba(96,165,250,0.1)' : 'rgba(37,99,235,0.08)';
+  const { borderColor: balanceColor, backgroundColor: balanceFill } = primaryColors();
 
   _timelineChart = new Chart(canvas.getContext('2d'), {
     data: {

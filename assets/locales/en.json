@@ -1920,6 +1920,7 @@
     "accept_not_found":     "Invitation not found.",
     "accept_email_mismatch":"This invitation was sent to a different email address.",
     "accept_go_dashboard":  "Go to Dashboard",
+    "go_home":              "Go Home",
     "accept_loading":       "Loading invitation details…",
 
     "my_role_label": "Your role in this workspace",

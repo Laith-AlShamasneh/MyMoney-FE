@@ -218,48 +218,44 @@ function _renderPeriodKpis(b) {
 
   const bandCls = _healthBandCls(p.healthBandId);
   const riskCls = _riskBandCls(p.forecastRiskId);
-  const isDark  = document.documentElement.getAttribute('data-theme') === 'dark';
 
+  /* Accent is a design-token reference (not a raw color), so each card
+     automatically adapts to light/dark mode via the token system — no
+     manual isDark branching or hardcoded hex needed. */
   const items = [
     {
       icon: 'bi-bullseye',
-      bg:   isDark ? '#1e3a5f' : '#dbeafe',
-      clr:  isDark ? '#60a5fa' : '#1e40af',
+      accent: 'var(--mm-primary)',
       val:  _fmtCurrency(p.budgetedAmount),
       lbl:  'budgets.col_budgeted',
     },
     {
       icon: 'bi-credit-card',
-      bg:   isDark ? '#450a0a' : '#fee2e2',
-      clr:  isDark ? '#f87171' : '#991b1b',
+      accent: 'var(--mm-danger)',
       val:  _fmtCurrency(p.actualSpent),
       lbl:  'budgets.col_spent',
     },
     {
       icon: 'bi-wallet',
-      bg:   isDark ? '#064e3b' : '#d1fae5',
-      clr:  isDark ? '#34d399' : '#065f46',
+      accent: 'var(--mm-success)',
       val:  _fmtCurrency(p.remainingAmount),
       lbl:  'budgets.col_remaining',
     },
     {
       icon: 'bi-graph-up',
-      bg:   isDark ? '#2e1065' : '#ede9fe',
-      clr:  isDark ? '#a78bfa' : '#5b21b6',
+      accent: 'var(--mm-accent)',
       val:  _fmtCurrency(p.projectedEndSpending),
       lbl:  'budgets.detail_projected',
     },
     {
       icon: 'bi-calendar-day',
-      bg:   isDark ? '#1c3035' : '#cffafe',
-      clr:  isDark ? '#22d3ee' : '#0e7490',
+      accent: 'var(--mm-info)',
       val:  p.dailyBudgetRemaining != null ? _fmtCurrency(p.dailyBudgetRemaining) : '—',
       lbl:  'budgets.detail_daily_budget',
     },
     {
       icon: 'bi-shield-exclamation',
-      bg:   isDark ? '#422006' : '#fef9c3',
-      clr:  isDark ? '#fb923c' : '#854d0e',
+      accent: 'var(--mm-warning)',
       val:  _riskLabel(p.forecastRiskId),
       lbl:  'budgets.detail_forecast_risk',
     },
@@ -267,8 +263,8 @@ function _renderPeriodKpis(b) {
 
   kpiWrap.innerHTML = items.map(item => `
     <div class="col-6 col-md-4 col-lg-2">
-      <div class="kpi-card h-100">
-        <span class="kpi-icon" style="background:${item.bg};color:${item.clr}">
+      <div class="kpi-card kpi-card-accent h-100" style="--kpi-accent:${item.accent}">
+        <span class="kpi-icon">
           <i class="bi ${item.icon}" aria-hidden="true"></i>
         </span>
         <span class="kpi-label">${t(item.lbl)}</span>

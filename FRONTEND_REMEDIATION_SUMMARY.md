@@ -333,13 +333,92 @@ after every locale edit in this pass).
    inherit `color`, unlike emoji, so selection state now visually highlights the chosen type's icon too
    (matching the existing `budget-type-icon` precedent elsewhere in the app).
 
+### Completion — every remaining page (auth, errors, currency, budget detail, dashboard sub-pages)
+This closes out the design pass across **all 32 pages** in the app.
+- **`index.html` (splash)** — checked; a genuinely minimal instant-redirect spinner shown for a fraction
+  of a second. Correct as-is, no changes.
+- **Auth pages (login/register/forgot-password/reset-password)** — `.auth-visual` (the decorative gradient
+  banner above the form) upgraded from a flat 2-stop gradient to the richer `--mm-gradient-primary` token
+  plus a subtle radial-highlight overlay for depth, via one shared `enhance.css` rule that cascades to all
+  4 pages that use it (`confirm-email`/`confirm-email-change` don't have this banner — simpler pages by
+  design, left as-is).
+- **Error pages (403/404/500)** — checked; already minimal by design (SVG illustration/icon + heading),
+  which is the right UX for an error state (calm, not decorated). No changes — already benefit from the
+  global `.btn-primary` gradient automatically.
+- **Currency page** — `panel-title-icon` on the Converter and Set Manual Rate headers; the 4 statistics
+  cards were already using the proper `.stat-card-icon-{blue,green,info,amber}` token-driven variants
+  (no bug, already correct).
+- **Budgets Detail** — `panel-title-icon` on the 2 chart/table panel headers; converted the 6-card period
+  KPI strip in `budget-detail.js` to the `--kpi-accent` system (same `isDark`+hardcoded-hex bug pattern
+  found and fixed on Budgets/Goals index pages, here in the detail page's own render function).
+- **Dashboard sub-pages** — Notifications: checked, simple list page, nothing to add. Profile:
+  `panel-title-icon` on "Personal Information" (the hero display-name heading correctly left alone — it's
+  the user's own name, not a generic section label). Settings: `panel-title-icon` on all 5 section headers
+  (Change Password, Change Email, Active Sessions, Notification Preferences, Currency Preferences),
+  removing 4 redundant bare decorative icons that duplicated the new badges.
+- **Workspace Accept** — reviewed; its color stripe is JS-populated with the real workspace's color at
+  runtime (not a static bug), left as-is.
+
+**One more real bug found — this time in the shared chart-theme module:** `cash-flow.js`'s timeline chart
+hand-rolled its own `isDark ? '#60a5fa' : '#2563eb'` branching for the balance line's color, duplicating
+logic that the app already centralizes in `core/chart-theme.js` (`incomeColors()`/`expenseColors()` etc.
+— a proper, established pattern for Chart.js, which needs computed color strings and can't read CSS
+custom properties directly). Added a matching `primaryColors()` export to `chart-theme.js` and switched
+`cash-flow.js` to use it — same visual result, now DRY and consistent with how every other chart color in
+the app is resolved.
+
+**Final full-app sweep:** grepped every page script for the `isDark`-branching pattern one more time after
+all fixes — the only remaining instance was `cash-flow.js`'s chart color (now fixed above); everything
+else that matched the search pattern was a false positive (legitimate `var(--mm-*)` token usage already
+handled correctly in Dashboard/Transactions/Goals/Calendar/Workspace Dashboard).
+
 ### Verification
 Every touched HTML file re-checked for tag balance (div/h1/h2/h5/span/p/i) after each edit; every touched
 CSS file brace-balanced; every touched JS file brace/paren-balanced; locale parity re-verified after each
-i18n addition; everything re-served and HTTP-200-checked. As with the rest of this document, verification
-is **structural only** — the actual visual result (does it look "modern/attractive," does the motion feel
-right, does dark mode read well, do the new icon glyphs render at the right size) needs a real browser
-pass — see [Outstanding verification](#outstanding-verification).
+i18n addition (final: AR=EN=1805, 0 orphans); everything re-served and HTTP-200-checked. As with the rest
+of this document, verification is **structural only** — the actual visual result (does it look
+"modern/attractive," does the motion feel right, does dark mode read well, do the new icon glyphs render
+at the right size) needs a real browser pass — see [Outstanding verification](#outstanding-verification).
+
+---
+
+## In-browser verification pass
+
+Ran a real (sandboxed) browser session against the FE (static server, no backend reachable) covering
+login, register, forgot-password, 403/404, and the workspace-accept invalid-link state — across
+light/dark theme, AR (RTL)/EN (LTR), and desktop/mobile viewports.
+
+**Confirmed genuinely working (not just structurally plausible):**
+- The `.auth-visual` gradient banner and `.btn-primary` gradient both computed correctly
+  (`background-image: linear-gradient(...)` verified via `preview_inspect`, not just present in CSS).
+- The `.eyebrow` gradient-clip-text effect is real (`-webkit-text-fill-color: transparent` +
+  gradient `background-image` confirmed on a live element, not falling back to plain text).
+- Zero console errors, zero failed asset/CSP requests across every page tested — the CSP hash resync
+  and all HTML edits this session didn't break anything.
+- RTL Arabic and LTR English both render correctly; dark mode token overrides apply correctly; mobile
+  (375×812) layout holds with no overflow/breakage.
+- The `brand/logo-icon.svg` fix (from the earlier "Cannot GET /assets/images/logo/logo.svg" report) is
+  confirmed rendering on `workspaces/accept.html`.
+
+**One real, previously-unknown bug found and fixed:** the workspace-accept page's "Go Home" button (used
+on the Invalid Link / Expired / Rejected states) rendered the literal text `workspace.go_home` instead of
+translated text — a genuine end-user-visible bug, pre-existing (not introduced this session). Root cause:
+`accept.html` references `data-i18n="workspace.go_home"`, but no `go_home` key ever existed under the
+`workspace` namespace in either locale file — a same-named `go_home` key exists under `errors_page`
+(used correctly by the 403/404/500 pages), which is a different, unrelated key. Fix: added a proper
+`workspace.go_home` key to both `en.json`/`ar.json` ("Go Home" / "العودة للرئيسية") rather than
+repurposing `errors_page.go_home`, to avoid coupling the two features' translations. Verified fixed live
+via accessibility-tree snapshot before and after (confirmed the broken state, applied the fix, confirmed
+the corrected text renders in both languages). Locale parity re-verified: AR=EN=1806, 0 orphans.
+
+**Not reachable in this pass:** every authenticated page (Dashboard, Transactions, Budgets, Goals, Cash
+Flow, Reports, Recurring, Financial Intelligence, Currency, Calendar, all Workspace pages, Profile,
+Settings) — `guardPage()` correctly redirected to login since no session exists in the sandboxed browser,
+and creating an account or entering credentials to get past that isn't something this pass does
+(the sandboxed browser is single-purpose for the app under test, but the same
+credential-handling boundary applies regardless of environment). **A full authenticated-page visual pass
+still needs you to either log in within a connected browser session or hand off specific pages/screenshots
+for me to react to.**
 
 ---
 
