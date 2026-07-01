@@ -91,14 +91,14 @@ a, .btn, .nav-link, .icon-button, .profile-button,
 
 /* Small stat/KPI/summary cards get a real lift on hover */
 .stat-card, .kpi-card, .rate-card, .budget-card, .goal-card,
-.receipt-card, .receipt-kpi, .cf-kpi, .ws-kpi, .insight-card, .mm-stat {
+.receipt-card, .receipt-kpi, .ws-kpi-card, .insight-card {
   transition: box-shadow var(--mm-duration-base) var(--mm-ease),
               transform var(--mm-duration-base) var(--mm-ease-spring),
               border-color var(--mm-duration-base) var(--mm-ease);
 }
 .stat-card:hover, .kpi-card:hover, .rate-card:hover, .budget-card:hover,
-.goal-card:hover, .receipt-card:hover, .receipt-kpi:hover, .cf-kpi:hover,
-.ws-kpi:hover, .insight-card:hover, .mm-stat:hover {
+.goal-card:hover, .receipt-card:hover, .receipt-kpi:hover,
+.ws-kpi-card:hover, .insight-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--mm-shadow-lg);
 }

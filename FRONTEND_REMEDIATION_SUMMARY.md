@@ -225,6 +225,122 @@ undefined tokens were found and fixed in `goals.css` (11× `--mm-text-muted`) an
 (1× `--mm-shadow-md`). An app-wide sweep now reports no undefined `--mm-*` tokens except 3 pre-existing
 `--mm-sidebar-*` references in `layout.css` (sidebar renders correctly; left as a separate minor item).
 
+### Cash Flow: new-user "no forecast" state showed as an error
+**Symptom:** on a brand-new account (no transactions yet), the Cash Flow page showed a red error toast
+("CashFlow.ForecastNotAvailable") instead of a helpful empty state.
+
+**Cause:** the backend correctly returns `NOT_FOUND` (code 8) when no forecast has been computed yet —
+this is expected for a new user, not a real error. `cash-flow.js`'s catch block treated every `ApiError`
+the same way (error toast), including this expected case. The page already had a well-built empty state
+(`cfNoData`, with "Add transaction" / "Set up recurring" CTAs) that was simply never being shown.
+
+**Fix:** the catch now checks `err.code === Config.RESPONSE_CODES.NOT_FOUND` and shows the existing empty
+state instead of an error toast. Added the missing `Config` import. A forecast is computed by a background
+job once the user has transactions (ideally recurring ones); no forecast on day one is expected behavior,
+not a bug.
+
+---
+
+## Design upgrade (visual modernization pass)
+
+A broad, token-driven visual upgrade requested by the user ("make it more powerful, modern, attractive,
+animated"). Rather than hand-editing 30+ pages independently, the approach was to elevate the **shared
+design system** so improvements cascade, then push further on high-traffic pages.
+
+### `enhance.css` — global upgrade layer
+New file, linked **last** on all 33 pages (reversible — removing the `<link>` fully reverts it). Adds on
+top of the existing token system without modifying it:
+- **Depth/color:** richer layered shadows across the elevation scale, new gradient tokens
+  (`--mm-gradient-primary`, `--mm-gradient-text`, etc.), a new general-purpose `--mm-accent` (purple) token
+  for "misc/count"-style metrics, refined focus rings, slim custom scrollbars.
+- **Motion:** entrance animation for panels/cards (`mmx-rise`), staggered grid entrance, hover-lift on
+  stat/KPI/budget/goal/receipt/rate cards, a gradient **primary button** with lift + sweep-sheen on hover,
+  a glowing gradient sidebar active-item, glass-blur navbar.
+- **Accessibility:** fully respects `prefers-reduced-motion` (kills animations/transforms).
+
+### KPI card accent system (`--kpi-accent`)
+A reusable mechanism: any card sets `--kpi-accent:var(--mm-income)` (etc.) inline; one shared rule set in
+`enhance.css` drives that card's icon tint, glow, and a slim gradient top-bar — no per-metric CSS classes,
+no hardcoded hex, automatic dark-mode correctness via the token system. Rolled out to:
+- **Dashboard** — 4 KPI cards (income/expenses/net/count), plus a new personalized time-of-day greeting
+  ("Good morning, {name}" — real clock + logged-in display name, hidden gracefully if no name), a gradient
+  hero page-icon, and icon badges on the 3 chart-panel headers (`panel-title-icon` system, see below).
+  **Bug fix bundled in:** the Net KPI's color was hardcoded hex (`#dc3545`/`#198754`) in `dashboard.js`,
+  which didn't adapt to dark mode's income/expense palette — now `var(--mm-expense)`/`var(--mm-income)`.
+- **Transactions** — 4 summary-strip cards converted the same way; added a panel-title icon to "Analytics".
+- **Budgets** — 4 KPI cards. Found a real bug while converting: `budgets.js` hardcoded **8 hex values**
+  (light+dark pairs, `isDark ? '#..' : '#..'` branching) for icon colors, while `budgets.css` had **unused**
+  `.icon-primary/-success/-warning/-danger` classes that looked intended for this but were never wired up.
+  Extended `--kpi-accent` to also cover `.budget-kpi-icon`, rewrote `_renderKpis()` to pass token
+  references instead of hex (removes the `isDark` branch entirely), removed the now-confirmed-dead
+  `.icon-*` CSS rules.
+- **Goals** — 6 KPI cards. Found a **worse** version of the same bug: `goals.js` hardcoded fixed
+  light-mode-only icon *text* color with **no dark-mode override at all** (only the background swapped),
+  risking low-contrast text in dark mode. Same fix pattern applied.
+- **Cash Flow** — 5 hero KPI cards, already token-correct but not using the shared mechanism; converted
+  for consistency, fixed one raw hex (`#7c3aed` → `var(--mm-accent)`).
+- **Receipts** — checked; its `.receipt-kpi` cards already use the identical `--rk-color` pattern (the
+  precedent that inspired `--kpi-accent`). Already correct, left unchanged.
+
+### `panel-title-icon` system
+Small colored icon badge before a panel's `<h2>`/`<h5>` (5 color variants: default/danger/accent/warning/
+info, `enhance.css`). Applied to Dashboard (3), Transactions (1), Budgets (2), Cash Flow (6), and Goal
+Detail (4) panel/section headers.
+
+### Real bug found: three page headers were completely unstyled
+While extending the upgrade to Budgets, Goals, and Calendar, discovered that `.mm-page-header`,
+`.mm-page-title`, `.mm-eyebrow`, `.mm-heading`, `.mm-subheading` are **undefined anywhere in the entire
+CSS codebase**. All three pages' headers (skeleton, empty-state, and content-state variants — 8 instances
+total) were built against these non-existent classes, meaning they rendered as unstyled browser-default
+text with **no page icon**, unlike Dashboard/Transactions/Cash-Flow which all correctly use `.page-heading`
++ `.page-icon` + `.eyebrow`. Fixed all 8 instances to use the real, working classes, and added matching
+page-icon badges using each page's actual sidebar-nav icon (`wallet2` Budgets, `piggy-bank` Goals,
+`calendar3` Calendar) for full consistency with the rest of the app.
+
+**Bonus i18n fix found along the way:** Goal Detail's "Milestones" section header had a hardcoded Arabic
+string with no `data-i18n` attribute — English users were seeing Arabic text leak through. Added the
+missing `goals.milestones_section_title` key to both locales (parity: AR=EN=1805, 0 orphans, verified
+after every locale edit in this pass).
+
+### Continuation — Reports, Recurring, Financial Intelligence, Workspace pages
+- **Reports** — added `panel-title-icon` to the two panel headers (Generate Report, Report History);
+  removed a now-redundant bare decorative icon that duplicated the new badge.
+- **Recurring** — converted all 6 static KPI cards (already token-correct) to the shared
+  `kpi-card-accent` mechanism for visual consistency with the rest of the app.
+- **Financial Intelligence** — added `panel-title-icon` to all 3 panel headers (Financial Health,
+  Category Trends, Behavior Patterns).
+- **Receipts** — checked; gallery-grid layout with no panel headers, KPI cards already correct
+  (`--rk-color` pattern). No changes needed.
+- **Workspace pages (dashboard/members/invitations/roles/settings)** — confirmed none use the broken
+  `mm-page-*` classes (all correctly use `.page-heading`/`.page-icon`/`.eyebrow` already). Added
+  `panel-title-icon` to 4 section headers (Recent Activity, Members quick-view, Permission Matrix, My
+  Permissions). Members and Invitations checked — single-table pages with no additional panel headers
+  beyond the page heading and modal titles; nothing further needed.
+
+**Two more real bugs found during this pass:**
+1. **`enhance.css`'s own hover-lift selector list had 3 typo'd/invented class names** —
+   `.ws-kpi` (real class is `.ws-kpi-card`), `.cf-kpi` (never existed; Cash Flow actually uses `.kpi-card`,
+   already covered), and `.mm-stat` (matches nothing anywhere in the app). These were introduced during
+   the original broad `enhance.css` pass without verifying against real markup. Fixed: swapped `.ws-kpi`
+   → `.ws-kpi-card`, removed the two phantom classes — so the Workspace Dashboard's KPI cards actually
+   get the intended hover-lift now (they never did before this fix).
+2. **Workspace type-selector icons used literal emoji** (👤👨‍👩‍👧🏢👥) instead of the Bootstrap Icons font
+   used everywhere else in the app (which explicitly avoids emoji) — in both the Create Workspace modal
+   (`workspaces/dashboard.html`) and the Settings page's type picker (`workspaces/settings.html`), 4
+   instances each. Emoji rendering is inconsistent across OS/browser/font and breaks the app's icon-color
+   theming. Replaced all 8 with matching `bi-*` glyphs (`person-fill`/`house-heart-fill`/`building-fill`/
+   `people-fill`) and added a `.selected` icon-tint rule (`color: var(--mm-primary)`) — icon-font glyphs
+   inherit `color`, unlike emoji, so selection state now visually highlights the chosen type's icon too
+   (matching the existing `budget-type-icon` precedent elsewhere in the app).
+
+### Verification
+Every touched HTML file re-checked for tag balance (div/h1/h2/h5/span/p/i) after each edit; every touched
+CSS file brace-balanced; every touched JS file brace/paren-balanced; locale parity re-verified after each
+i18n addition; everything re-served and HTTP-200-checked. As with the rest of this document, verification
+is **structural only** — the actual visual result (does it look "modern/attractive," does the motion feel
+right, does dark mode read well, do the new icon glyphs render at the right size) needs a real browser
+pass — see [Outstanding verification](#outstanding-verification).
+
 ---
 
 ## Deferred items (and why)

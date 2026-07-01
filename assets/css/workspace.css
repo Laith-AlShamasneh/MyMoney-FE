@@ -442,7 +442,8 @@ html[data-theme="dark"] {
   box-shadow: var(--mm-ring);
 }
 
-.ws-type-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+.ws-type-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; color: var(--mm-muted); }
+.ws-type-option.selected .ws-type-icon { color: var(--mm-primary); }
 .ws-type-name { font-size: var(--mm-text-sm); font-weight: 600; color: var(--mm-text); }
 .ws-type-desc { font-size: var(--mm-text-xs); color: var(--mm-muted); margin-top: 0.125rem; }
 

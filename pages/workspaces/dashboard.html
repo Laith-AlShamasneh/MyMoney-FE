@@ -159,7 +159,10 @@
               <div class="col-12 col-lg-7">
                 <div class="card border-0 shadow-sm">
                   <div class="card-header d-flex align-items-center justify-content-between bg-transparent border-bottom-0 pt-3 px-4">
-                    <h5 class="mb-0 fw-semibold" data-i18n="workspace.activity_title">النشاط الأخير</h5>
+                    <h5 class="mb-0 fw-semibold panel-title">
+                      <span class="panel-title-icon panel-title-icon-info"><i class="bi bi-clock-history" aria-hidden="true"></i></span>
+                      <span data-i18n="workspace.activity_title">النشاط الأخير</span>
+                    </h5>
                     <a class="btn btn-sm btn-outline-secondary" id="viewAllActivityBtn" href="/pages/workspaces/members.html">
                       <span data-i18n="workspace.activity_load_more">تحميل المزيد</span>
                     </a>
@@ -184,7 +187,10 @@
               <div class="col-12 col-lg-5">
                 <div class="card border-0 shadow-sm">
                   <div class="card-header d-flex align-items-center justify-content-between bg-transparent border-bottom-0 pt-3 px-4">
-                    <h5 class="mb-0 fw-semibold" data-i18n="workspace.members_heading">الأعضاء</h5>
+                    <h5 class="mb-0 fw-semibold panel-title">
+                      <span class="panel-title-icon"><i class="bi bi-people-fill" aria-hidden="true"></i></span>
+                      <span data-i18n="workspace.members_heading">الأعضاء</span>
+                    </h5>
                     <a class="btn btn-sm btn-outline-secondary" href="/pages/workspaces/members.html">
                       <span data-i18n="workspace.members_subheading">إدارة</span>
                     </a>
@@ -241,22 +247,22 @@
               <label class="form-label fw-semibold" data-i18n="workspace.type_label">النوع</label>
               <div class="ws-type-grid" id="wsTypeGrid">
                 <button type="button" class="ws-type-option selected" data-type-id="1">
-                  <span class="ws-type-icon">👤</span>
+                  <span class="ws-type-icon"><i class="bi bi-person-fill" aria-hidden="true"></i></span>
                   <span class="ws-type-name" data-i18n="workspace.type_personal">شخصية</span>
                   <span class="ws-type-desc" data-i18n="workspace.type_personal_desc">لك وحدك.</span>
                 </button>
                 <button type="button" class="ws-type-option" data-type-id="2">
-                  <span class="ws-type-icon">👨‍👩‍👧</span>
+                  <span class="ws-type-icon"><i class="bi bi-house-heart-fill" aria-hidden="true"></i></span>
                   <span class="ws-type-name" data-i18n="workspace.type_family">عائلية</span>
                   <span class="ws-type-desc" data-i18n="workspace.type_family_desc">شارك الماليات مع أسرتك.</span>
                 </button>
                 <button type="button" class="ws-type-option" data-type-id="3">
-                  <span class="ws-type-icon">🏢</span>
+                  <span class="ws-type-icon"><i class="bi bi-building-fill" aria-hidden="true"></i></span>
                   <span class="ws-type-name" data-i18n="workspace.type_business">تجارية</span>
                   <span class="ws-type-desc" data-i18n="workspace.type_business_desc">تتبع الحسابات التجارية معاً.</span>
                 </button>
                 <button type="button" class="ws-type-option" data-type-id="4">
-                  <span class="ws-type-icon">👥</span>
+                  <span class="ws-type-icon"><i class="bi bi-people-fill" aria-hidden="true"></i></span>
                   <span class="ws-type-name" data-i18n="workspace.type_team">فريق</span>
                   <span class="ws-type-desc" data-i18n="workspace.type_team_desc">تعاون مع فريقك.</span>
                 </button>
