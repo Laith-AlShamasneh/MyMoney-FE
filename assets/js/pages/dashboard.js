@@ -5,7 +5,7 @@
 
 import { initI18n, t, getLanguage }     from '../core/i18n.js';
 import { initLayout }                    from '../components/layout.js';
-import { guardPage }                     from '../core/auth.js';
+import { guardPage, getCurrentUser }     from '../core/auth.js';
 import { initOnboarding }                from '../components/onboarding.js';
 import { DashboardService }              from '../services/dashboard-service.js';
 import { FinancialIntelligenceService }  from '../services/financial-intelligence-service.js';
@@ -135,6 +135,23 @@ function _countChangePill(change) {
 }
 
 /* --------------------------------------------------------------------------
+   Personalized time-of-day greeting (shown above the eyebrow, first-name only)
+   -------------------------------------------------------------------------- */
+function _renderGreeting() {
+  const el   = document.getElementById('dashboardGreeting');
+  const name = (getCurrentUser()?.displayName || '').trim().split(/\s+/)[0];
+  if (!el || !name) return;
+
+  const hour = new Date().getHours();
+  const key  = hour < 12 ? 'dashboard.greeting_morning'
+             : hour < 18 ? 'dashboard.greeting_afternoon'
+             : 'dashboard.greeting_evening';
+
+  el.textContent = t(key, { name });
+  el.classList.remove('d-none');
+}
+
+/* --------------------------------------------------------------------------
    KPI rendering
    -------------------------------------------------------------------------- */
 function _renderKpi(kpi) {
@@ -143,7 +160,9 @@ function _renderKpi(kpi) {
 
   const net = kpi.currentNet;
   kpiNetVal.textContent    = (net < 0 ? '−' : '') + formatAmount(Math.abs(net));
-  kpiNetVal.style.color    = net < 0 ? '#dc3545' : net > 0 ? '#198754' : '';
+  /* Token-driven (not hardcoded hex) so the color follows the dark-mode
+     income/expense palette instead of a fixed light-mode red/green. */
+  kpiNetVal.style.color    = net < 0 ? 'var(--mm-expense)' : net > 0 ? 'var(--mm-income)' : '';
   kpiCountVal.textContent  = _fmtInt(kpi.currentTransactionCount);
 
   kpiIncomeChange.innerHTML    = _changePill(kpi.incomeChangePercent, true);
@@ -647,6 +666,7 @@ async function init() {
   await initI18n();
   await guardPage();
   initLayout();
+  _renderGreeting();
   await loadDashboard();
   initOnboarding();
 }

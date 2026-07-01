@@ -380,12 +380,8 @@ html[data-theme="dark"] .budget-risk-badge.risk-medium { color: var(--mm-warning
   margin-bottom: 0.25rem;
 }
 
-.budget-kpi-icon.icon-primary  { background: rgba(37,99,235,0.1);  color: var(--mm-primary); }
-.budget-kpi-icon.icon-success  { background: rgba(25,135,84,0.1);  color: var(--mm-success); }
-.budget-kpi-icon.icon-warning  { background: rgba(255,193,7,0.12); color: #a67a00; }
-.budget-kpi-icon.icon-danger   { background: rgba(220,53,69,0.1);  color: var(--mm-danger); }
-
-html[data-theme="dark"] .budget-kpi-icon.icon-warning { color: var(--mm-warning); }
+/* Icon tint is driven by enhance.css's --kpi-accent system (see
+   .kpi-card-accent .budget-kpi-icon), set inline per card in budgets.js. */
 
 .budget-kpi-label {
   font-size: 0.72rem;

@@ -124,26 +124,23 @@ function _animateRing(cardEl, pct, color) {
 
 /* ── Render KPI strip ───────────────────────────────────────────────────────── */
 function _renderKpiStrip(kpi) {
+  /* Accent is a design-token reference (not a raw color), so each card
+     automatically adapts to light/dark mode via the token system — no
+     manual dark-mode branching or hardcoded hex needed. */
   const items = [
-    { icon: 'bi-flag-fill',        bg: '#dbeafe', color: '#1e40af',   val: kpi.activeGoalCount,     lbl: 'goals.kpi_active' },
-    { icon: 'bi-pause-circle-fill',bg: '#fef9c3', color: '#854d0e',   val: kpi.pausedGoalCount,     lbl: 'goals.kpi_paused' },
-    { icon: 'bi-check-circle-fill',bg: '#dcfce7', color: '#166534',   val: kpi.completedGoalCount,  lbl: 'goals.kpi_completed' },
-    { icon: 'bi-wallet2',          bg: '#d1fae5', color: '#065f46',   val: _fmtCurrency(kpi.totalSavedAmount),   lbl: 'goals.kpi_saved',      isCurrency: true },
-    { icon: 'bi-bullseye',         bg: '#ede9fe', color: '#5b21b6',   val: _fmtCurrency(kpi.totalTargetAmount),  lbl: 'goals.kpi_target',     isCurrency: true },
-    { icon: 'bi-hourglass-split',  bg: '#fee2e2', color: '#991b1b',   val: _fmtCurrency(kpi.totalRemainingAmount),lbl: 'goals.kpi_remaining', isCurrency: true },
+    { icon: 'bi-flag-fill',         accent: 'var(--mm-primary)', val: kpi.activeGoalCount,    lbl: 'goals.kpi_active' },
+    { icon: 'bi-pause-circle-fill', accent: 'var(--mm-warning)', val: kpi.pausedGoalCount,    lbl: 'goals.kpi_paused' },
+    { icon: 'bi-check-circle-fill', accent: 'var(--mm-success)', val: kpi.completedGoalCount, lbl: 'goals.kpi_completed' },
+    { icon: 'bi-wallet2',           accent: 'var(--mm-income)',  val: _fmtCurrency(kpi.totalSavedAmount),     lbl: 'goals.kpi_saved',     isCurrency: true },
+    { icon: 'bi-bullseye',          accent: 'var(--mm-accent)',  val: _fmtCurrency(kpi.totalTargetAmount),    lbl: 'goals.kpi_target',    isCurrency: true },
+    { icon: 'bi-hourglass-split',   accent: 'var(--mm-danger)',  val: _fmtCurrency(kpi.totalRemainingAmount), lbl: 'goals.kpi_remaining', isCurrency: true },
   ];
-
-  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  if (dark) {
-    items[0].bg='#1e3a5f'; items[1].bg='#422006'; items[2].bg='#14532d';
-    items[3].bg='#064e3b'; items[4].bg='#2e1065'; items[5].bg='#450a0a';
-  }
 
   const html = items.map(item => `
     <div class="col-6 col-md-4 col-xl-2">
-      <div class="goal-kpi-card">
-        <div class="goal-kpi-icon" style="background:${item.bg};color:${item.color}">
-          <i class="bi ${item.icon}"></i>
+      <div class="goal-kpi-card kpi-card-accent" style="--kpi-accent:${item.accent}">
+        <div class="goal-kpi-icon">
+          <i class="bi ${item.icon}" aria-hidden="true"></i>
         </div>
         <div>
           <div class="goal-kpi-val">${item.isCurrency ? `<span style="font-size:0.85rem">${_esc(item.val)}</span>` : item.val}</div>

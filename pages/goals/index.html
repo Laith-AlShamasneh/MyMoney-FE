@@ -61,7 +61,7 @@
 
         <!-- ── Skeleton ─────────────────────────────────────────────────── -->
         <div id="goalsPageSkeleton">
-          <div class="mm-page-header mb-4">
+          <div class="page-heading mb-4">
             <div>
               <div class="skel mb-2" style="width:80px;height:12px"></div>
               <div class="skel mb-2" style="width:220px;height:28px"></div>
@@ -85,11 +85,14 @@
 
         <!-- ── No data / first-time empty ───────────────────────────────── -->
         <div id="goalsNoData" class="d-none">
-          <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between">
-            <div>
-              <p class="eyebrow" data-i18n="goals.eyebrow"></p>
-              <h1 class="mm-page-title" data-i18n="goals.heading"></h1>
-              <p class="text-muted" data-i18n="goals.subheading"></p>
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-piggy-bank" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="goals.eyebrow"></p>
+                <h1 class="h3 mb-1" data-i18n="goals.heading"></h1>
+                <p class="text-muted mb-0" data-i18n="goals.subheading"></p>
+              </div>
             </div>
           </div>
           <div class="goal-empty-state">
@@ -109,11 +112,14 @@
         <div id="goalsContent" class="d-none">
 
           <!-- Page header -->
-          <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between flex-wrap gap-3">
-            <div>
-              <p class="eyebrow" data-i18n="goals.eyebrow"></p>
-              <h1 class="mm-page-title" data-i18n="goals.heading"></h1>
-              <p class="text-muted mb-0" data-i18n="goals.subheading"></p>
+          <div class="page-heading flex-wrap gap-3">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-piggy-bank" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1" data-i18n="goals.eyebrow"></p>
+                <h1 class="h3 mb-1" data-i18n="goals.heading"></h1>
+                <p class="text-muted mb-0" data-i18n="goals.subheading"></p>
+              </div>
             </div>
             <button id="addGoalBtn" class="btn btn-primary align-self-start">
               <i class="bi bi-plus-circle me-2"></i>

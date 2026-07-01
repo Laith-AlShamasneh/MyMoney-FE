@@ -62,10 +62,11 @@
         <div class="container-fluid px-3 px-lg-4">
 
           <!-- Page heading -->
-          <div class="page-heading">
+          <div class="page-heading dashboard-hero">
             <div class="page-heading-copy">
-              <span class="page-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
+              <span class="page-icon dashboard-hero-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
               <div>
+                <p class="dashboard-greeting d-none" id="dashboardGreeting"></p>
                 <p class="eyebrow mb-1" data-i18n="dashboard.eyebrow">نظرة عامة</p>
                 <h1 class="h3 mb-1" data-i18n="dashboard.heading">لوحة التحكم</h1>
                 <p class="text-muted mb-0" data-i18n="dashboard.subheading">راقب أداءك المالي من مكان واحد.</p>
@@ -84,10 +85,10 @@
           <div id="kpiCards" class="row g-3 mb-4 d-none animate-stagger">
             <!-- Income -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-income)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(25,135,84,.1);color:#198754;">
-                    <i class="bi bi-arrow-down-circle-fill"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-arrow-down-circle-fill" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="dashboard.kpi_income">الدخل</span>
                 </div>
@@ -97,10 +98,10 @@
             </div>
             <!-- Expenses -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-expense)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(220,53,69,.1);color:#dc3545;">
-                    <i class="bi bi-arrow-up-circle-fill"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-arrow-up-circle-fill" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="dashboard.kpi_expenses">المصروفات</span>
                 </div>
@@ -110,10 +111,10 @@
             </div>
             <!-- Net -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-primary)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(13,110,253,.1);color:#0d6efd;">
-                    <i class="bi bi-calculator-fill"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-calculator-fill" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="dashboard.kpi_net">الصافي</span>
                 </div>
@@ -123,10 +124,10 @@
             </div>
             <!-- Transaction count -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-accent)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(111,66,193,.1);color:#6f42c1;">
-                    <i class="bi bi-list-ul"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="dashboard.kpi_transactions">المعاملات</span>
                 </div>
@@ -162,7 +163,10 @@
               <div class="panel">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                   <div>
-                    <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.trend_title">الدخل مقابل المصروفات</h2>
+                    <h2 class="h6 mb-0 fw-semibold panel-title">
+                      <span class="panel-title-icon"><i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i></span>
+                      <span data-i18n="dashboard.trend_title">الدخل مقابل المصروفات</span>
+                    </h2>
                     <p class="text-muted small mb-0" data-i18n="dashboard.trend_subtitle">آخر 6 أشهر</p>
                   </div>
                 </div>
@@ -184,7 +188,10 @@
             <div class="col-lg-5">
               <div class="panel h-100 d-flex flex-column">
                 <div class="mb-3">
-                  <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.breakdown_title">توزيع المصروفات</h2>
+                  <h2 class="h6 mb-0 fw-semibold panel-title">
+                    <span class="panel-title-icon panel-title-icon-danger"><i class="bi bi-pie-chart-fill" aria-hidden="true"></i></span>
+                    <span data-i18n="dashboard.breakdown_title">توزيع المصروفات</span>
+                  </h2>
                   <p class="text-muted small mb-0" data-i18n="dashboard.breakdown_subtitle">هذا الشهر حسب الفئة</p>
                 </div>
                 <div id="breakdownEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">
@@ -208,7 +215,10 @@
               <div class="panel h-100 d-flex flex-column">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                   <div>
-                    <h2 class="h6 mb-0 fw-semibold" data-i18n="dashboard.recent_title">آخر المعاملات</h2>
+                    <h2 class="h6 mb-0 fw-semibold panel-title">
+                      <span class="panel-title-icon panel-title-icon-accent"><i class="bi bi-receipt" aria-hidden="true"></i></span>
+                      <span data-i18n="dashboard.recent_title">آخر المعاملات</span>
+                    </h2>
                   </div>
                 </div>
                 <div id="recentEmpty" class="d-none flex-grow-1 d-flex align-items-center justify-content-center">

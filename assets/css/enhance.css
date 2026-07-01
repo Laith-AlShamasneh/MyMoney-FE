@@ -19,6 +19,9 @@
   --mm-gradient-success: linear-gradient(135deg, #10b981 0%, #0f766e 100%);
   --mm-gradient-text: linear-gradient(120deg, #2563eb, #4f46e5 55%, #7c3aed);
 
+  /* General-purpose accent (used for "misc/count" style KPIs, badges, etc.) */
+  --mm-accent: #7c3aed;
+
   /* Softer, deeper, layered elevation */
   --mm-shadow-xs: 0 1px 2px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.05);
   --mm-shadow-sm: 0 2px 6px rgba(15,23,42,0.06), 0 6px 16px rgba(15,23,42,0.07);
@@ -36,6 +39,7 @@ html[data-theme="dark"] {
   --mm-shadow-sm: 0 2px 8px rgba(0,0,0,0.34);
   --mm-shadow:    0 6px 20px rgba(0,0,0,0.40);
   --mm-shadow-lg: 0 16px 48px rgba(0,0,0,0.52);
+  --mm-accent: #a78bfa;
 }
 
 /* --------------------------------------------------------------------------
@@ -172,7 +176,90 @@ a, .btn, .nav-link, .icon-button, .profile-button,
 }
 
 /* --------------------------------------------------------------------------
-   9. Accessibility — honor reduced motion
+   9. Dashboard hero (page-heading upgrade)
+   -------------------------------------------------------------------------- */
+.dashboard-hero .page-icon.dashboard-hero-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--mm-radius-lg);
+  font-size: 1.5rem;
+  background: var(--mm-gradient-primary);
+  color: #fff;
+  box-shadow: var(--mm-shadow-primary);
+}
+
+.dashboard-greeting {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--mm-muted);
+  margin: 0 0 0.15rem;
+}
+
+/* --------------------------------------------------------------------------
+   10. KPI card accent system (Dashboard, Transactions summary strip, Budgets
+   KPI strip). Each card sets --kpi-accent inline (a token reference, e.g.
+   var(--mm-income)) so one rule set drives every metric's tint, top-bar, and
+   icon color — no hardcoded hex, no per-theme JS branching required.
+   -------------------------------------------------------------------------- */
+.kpi-card, .kpi-card-accent { position: relative; overflow: hidden; }
+
+.kpi-card-accent::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--kpi-accent, var(--mm-primary)), transparent 85%);
+}
+
+.kpi-card-accent .kpi-icon,
+.kpi-card-accent .budget-kpi-icon,
+.kpi-card-accent .goal-kpi-icon {
+  background: color-mix(in srgb, var(--kpi-accent, var(--mm-primary)) 14%, transparent);
+  color: var(--kpi-accent, var(--mm-primary));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--kpi-accent, var(--mm-primary)) 18%, transparent);
+}
+
+.kpi-value {
+  font-size: 1.7rem;
+  letter-spacing: -0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   11. Panel title icon badges (small colored icon before a panel's <h2>)
+   -------------------------------------------------------------------------- */
+.panel-title { display: flex; align-items: center; gap: 0.5rem; }
+
+.panel-title-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: var(--mm-primary-light);
+  color: var(--mm-primary);
+  font-size: 0.72rem;
+}
+.panel-title-icon-danger  { background: var(--mm-danger-light);  color: var(--mm-danger); }
+.panel-title-icon-accent  { background: color-mix(in srgb, var(--mm-accent) 14%, transparent); color: var(--mm-accent); }
+.panel-title-icon-warning { background: var(--mm-warning-light); color: var(--mm-warning); }
+.panel-title-icon-info    { background: var(--mm-info-light);    color: var(--mm-info); }
+.panel-title-icon-success { background: var(--mm-success-light); color: var(--mm-success); }
+
+/* Flagship chart panel — slim gradient top accent (dashboard-only, ID-scoped) */
+#chartsRow .panel { position: relative; overflow: hidden; }
+#chartsRow .panel::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: var(--mm-gradient-primary);
+}
+
+/* --------------------------------------------------------------------------
+   12. Accessibility — honor reduced motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -90,10 +90,10 @@
           <div id="summaryStrip" class="row g-3 mb-4 d-none animate-stagger">
             <!-- Income -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-income)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(25,135,84,.1);color:#198754;">
-                    <i class="bi bi-arrow-down-circle-fill"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-arrow-down-circle-fill" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="transactions.summary_income">إجمالي الدخل</span>
                 </div>
@@ -102,10 +102,10 @@
             </div>
             <!-- Expenses -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-expense)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(220,53,69,.1);color:#dc3545;">
-                    <i class="bi bi-arrow-up-circle-fill"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-arrow-up-circle-fill" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="transactions.summary_expenses">إجمالي المصروفات</span>
                 </div>
@@ -114,10 +114,10 @@
             </div>
             <!-- Net -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-primary)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(13,110,253,.1);color:#0d6efd;">
-                    <i class="bi bi-calculator-fill"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-calculator-fill" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="transactions.summary_net">الرصيد الصافي</span>
                 </div>
@@ -126,10 +126,10 @@
             </div>
             <!-- Count -->
             <div class="col-6 col-xl-3">
-              <div class="kpi-card d-flex flex-column gap-2">
+              <div class="kpi-card kpi-card-accent d-flex flex-column gap-2" style="--kpi-accent:var(--mm-accent)">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="kpi-icon" style="background:rgba(111,66,193,.1);color:#6f42c1;">
-                    <i class="bi bi-hash"></i>
+                  <div class="kpi-icon">
+                    <i class="bi bi-hash" aria-hidden="true"></i>
                   </div>
                   <span class="kpi-label" data-i18n="transactions.summary_count">المعاملات</span>
                 </div>
@@ -310,7 +310,10 @@
           <div class="panel mb-4">
             <div class="d-flex align-items-start justify-content-between mb-0">
               <div>
-                <h2 class="h6 fw-semibold mb-0" data-i18n="transactions.analytics_title">التحليلات</h2>
+                <h2 class="h6 fw-semibold mb-0 panel-title">
+                  <span class="panel-title-icon panel-title-icon-accent"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i></span>
+                  <span data-i18n="transactions.analytics_title">التحليلات</span>
+                </h2>
                 <p class="text-muted small mb-0" data-i18n="transactions.analytics_subtitle">تحليل بصري لنشاطك المالي.</p>
               </div>
               <button id="btnToggleAnalytics" class="analytics-toggle-btn text-muted" data-i18n="transactions.analytics_toggle_show">

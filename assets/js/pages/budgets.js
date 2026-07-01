@@ -140,44 +140,41 @@ function _progressBarCls(pct) {
    KPI strip
    -------------------------------------------------------------------------- */
 function _renderKpis(summary) {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
+  /* Accent is a design-token reference (not a raw color), so each card
+     automatically adapts to light/dark mode via the token system — no
+     manual isDark branching or hardcoded hex needed. */
   const items = [
     {
       icon: 'bi-wallet2',
-      bg: isDark ? '#1e3a5f' : '#dbeafe',
-      color: isDark ? '#60a5fa' : '#1e40af',
+      accent: 'var(--mm-primary)',
       val: summary.totalBudgets,
       lbl: 'budgets.kpi_active',
     },
     {
       icon: 'bi-cash-stack',
-      bg: isDark ? '#064e3b' : '#d1fae5',
-      color: isDark ? '#34d399' : '#065f46',
+      accent: 'var(--mm-success)',
       val: _fmtCurrency(summary.totalBudgetedAmount),
       lbl: 'budgets.kpi_total_budgeted',
       currency: true,
     },
     {
       icon: 'bi-credit-card',
-      bg: isDark ? '#450a0a' : '#fee2e2',
-      color: isDark ? '#f87171' : '#991b1b',
+      accent: 'var(--mm-danger)',
       val: _fmtCurrency(summary.totalActualSpent),
       lbl: 'budgets.kpi_total_spent',
       currency: true,
     },
     {
       icon: 'bi-exclamation-triangle-fill',
-      bg: isDark ? '#422006' : '#fef9c3',
-      color: isDark ? '#fb923c' : '#854d0e',
+      accent: 'var(--mm-warning)',
       val: summary.exceededCount,
       lbl: 'budgets.kpi_over_budget',
     },
   ];
 
   $('budgetsKpiStrip').innerHTML = items.map(item => `
-    <div class="budget-kpi-card">
-      <div class="budget-kpi-icon" style="background:${item.bg};color:${item.color}">
+    <div class="budget-kpi-card kpi-card-accent" style="--kpi-accent:${item.accent}">
+      <div class="budget-kpi-icon">
         <i class="bi ${item.icon}" aria-hidden="true"></i>
       </div>
       <div>

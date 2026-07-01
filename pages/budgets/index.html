@@ -61,7 +61,7 @@
 
           <!-- ── Skeleton ──────────────────────────────────────────────────── -->
           <div id="budgetsSkeleton">
-            <div class="mm-page-header mb-4">
+            <div class="page-heading mb-4">
               <div>
                 <div class="skel mb-2" style="width:80px;height:12px"></div>
                 <div class="skel mb-2" style="width:220px;height:28px"></div>
@@ -83,11 +83,14 @@
 
           <!-- ── No data / first-time empty ──────────────────────────────── -->
           <div id="budgetsNoData" class="d-none">
-            <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between">
-              <div>
-                <p class="eyebrow" data-i18n="budgets.eyebrow"></p>
-                <h1 class="mm-page-title" data-i18n="budgets.heading"></h1>
-                <p class="text-muted" data-i18n="budgets.subheading"></p>
+            <div class="page-heading">
+              <div class="page-heading-copy">
+                <span class="page-icon"><i class="bi bi-wallet2" aria-hidden="true"></i></span>
+                <div>
+                  <p class="eyebrow mb-1" data-i18n="budgets.eyebrow"></p>
+                  <h1 class="h3 mb-1" data-i18n="budgets.heading"></h1>
+                  <p class="text-muted mb-0" data-i18n="budgets.subheading"></p>
+                </div>
               </div>
             </div>
             <div class="budget-empty-state text-center py-5">
@@ -107,11 +110,14 @@
           <div id="budgetsContent" class="d-none">
 
             <!-- Page header -->
-            <div class="mm-page-header mb-4 d-flex align-items-start justify-content-between flex-wrap gap-3">
-              <div>
-                <p class="eyebrow" data-i18n="budgets.eyebrow"></p>
-                <h1 class="mm-page-title" data-i18n="budgets.heading"></h1>
-                <p class="text-muted mb-0" data-i18n="budgets.subheading"></p>
+            <div class="page-heading flex-wrap gap-3">
+              <div class="page-heading-copy">
+                <span class="page-icon"><i class="bi bi-wallet2" aria-hidden="true"></i></span>
+                <div>
+                  <p class="eyebrow mb-1" data-i18n="budgets.eyebrow"></p>
+                  <h1 class="h3 mb-1" data-i18n="budgets.heading"></h1>
+                  <p class="text-muted mb-0" data-i18n="budgets.subheading"></p>
+                </div>
               </div>
               <button id="addBudgetBtn" class="btn btn-primary align-self-start">
                 <i class="bi bi-plus-circle me-2"></i>
@@ -128,7 +134,10 @@
               <div class="panel budget-chart-panel">
                 <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
                   <div>
-                    <h2 class="h6 fw-semibold mb-0" data-i18n="budgets.chart_trend_title"></h2>
+                    <h2 class="h6 fw-semibold mb-0 panel-title">
+                      <span class="panel-title-icon"><i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i></span>
+                      <span data-i18n="budgets.chart_trend_title"></span>
+                    </h2>
                     <p class="text-muted small mb-0" data-i18n="budgets.chart_trend_subtitle"></p>
                   </div>
                 </div>
@@ -141,7 +150,10 @@
               <div class="panel budget-chart-panel">
                 <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
                   <div>
-                    <h2 class="h6 fw-semibold mb-0" data-i18n="budgets.chart_category_title"></h2>
+                    <h2 class="h6 fw-semibold mb-0 panel-title">
+                      <span class="panel-title-icon panel-title-icon-danger"><i class="bi bi-pie-chart-fill" aria-hidden="true"></i></span>
+                      <span data-i18n="budgets.chart_category_title"></span>
+                    </h2>
                     <p class="text-muted small mb-0" data-i18n="budgets.chart_category_subtitle"></p>
                   </div>
                 </div>

@@ -245,6 +245,9 @@
     "eyebrow": "نظرة عامة",
     "heading": "لوحة التحكم",
     "subheading": "راقب أداءك المالي من مكان واحد.",
+    "greeting_morning":   "صباح الخير، {name}",
+    "greeting_afternoon": "مساء الخير، {name}",
+    "greeting_evening":   "مساء النور، {name}",
 
     "kpi_income": "الدخل هذا الشهر",
     "kpi_expenses": "المصروفات هذا الشهر",
@@ -1026,6 +1029,7 @@
     "modal_confirm":          "تأكيد",
     "modal_confirming":       "جاري التنفيذ...",
 
+    "milestones_section_title":  "المراحل",
     "contrib_history_title":     "سجل الادخار",
     "contrib_load_more":         "عرض المزيد",
     "contrib_empty":             "لا توجد مساهمات بعد. أضف أول ادخار لك!",
